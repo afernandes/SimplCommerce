@@ -3,11 +3,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace SimplCommerce.Module.Core.Areas.Core.Controllers
+namespace SimplCommerce.Module.Core.Controllers
 {
     [Area("Core")]
     [Authorize(Roles = "admin, vendor")]
-    [ApiExplorerSettings(IgnoreApi = true)]
     public class HomeAdminController : Controller
     {
         private readonly IAntiforgery _antiforgery;
@@ -22,7 +21,7 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
         { 
             var tokens = _antiforgery.GetAndStoreTokens(HttpContext);
             HttpContext.Response.Cookies.Append("XSRF-TOKEN",
-                tokens.RequestToken, new CookieOptions { HttpOnly = false, IsEssential = true }
+                tokens.RequestToken, new CookieOptions { HttpOnly = false }
             );
 
             return View();
