@@ -63,6 +63,7 @@ namespace SimplCommerce.WebHost.Extensions
                 {
                     o.EnableEndpointRouting = false;
                     o.ModelBinderProviders.Insert(0, new InvariantDecimalModelBinderProvider());
+                    o.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
                 })
                 .AddRazorRuntimeCompilation()
                 .AddViewLocalization()
