@@ -60,5 +60,23 @@ namespace SimplCommerce.Module.Orders.Areas.Orders.Controllers
 
             return View(model);
         }
+
+        public virtual IActionResult SetCurrency(int customerCurrency, string returnUrl = "")
+        {
+            var currency = _currencyService.GetCurrencyById(customerCurrency);
+            if (currency != null)
+                _workContext.WorkingCurrency = currency;
+
+            //home page
+            if (string.IsNullOrEmpty(returnUrl))
+                returnUrl = Url.RouteUrl("HomePage");
+
+            //prevent open redirection attack
+            if (!Url.IsLocalUrl(returnUrl))
+                returnUrl = Url.RouteUrl("HomePage");
+
+            return Redirect(returnUrl);
+        }
+
     }
 }

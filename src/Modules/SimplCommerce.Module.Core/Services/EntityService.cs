@@ -69,7 +69,7 @@ namespace SimplCommerce.Module.Core.Services
 
             if (entity != null)
             {
-                 await _mediator.Publish(new EntityDeleting { EntityId = entity.Id });
+                 await _mediator.Publish(new EntityDeletedEvent<Entity>(entity));
                 _entityRepository.Remove(entity);
             }
         }

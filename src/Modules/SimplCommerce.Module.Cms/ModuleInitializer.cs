@@ -6,6 +6,7 @@ using SimplCommerce.Infrastructure.Modules;
 using SimplCommerce.Module.Cms.Events;
 using SimplCommerce.Module.Cms.Services;
 using SimplCommerce.Module.Core.Events;
+using SimplCommerce.Module.Core.Models;
 
 namespace SimplCommerce.Module.Cms
 {
@@ -13,7 +14,8 @@ namespace SimplCommerce.Module.Cms
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddTransient<INotificationHandler<EntityDeleting>, EntityDeletingHandler>();
+            //services.AddTransient<INotificationHandler<EntityDeleting>, EntityDeletingHandler>();
+            services.AddTransient<INotificationHandler<EntityDeletedEvent<Entity>>, EntityDeletingHandler>();
             services.AddTransient<IPageService, PageService>();
         }
 

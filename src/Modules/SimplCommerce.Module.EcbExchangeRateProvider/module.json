@@ -1,0 +1,6 @@
+{
+  "id": "SimplCommerce.Module.EcbExchangeRateProvider",
+  "name": "ECB Exchange rate provider",
+  "isBundledWithHost": true,
+  "version": "1.0.0"
+}

@@ -6,5 +6,10 @@ namespace SimplCommerce.Module.Core.Extensions
     public interface IWorkContext
     {
         Task<User> GetCurrentUser();
+
+        /// <summary>
+        /// Gets or sets current user working currency
+        /// </summary>
+        Currency WorkingCurrency { get; set; }
     }
 }

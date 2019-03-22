@@ -1,0 +1,6 @@
+{
+  "id": "SimplCommerce.Module.Currencies",
+  "name": "Currency",
+  "isBundledWithHost": true,
+  "version": "1.0.0"
+}
