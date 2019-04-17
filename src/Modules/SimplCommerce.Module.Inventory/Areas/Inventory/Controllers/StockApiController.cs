@@ -43,7 +43,7 @@ namespace SimplCommerce.Module.Inventory.Areas.Inventory.Controllers
         public async Task<IActionResult> AddAllProducts(long warehouseId)
         {
             var currentUser = await _workContext.GetCurrentUser();
-            var warehouse = _warehouseRepository.Query().FirstOrDefault(x => x.Id == warehouseId);
+            var warehouse = _warehouseRepository.GetAll().FirstOrDefault(x => x.Id == warehouseId);
             if (warehouse == null)
             {
                 return NotFound();
@@ -62,7 +62,7 @@ namespace SimplCommerce.Module.Inventory.Areas.Inventory.Controllers
         public async Task<IActionResult> List(long warehouseId, [FromBody] SmartTableParam param)
         {
             var currentUser = await _workContext.GetCurrentUser();
-            var warehouse = _warehouseRepository.Query().FirstOrDefault(x => x.Id == warehouseId);
+            var warehouse = _warehouseRepository.GetAll().FirstOrDefault(x => x.Id == warehouseId);
             if(warehouse == null)
             {
                 return NotFound();
@@ -73,7 +73,7 @@ namespace SimplCommerce.Module.Inventory.Areas.Inventory.Controllers
                 return BadRequest(new { error = "You don't have permission to manage this warehouse" });
             }
 
-            var query = _stockRepository.Query().Where(x => x.WarehouseId == warehouseId && !x.Product.HasOptions && !x.Product.IsDeleted);
+            var query = _stockRepository.GetAll().Where(x => x.WarehouseId == warehouseId && !x.Product.HasOptions && !x.Product.IsDeleted);
             if (param.Search.PredicateObject != null)
             {
                 dynamic search = param.Search.PredicateObject;
@@ -110,7 +110,7 @@ namespace SimplCommerce.Module.Inventory.Areas.Inventory.Controllers
         public async Task<IActionResult> Put(long warehouseId, [FromBody] IList<StockVm> stockVms)
         {
             var currentUser = await _workContext.GetCurrentUser();
-            var warehouse = _warehouseRepository.Query().FirstOrDefault(x => x.Id == warehouseId);
+            var warehouse = _warehouseRepository.GetAll().FirstOrDefault(x => x.Id == warehouseId);
             if (warehouse == null)
             {
                 return NotFound();
@@ -146,7 +146,7 @@ namespace SimplCommerce.Module.Inventory.Areas.Inventory.Controllers
         [HttpGet("history")]
         public async Task<IActionResult> GetStockHistory(int warehouseId, int productId)
         {
-            var query = _stockHistoryRepository.Query();
+            var query = _stockHistoryRepository.GetAll();
             query = query.Where(x => x.WarehouseId == warehouseId && x.ProductId == productId);
             var stockHistory = await query.Select(x => new
             {

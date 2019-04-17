@@ -33,7 +33,7 @@ namespace SimplCommerce.Module.Orders.Events
             orderHistory.OrderSnapshot = JsonConvert.SerializeObject(notification.Order);
         }
 
-        _orderHistoryRepository.Add(orderHistory);
+        _orderHistoryRepository.Insert(orderHistory);
         await _orderHistoryRepository.SaveChangesAsync();
     }
 }

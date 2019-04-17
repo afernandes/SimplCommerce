@@ -50,7 +50,7 @@ namespace SimplCommerce.WebHost
             services.AddCustomizedIdentity(_configuration);
             services.AddHttpClient();
             services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
-            services.AddTransient(typeof(IRepositoryWithTypedId<,>), typeof(RepositoryWithTypedId<,>));
+            services.AddTransient(typeof(IRepository<,>), typeof(Repository<,>));
 
             services.AddCustomizedLocalization();
 

@@ -43,7 +43,7 @@ namespace SimplCommerce.Module.Core.Services
 
         public Task DeleteMediaAsync(Media media)
         {
-            _mediaRepository.Remove(media);
+            _mediaRepository.Delete(media);
             return DeleteMediaAsync(media.FileName);
         }
 

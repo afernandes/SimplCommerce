@@ -23,7 +23,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
         public IActionResult List()
         {
             var attributes = _productAttrRepository
-                .Query()
+                .GetAll()
                 .Select(x => new
                 {
                     Id = x.Id,
@@ -37,7 +37,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
         [HttpGet("{id}")]
         public IActionResult Get(long id)
         {
-            var productAttribute = _productAttrRepository.Query().FirstOrDefault(x => x.Id == id);
+            var productAttribute = _productAttrRepository.GetAll().FirstOrDefault(x => x.Id == id);
             var model = new ProductAttributeFormVm
             {
                 Id = productAttribute.Id,
@@ -60,7 +60,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
                     GroupId = model.GroupId
                 };
 
-                _productAttrRepository.Add(productAttribute);
+                _productAttrRepository.Insert(productAttribute);
                 _productAttrRepository.SaveChanges();
 
                 return Ok();
@@ -74,7 +74,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
         {
             if (ModelState.IsValid)
             {
-                var productAttribute = _productAttrRepository.Query().FirstOrDefault(x => x.Id == id);
+                var productAttribute = _productAttrRepository.GetAll().FirstOrDefault(x => x.Id == id);
                 productAttribute.Name = model.Name;
                 productAttribute.GroupId = model.GroupId;
 
@@ -89,13 +89,13 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
         [Authorize(Roles = "admin")]
         public IActionResult Delete(long id)
         {
-            var productAttribute = _productAttrRepository.Query().FirstOrDefault(x => x.Id == id);
+            var productAttribute = _productAttrRepository.GetAll().FirstOrDefault(x => x.Id == id);
             if (productAttribute == null)
             {
                 return NotFound();
             }
 
-            _productAttrRepository.Remove(productAttribute);
+            _productAttrRepository.Delete(productAttribute);
             return Json(true);
         }
     }

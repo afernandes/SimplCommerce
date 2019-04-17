@@ -27,7 +27,7 @@ namespace SimplCommerce.Module.News.Areas.News.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var categoryList = await _categoryRepository.Query().Where(x => !x.IsDeleted).ToListAsync();
+            var categoryList = await _categoryRepository.GetAll().Where(x => !x.IsDeleted).ToListAsync();
 
             return Json(categoryList);
         }
@@ -35,7 +35,7 @@ namespace SimplCommerce.Module.News.Areas.News.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(long id)
         {
-            var category = await _categoryRepository.Query().FirstOrDefaultAsync(x => x.Id == id);
+            var category = await _categoryRepository.GetAll().FirstOrDefaultAsync(x => x.Id == id);
             if(category == null)
             {
                 return NotFound();
@@ -84,7 +84,7 @@ namespace SimplCommerce.Module.News.Areas.News.Controllers
         {
             if (ModelState.IsValid)
             {
-                var category = _categoryRepository.Query().FirstOrDefault(x => x.Id == id);
+                var category = _categoryRepository.GetAll().FirstOrDefault(x => x.Id == id);
                 category.Name = model.Name;
                 category.Slug = model.Slug;
                 category.MetaTitle = model.MetaTitle;
@@ -103,7 +103,7 @@ namespace SimplCommerce.Module.News.Areas.News.Controllers
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> Delete(long id)
         {
-            var category = await _categoryRepository.Query().FirstOrDefaultAsync(x => x.Id == id);
+            var category = await _categoryRepository.GetAll().FirstOrDefaultAsync(x => x.Id == id);
             if (category == null)
             {
                 return NotFound();

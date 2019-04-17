@@ -111,7 +111,7 @@ namespace SimplCommerce.Module.Reviews.Areas.Reviews.Controllers
         [HttpPost("change-status/{id}")]
         public async Task<IActionResult> ChangeStatus(long id, [FromBody] int statusId)
         {
-            var reply = _replyRepository.Query().FirstOrDefault(x => x.Id == id);
+            var reply = _replyRepository.GetAll().FirstOrDefault(x => x.Id == id);
 
             if (reply == null)
             {

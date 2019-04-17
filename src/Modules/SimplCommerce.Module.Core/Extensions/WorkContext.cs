@@ -45,7 +45,7 @@ namespace SimplCommerce.Module.Core.Extensions
             var userGuid = GetUserGuidFromCookies();
             if (userGuid.HasValue)
             {
-                _currentUser = _userRepository.Query().Include(x => x.Roles).FirstOrDefault(x => x.UserGuid == userGuid);
+                _currentUser = _userRepository.GetAll().Include(x => x.Roles).FirstOrDefault(x => x.UserGuid == userGuid);
             }
 
             if (_currentUser != null && _currentUser.Roles.Count == 1 && _currentUser.Roles.First().RoleId == GuestRoleId)

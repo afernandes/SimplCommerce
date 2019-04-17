@@ -41,7 +41,7 @@ namespace SimplCommerce.Module.Reviews.Areas.Reviews.Controllers
                     UserId = user.Id,
                 };
 
-                _reviewRepository.Add(review);
+                _reviewRepository.Insert(review);
                 _reviewRepository.SaveChanges();
 
                 return PartialView("_ReviewFormSuccess", model);
@@ -70,7 +70,7 @@ namespace SimplCommerce.Module.Reviews.Areas.Reviews.Controllers
             model.EntitySlug = entity.EntitySlug;
 
             var query = _reviewRepository
-                .Query()
+                .GetAll()
                 .Where(x => (x.EntityId == entityId) && (x.EntityTypeId == entityTypeId) && (x.Status == ReviewStatus.Approved))
                 .OrderByDescending(x => x.CreatedOn)
                 .Select(x => new ReviewItem

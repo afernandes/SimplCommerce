@@ -4,7 +4,7 @@ using SimplCommerce.Infrastructure.Models;
 
 namespace SimplCommerce.Module.Core.Models
 {
-    public class Widget : EntityBaseWithTypedId<string>
+    public class Widget : EntityBase<string>
     {
         public Widget(string id)
         {

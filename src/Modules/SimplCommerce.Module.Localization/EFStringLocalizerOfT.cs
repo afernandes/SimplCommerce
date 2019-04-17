@@ -70,7 +70,7 @@ namespace SimplCommerce.Module.Localization
                 using (var scope = _serviceProvider.CreateScope())
                 {
                     var resourceRepository = scope.ServiceProvider.GetRequiredService<IRepository<Resource>>();
-                    resources = resourceRepository.Query().Where(r => r.Culture.Id == culture).ToList();
+                    resources = resourceRepository.GetAll().Where(r => r.Culture.Id == culture).ToList();
                 }
                 _resourcesCache.Set(culture, resources);
             }

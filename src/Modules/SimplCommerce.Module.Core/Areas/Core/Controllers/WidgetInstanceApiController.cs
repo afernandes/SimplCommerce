@@ -14,9 +14,9 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
     public class WidgetInstanceApiController : Controller
     {
         private readonly IRepository<WidgetInstance> _widgetInstanceRepository;
-        private readonly IRepositoryWithTypedId<Widget, string> _widgetRespository;
+        private readonly IRepository<Widget, string> _widgetRespository;
 
-        public WidgetInstanceApiController(IRepository<WidgetInstance> widgetInstanceRepository, IRepositoryWithTypedId<Widget, string> widgetRespository)
+        public WidgetInstanceApiController(IRepository<WidgetInstance> widgetInstanceRepository, IRepository<Widget, string> widgetRespository)
         {
             _widgetInstanceRepository = widgetInstanceRepository;
             _widgetRespository = widgetRespository;
@@ -25,7 +25,7 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var widgetInstances = await _widgetInstanceRepository.Query()
+            var widgetInstances = await _widgetInstanceRepository.GetAll()
                 .Select(x => new
                 {
                     Id = x.Id,
@@ -45,13 +45,13 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(long id)
         {
-            var widgetInstance = await _widgetInstanceRepository.Query().FirstOrDefaultAsync(x => x.Id == id);
+            var widgetInstance = await _widgetInstanceRepository.GetAll().FirstOrDefaultAsync(x => x.Id == id);
             if (widgetInstance == null)
             {
                 return NotFound();
             }
 
-            _widgetInstanceRepository.Remove(widgetInstance);
+            _widgetInstanceRepository.Delete(widgetInstance);
             _widgetInstanceRepository.SaveChanges();
 
             return NoContent();
@@ -60,7 +60,7 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
         [HttpGet("number-of-widgets")]
         public IActionResult GetNumberOfWidgets()
         {
-            var total = _widgetInstanceRepository.Query().Count();
+            var total = _widgetInstanceRepository.GetAll().Count();
 
             return Json(total);
         }

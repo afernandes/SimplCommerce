@@ -23,7 +23,7 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var widgetZones = await _widgetZoneRespository.Query().Select(x => new
+            var widgetZones = await _widgetZoneRespository.GetAll().Select(x => new
             {
                 Id = x.Id,
                 Name = x.Name,

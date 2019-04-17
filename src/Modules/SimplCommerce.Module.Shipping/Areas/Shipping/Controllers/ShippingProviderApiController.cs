@@ -13,9 +13,9 @@ namespace SimplCommerce.Module.Shipping.Areas.Shipping.Controllers
     [Route("api/shipping-providers")]
     public class ShippingProviderApiController : Controller
     {
-        private readonly IRepositoryWithTypedId<ShippingProvider, string> _shippingProviderRepositor;
+        private readonly IRepository<ShippingProvider, string> _shippingProviderRepositor;
 
-        public ShippingProviderApiController(IRepositoryWithTypedId<ShippingProvider, string> shippingProviderRepositor)
+        public ShippingProviderApiController(IRepository<ShippingProvider, string> shippingProviderRepositor)
         {
             _shippingProviderRepositor = shippingProviderRepositor;
         }
@@ -23,7 +23,7 @@ namespace SimplCommerce.Module.Shipping.Areas.Shipping.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var providers = await _shippingProviderRepositor.Query()
+            var providers = await _shippingProviderRepositor.GetAll()
                 .Select(x => new
                 {
                     x.Id,
@@ -38,7 +38,7 @@ namespace SimplCommerce.Module.Shipping.Areas.Shipping.Controllers
         [HttpPost("{id}/enable")]
         public async Task<IActionResult> Enable(string id)
         {
-            var provider = await _shippingProviderRepositor.Query().FirstOrDefaultAsync(x => x.Id == id);
+            var provider = await _shippingProviderRepositor.GetAll().FirstOrDefaultAsync(x => x.Id == id);
             provider.IsEnabled = true;
             await _shippingProviderRepositor.SaveChangesAsync();
             return NoContent();
@@ -47,7 +47,7 @@ namespace SimplCommerce.Module.Shipping.Areas.Shipping.Controllers
         [HttpPost("{id}/disable")]
         public async Task<IActionResult> Disable(string id)
         {
-            var provider = await _shippingProviderRepositor.Query().FirstOrDefaultAsync(x => x.Id == id);
+            var provider = await _shippingProviderRepositor.GetAll().FirstOrDefaultAsync(x => x.Id == id);
             provider.IsEnabled = false;
             await _shippingProviderRepositor.SaveChangesAsync();
             return NoContent();

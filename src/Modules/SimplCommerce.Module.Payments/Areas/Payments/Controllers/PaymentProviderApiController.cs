@@ -13,9 +13,9 @@ namespace SimplCommerce.Module.Payments.Areas.Payments.Controllers
     [Route("api/payments-providers")]
     public class PaymentProviderApiController : Controller
     {
-        private readonly IRepositoryWithTypedId<PaymentProvider, string> _paymentProviderRepository;
+        private readonly IRepository<PaymentProvider, string> _paymentProviderRepository;
 
-        public PaymentProviderApiController(IRepositoryWithTypedId<PaymentProvider, string> paymentProviderRepositor)
+        public PaymentProviderApiController(IRepository<PaymentProvider, string> paymentProviderRepositor)
         {
             _paymentProviderRepository = paymentProviderRepositor;
         }
@@ -23,7 +23,7 @@ namespace SimplCommerce.Module.Payments.Areas.Payments.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var providers = await _paymentProviderRepository.Query()
+            var providers = await _paymentProviderRepository.GetAll()
                 .Select(x => new
                 {
                     x.Id,
@@ -38,7 +38,7 @@ namespace SimplCommerce.Module.Payments.Areas.Payments.Controllers
         [HttpPost("{id}/enable")]
         public async Task<IActionResult> Enable(string id)
         {
-            var provider = await _paymentProviderRepository.Query().FirstOrDefaultAsync(x => x.Id == id);
+            var provider = await _paymentProviderRepository.GetAll().FirstOrDefaultAsync(x => x.Id == id);
             provider.IsEnabled = true;
             await _paymentProviderRepository.SaveChangesAsync();
             return NoContent();
@@ -47,7 +47,7 @@ namespace SimplCommerce.Module.Payments.Areas.Payments.Controllers
         [HttpPost("{id}/disable")]
         public async Task<IActionResult> Disable(string id)
         {
-            var provider = await _paymentProviderRepository.Query().FirstOrDefaultAsync(x => x.Id == id);
+            var provider = await _paymentProviderRepository.GetAll().FirstOrDefaultAsync(x => x.Id == id);
             provider.IsEnabled = false;
             await _paymentProviderRepository.SaveChangesAsync();
             return NoContent();

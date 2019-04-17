@@ -21,7 +21,7 @@ namespace SimplCommerce.Module.Search.Areas.Search.Controllers
         [HttpGet("most-search-keywords")]
         public IActionResult MostSearchKeywords()
         {
-            var model = _queryRepository.Query()
+            var model = _queryRepository.GetAll()
                 .GroupBy(x => x.QueryText)
                 .OrderByDescending(g => g.Count())
                 .Select(g => new {Keyword = g.Key, Count = g.Count()})

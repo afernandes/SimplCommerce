@@ -51,7 +51,7 @@ namespace SimplCommerce.Module.ShoppingCart.Areas.ShoppingCart.Controllers
         public async Task<IActionResult> UpdateQuantity(long itemId, [FromBody] CartQuantityUpdate model)
         {
             var currentUser = await _workContext.GetCurrentUser();
-            var cartItem = _cartItemRepository.Query().FirstOrDefault(x => x.Id == itemId && x.Cart.CreatedById == currentUser.Id);
+            var cartItem = _cartItemRepository.GetAll().FirstOrDefault(x => x.Id == itemId && x.Cart.CreatedById == currentUser.Id);
             if (cartItem == null)
             {
                 return NotFound();
@@ -102,13 +102,13 @@ namespace SimplCommerce.Module.ShoppingCart.Areas.ShoppingCart.Controllers
         public async Task<IActionResult> Remove(long itemId)
         {
             var currentUser = await _workContext.GetCurrentUser();
-            var cartItem = _cartItemRepository.Query().FirstOrDefault(x => x.Id == itemId && x.Cart.CreatedById == currentUser.Id);
+            var cartItem = _cartItemRepository.GetAll().FirstOrDefault(x => x.Id == itemId && x.Cart.CreatedById == currentUser.Id);
             if (cartItem == null)
             {
                 return NotFound();
             }
 
-            _cartItemRepository.Remove(cartItem);
+            _cartItemRepository.Delete(cartItem);
             _cartItemRepository.SaveChanges();
 
             return NoContent();

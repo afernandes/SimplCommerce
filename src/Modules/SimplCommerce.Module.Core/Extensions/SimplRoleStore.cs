@@ -7,7 +7,7 @@ namespace SimplCommerce.Module.Core.Extensions
 {
     public class SimplRoleStore: RoleStore<Role, SimplDbContext, long, UserRole, IdentityRoleClaim<long>>
     {
-        public SimplRoleStore(SimplDbContext context) : base(context)
+        public SimplRoleStore(SimplDbContext dbContext) : base(dbContext)
         {
         }
     }

@@ -23,8 +23,8 @@ namespace SimplCommerce.Module.Inventory.Services
 
         public async Task AddAllProduct(Warehouse warehouse)
         {
-            var stocks = await _productRepository.Query().Where(x => !x.HasOptions && x.VendorId == warehouse.VendorId)
-                .GroupJoin(_stockRepository.Query().Where(x => x.WarehouseId == warehouse.Id),
+            var stocks = await _productRepository.GetAll().Where(x => !x.HasOptions && x.VendorId == warehouse.VendorId)
+                .GroupJoin(_stockRepository.GetAll().Where(x => x.WarehouseId == warehouse.Id),
                     product => product.Id, stock => stock.ProductId,
                     (product, stockCollection) => new {IsNew = !stockCollection.Any(), ProductId = product.Id})
                 .Where(x => x.IsNew)
@@ -34,14 +34,14 @@ namespace SimplCommerce.Module.Inventory.Services
                     WarehouseId = warehouse.Id,
                     Quantity = 0
                 }).ToArrayAsync();
-            _stockRepository.AddRange(stocks);
+            _stockRepository.Insert(stocks);
             await _stockRepository.SaveChangesAsync();
         }
 
         public async Task UpdateStock(StockUpdateRequest stockUpdateRequest)
         {
-            var product = await _productRepository.Query().FirstOrDefaultAsync(x => x.Id == stockUpdateRequest.ProductId);
-            var stock = await _stockRepository.Query().FirstOrDefaultAsync(x => x.ProductId == stockUpdateRequest.ProductId && x.WarehouseId == stockUpdateRequest.WarehouseId);
+            var product = await _productRepository.GetAll().FirstOrDefaultAsync(x => x.Id == stockUpdateRequest.ProductId);
+            var stock = await _stockRepository.GetAll().FirstOrDefaultAsync(x => x.ProductId == stockUpdateRequest.ProductId && x.WarehouseId == stockUpdateRequest.WarehouseId);
 
             stock.Quantity = stock.Quantity + stockUpdateRequest.AdjustedQuantity;
             product.StockQuantity = product.StockQuantity + stockUpdateRequest.AdjustedQuantity;
@@ -55,7 +55,7 @@ namespace SimplCommerce.Module.Inventory.Services
                 CreatedOn = DateTimeOffset.Now,
             };
 
-            _stockHistoryRepository.Add(stockHistory);
+            _stockHistoryRepository.Insert(stockHistory);
             await _stockHistoryRepository.SaveChangesAsync();
         }
     }

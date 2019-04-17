@@ -36,7 +36,7 @@ namespace SimplCommerce.Module.Reviews.Areas.Reviews.Controllers
                     ReplierName = model.ReplierName,
                 };
 
-                _replyRepository.Add(reply);
+                _replyRepository.Insert(reply);
                 _replyRepository.SaveChanges();
 
                 return PartialView("_ReplyFormSuccess", model);

@@ -35,7 +35,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
         [HttpGet("{id}")]
         public IActionResult Get(long id)
         {
-            var product = _productRepository.Query().FirstOrDefault(x => x.Id == id);
+            var product = _productRepository.GetAll().FirstOrDefault(x => x.Id == id);
             var model = new ProductCloneFormVm
             {
                 Id = product.Id,
@@ -51,7 +51,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
             if (ModelState.IsValid)
             {
                 var currentUser = await _workContext.GetCurrentUser();
-                var product = _productRepository.Query()
+                var product = _productRepository.GetAll()
                     .Include(x => x.AttributeValues)
                     .Include(x => x.Categories)
                     .FirstOrDefault(x => x.Id == model.Id);

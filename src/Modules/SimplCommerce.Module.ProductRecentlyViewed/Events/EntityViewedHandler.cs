@@ -27,7 +27,7 @@ namespace SimplCommerce.Module.ProductRecentlyViewed.Events
             if (notification.EntityTypeId == ProductEntityTypeId)
             {
                 var user = await _workContext.GetCurrentUser();
-                var recentlyViewedProduct = _recentlyViewedProductRepository.Query().FirstOrDefault(x =>
+                var recentlyViewedProduct = _recentlyViewedProductRepository.GetAll().FirstOrDefault(x =>
                     x.ProductId == notification.EntityId
                     && x.UserId == user.Id);
 
@@ -40,7 +40,7 @@ namespace SimplCommerce.Module.ProductRecentlyViewed.Events
                         LatestViewedOn = DateTimeOffset.Now
                     };
 
-                    _recentlyViewedProductRepository.Add(recentlyViewedProduct);
+                    _recentlyViewedProductRepository.Insert(recentlyViewedProduct);
                 }
 
                 recentlyViewedProduct.LatestViewedOn = DateTimeOffset.Now;

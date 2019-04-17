@@ -23,7 +23,7 @@ namespace SimplCommerce.Module.Notifications.Areas.Notifications.Components
         {
             var onlineUserIds = _onlineClientManager.GetAllClients().Select(o => o.UserId.Value).ToList();
 
-            var users = _userRepository.Query().Where(u =>
+            var users = _userRepository.GetAll().Where(u =>
                 onlineUserIds.Contains(u.Id)).Select(u =>
                 new SelectListItem
                 {

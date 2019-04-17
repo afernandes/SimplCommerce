@@ -24,7 +24,7 @@ namespace SimplCommerce.Module.Catalog.Services
             using (var transaction = _brandRepository.BeginTransaction())
             {
                 brand.Slug = _entityService.ToSafeSlug(brand.Slug, brand.Id, BrandEntityTypeId);
-                _brandRepository.Add(brand);
+                _brandRepository.Insert(brand);
                 await _brandRepository.SaveChangesAsync();
 
                 _entityService.Add(brand.Name, brand.Slug, brand.Id, BrandEntityTypeId);
@@ -43,7 +43,7 @@ namespace SimplCommerce.Module.Catalog.Services
 
         public async Task Delete(long id)
         {
-            var brand = _brandRepository.Query().First(x => x.Id == id);
+            var brand = _brandRepository.GetAll().First(x => x.Id == id);
             await Delete(brand);
         }
 

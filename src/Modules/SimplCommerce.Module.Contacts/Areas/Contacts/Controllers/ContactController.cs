@@ -59,7 +59,7 @@ namespace SimplCommerce.Module.Contacts.Areas.Contacts.Controllers
                     Content = model.Content
                 };
 
-                _contactRepository.Add(contact);
+                _contactRepository.Insert(contact);
                 _contactRepository.SaveChanges();
 
                 return View("SubmitContactResult", model);
@@ -72,7 +72,7 @@ namespace SimplCommerce.Module.Contacts.Areas.Contacts.Controllers
 
         private IList<ContactAreaVm> GetContactArea()
         {
-            var categories = _contactAreaRepository.Query()
+            var categories = _contactAreaRepository.GetAll()
                 .Where(x => !x.IsDeleted)
                 .Select(x => new ContactAreaVm()
                 {

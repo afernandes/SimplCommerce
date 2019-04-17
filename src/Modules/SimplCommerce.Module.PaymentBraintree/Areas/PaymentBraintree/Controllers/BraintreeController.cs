@@ -23,7 +23,7 @@ namespace SimplCommerce.Module.PaymentBraintree.Areas.PaymentBraintree.Controlle
         private readonly ICartService _cartService;
         private readonly IOrderService _orderService;
         private readonly IWorkContext _workContext;
-        private readonly IRepositoryWithTypedId<PaymentProvider, string> _paymentProviderRepository;
+        private readonly IRepository<PaymentProvider, string> _paymentProviderRepository;
         private readonly IRepository<Payment> _paymentRepository;
         private readonly IBraintreeConfiguration _braintreeConfiguration;
 
@@ -31,7 +31,7 @@ namespace SimplCommerce.Module.PaymentBraintree.Areas.PaymentBraintree.Controlle
             ICartService cartService,
             IOrderService orderService,
             IWorkContext workContext,
-            IRepositoryWithTypedId<PaymentProvider, string> paymentProviderRepository,
+            IRepository<PaymentProvider, string> paymentProviderRepository,
             IRepository<Payment> paymentRepository,
             IBraintreeConfiguration braintreeConfiguration)
         {
@@ -120,7 +120,7 @@ namespace SimplCommerce.Module.PaymentBraintree.Areas.PaymentBraintree.Controlle
                 payment.GatewayTransactionId = transaction.Id;
                 payment.Status = PaymentStatus.Succeeded;
                 order.OrderStatus = OrderStatus.PaymentReceived;
-                _paymentRepository.Add(payment);
+                _paymentRepository.Insert(payment);
                 await _paymentRepository.SaveChangesAsync();
 
                 return Ok(transaction.Id);

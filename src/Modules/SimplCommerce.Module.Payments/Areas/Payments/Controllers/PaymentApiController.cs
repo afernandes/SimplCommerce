@@ -23,7 +23,7 @@ namespace SimplCommerce.Module.Payments.Areas.Payments.Controllers
         [HttpGet("/api/orders/{orderId}/payments")]
         public async Task<IActionResult> GetByOrder(long orderId)
         {
-            var payments = await _paymentRepository.Query()
+            var payments = await _paymentRepository.GetAll()
                 .Where(x => x.OrderId == orderId)
                 .Select(x => new
                 {

@@ -24,7 +24,7 @@ namespace SimplCommerce.Module.Pricing.Areas.Pricing.Controllers
         public IActionResult List([FromBody] SmartTableParam param)
         {
             IQueryable<CartRuleUsage> query = _cartRuleUsageRepository
-                .Query();
+                .GetAll();
 
             if (param.Search.PredicateObject != null)
             {

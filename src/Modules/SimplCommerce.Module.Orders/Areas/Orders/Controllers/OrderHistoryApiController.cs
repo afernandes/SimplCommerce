@@ -22,7 +22,7 @@ namespace SimplCommerce.Module.Orders.Areas.Orders.Controllers
         [HttpGet("api/orders/{orderId}/history")]
         public async Task<IActionResult> Get(long orderId)
         {
-            var histories = await _orderHistoryRepository.Query()
+            var histories = await _orderHistoryRepository.GetAll()
                 .Where(x => x.OrderId == orderId)
                 .Select(x => new
                 {

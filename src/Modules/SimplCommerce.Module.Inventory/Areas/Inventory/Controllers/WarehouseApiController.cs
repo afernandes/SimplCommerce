@@ -31,7 +31,7 @@ namespace SimplCommerce.Module.Inventory.Areas.Inventory.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var query = _warehouseRepository.Query();
+            var query = _warehouseRepository.GetAll();
             var currentUser = await _workContext.GetCurrentUser();
             if (!User.IsInRole("admin"))
             {
@@ -50,7 +50,7 @@ namespace SimplCommerce.Module.Inventory.Areas.Inventory.Controllers
         [HttpPost("grid")]
         public async Task<IActionResult> List([FromBody] SmartTableParam param)
         {
-            var query = _warehouseRepository.Query();
+            var query = _warehouseRepository.GetAll();
             if (param.Search.PredicateObject != null)
             {
                 dynamic search = param.Search.PredicateObject;
@@ -83,7 +83,7 @@ namespace SimplCommerce.Module.Inventory.Areas.Inventory.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(long id)
         {
-            var warehouse = await _warehouseRepository.Query().Include(w => w.Address).FirstOrDefaultAsync(w => w.Id == id);
+            var warehouse = await _warehouseRepository.GetAll().Include(w => w.Address).FirstOrDefaultAsync(w => w.Id == id);
             if (warehouse == null)
             {
                 return NotFound();
@@ -145,7 +145,7 @@ namespace SimplCommerce.Module.Inventory.Areas.Inventory.Controllers
                     warehouse.VendorId = currentUser.VendorId;
                 }
 
-                _warehouseRepository.Add(warehouse);
+                _warehouseRepository.Insert(warehouse);
                 await _warehouseRepository.SaveChangesAsync();
                 return CreatedAtAction(nameof(Get), new { id = warehouse.Id }, null);
             }
@@ -161,7 +161,7 @@ namespace SimplCommerce.Module.Inventory.Areas.Inventory.Controllers
                 return BadRequest(ModelState);
             }
 
-            var warehouse = await _warehouseRepository.Query().Include(x => x.Address).FirstOrDefaultAsync(x => x.Id == id);
+            var warehouse = await _warehouseRepository.GetAll().Include(x => x.Address).FirstOrDefaultAsync(x => x.Id == id);
             if (warehouse == null)
             {
                 return NotFound();
@@ -177,7 +177,7 @@ namespace SimplCommerce.Module.Inventory.Areas.Inventory.Controllers
             if (warehouse.Address == null)
             {
                 warehouse.Address = new Address();
-                _addressRepository.Add(warehouse.Address);
+                _addressRepository.Insert(warehouse.Address);
             }
 
             warehouse.Address.ContactName = model.ContactName;
@@ -194,7 +194,7 @@ namespace SimplCommerce.Module.Inventory.Areas.Inventory.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(long id)
         {
-            var warehouse = await _warehouseRepository.Query().Include(w => w.Address).FirstOrDefaultAsync(x => x.Id == id);
+            var warehouse = await _warehouseRepository.GetAll().Include(w => w.Address).FirstOrDefaultAsync(x => x.Id == id);
             if (warehouse == null)
             {
                 return NotFound();
@@ -208,8 +208,8 @@ namespace SimplCommerce.Module.Inventory.Areas.Inventory.Controllers
 
             try
             {
-                _warehouseRepository.Remove(warehouse);
-                _addressRepository.Remove(warehouse.Address);
+                _warehouseRepository.Delete(warehouse);
+                _addressRepository.Delete(warehouse.Address);
 
                 await _warehouseRepository.SaveChangesAsync();
             }

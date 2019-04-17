@@ -27,7 +27,7 @@ namespace SimplCommerce.Module.ProductRecentlyViewed.Areas.ProductRecentlyViewed
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(long id)
         {
-            var widgetInstance = await _widgetInstanceRepository.Query().FirstOrDefaultAsync(x => x.Id == id);
+            var widgetInstance = await _widgetInstanceRepository.GetAll().FirstOrDefaultAsync(x => x.Id == id);
             var model = new RecentlyViewedWidgetForm
             {
                 Id = widgetInstance.Id,
@@ -58,7 +58,7 @@ namespace SimplCommerce.Module.ProductRecentlyViewed.Areas.ProductRecentlyViewed
                     DisplayOrder = model.DisplayOrder,
                 };
 
-                _widgetInstanceRepository.Add(widgetInstance);
+                _widgetInstanceRepository.Insert(widgetInstance);
                 await _widgetInstanceRepository.SaveChangesAsync();
                 return CreatedAtAction(nameof(Get), new {id = widgetInstance.Id}, null);
             }
@@ -68,7 +68,7 @@ namespace SimplCommerce.Module.ProductRecentlyViewed.Areas.ProductRecentlyViewed
         public async Task<IActionResult> Put(long id, [FromBody] RecentlyViewedWidgetForm model)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            var widgetInstance = await _widgetInstanceRepository.Query().FirstOrDefaultAsync(x => x.Id == id);
+            var widgetInstance = await _widgetInstanceRepository.GetAll().FirstOrDefaultAsync(x => x.Id == id);
             if(widgetInstance == null)
             {
                 return NotFound();

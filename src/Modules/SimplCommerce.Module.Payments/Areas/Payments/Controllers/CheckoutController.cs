@@ -19,12 +19,12 @@ namespace SimplCommerce.Module.Payments.Areas.Payments.Controllers
     [ApiExplorerSettings(IgnoreApi = true)]
     public class CheckoutController : Controller
     {
-        private readonly IRepositoryWithTypedId<PaymentProvider, string> _paymentProviderRepository;
+        private readonly IRepository<PaymentProvider, string> _paymentProviderRepository;
         private readonly ICartService _cartService;
         private readonly IOrderService _orderService;
         private readonly IWorkContext _workContext;
 
-        public CheckoutController(IRepositoryWithTypedId<PaymentProvider, string> paymentProviderRepository,
+        public CheckoutController(IRepository<PaymentProvider, string> paymentProviderRepository,
             ICartService cartService,
             IOrderService orderService,
             IWorkContext workContext)
@@ -49,7 +49,7 @@ namespace SimplCommerce.Module.Payments.Areas.Payments.Controllers
             await _paymentProviderRepository.SaveChangesAsync();
 
             var checkoutPaymentForm = new CheckoutPaymentForm();
-            checkoutPaymentForm.PaymentProviders = await _paymentProviderRepository.Query()
+            checkoutPaymentForm.PaymentProviders = await _paymentProviderRepository.GetAll()
                 .Where(x => x.IsEnabled)
                 .Select(x => new PaymentProviderVm
                 {

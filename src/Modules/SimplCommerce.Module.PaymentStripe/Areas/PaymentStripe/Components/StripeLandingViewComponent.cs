@@ -18,9 +18,9 @@ namespace SimplCommerce.Module.PaymentStripe.Areas.PaymentStripe.Components
     {
         private readonly ICartService _cartService;
         private readonly IWorkContext _workContext;
-        private readonly IRepositoryWithTypedId<PaymentProvider, string> _paymentProviderRepository;
+        private readonly IRepository<PaymentProvider, string> _paymentProviderRepository;
 
-        public StripeLandingViewComponent(ICartService cartService, IWorkContext workContext, IRepositoryWithTypedId<PaymentProvider, string> paymentProviderRepository)
+        public StripeLandingViewComponent(ICartService cartService, IWorkContext workContext, IRepository<PaymentProvider, string> paymentProviderRepository)
         {
             _cartService = cartService;
             _workContext = workContext;
@@ -29,7 +29,7 @@ namespace SimplCommerce.Module.PaymentStripe.Areas.PaymentStripe.Components
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            var stripeProvider = await _paymentProviderRepository.Query().FirstOrDefaultAsync(x => x.Id == PaymentProviderHelper.StripeProviderId);
+            var stripeProvider = await _paymentProviderRepository.GetAll().FirstOrDefaultAsync(x => x.Id == PaymentProviderHelper.StripeProviderId);
             var stripeSetting = JsonConvert.DeserializeObject<StripeConfigForm>(stripeProvider.AdditionalSettings);
             var curentUser = await _workContext.GetCurrentUser();
             var cart = await _cartService.GetActiveCartDetails(curentUser.Id);

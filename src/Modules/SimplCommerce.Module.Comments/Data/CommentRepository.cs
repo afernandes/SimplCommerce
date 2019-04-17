@@ -2,18 +2,19 @@
 using SimplCommerce.Module.Core.Data;
 using SimplCommerce.Module.Core.Models;
 using SimplCommerce.Module.Comments.Models;
+using SimplCommerce.Module.Core.Data.EntityFrameworkCore;
 
 namespace SimplCommerce.Module.Comments.Data
 {
     public class CommentRepository : Repository<Comment>, ICommentRepository
     {
-        public CommentRepository(SimplDbContext context) : base(context)
+        public CommentRepository(IDbContextProvider<SimplDbContext> dbContextProvider) : base(dbContextProvider)
         {
         }
 
         public IQueryable<CommentListItemDto> List()
         {
-            var items = DbSet.Join(Context.Set<Entity>(),
+            var items = Table.Join(Context.Set<Entity>(),
                 r => new { key1 = r.EntityId, key2 = r.EntityTypeId },
                 u => new { key1 = u.EntityId, key2 = u.EntityTypeId },
                 (r, u) => new CommentListItemDto

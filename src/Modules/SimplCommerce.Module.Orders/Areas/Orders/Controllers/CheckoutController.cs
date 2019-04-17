@@ -23,7 +23,7 @@ namespace SimplCommerce.Module.Orders.Areas.Orders.Controllers
     public class CheckoutController : Controller
     {
         private readonly IOrderService _orderService;
-        private readonly IRepositoryWithTypedId<Country, string> _countryRepository;
+        private readonly IRepository<Country, string> _countryRepository;
         private readonly IRepository<StateOrProvince> _stateOrProvinceRepository;
         private readonly IRepository<UserAddress> _userAddressRepository;
         private readonly IShippingPriceService _shippingPriceService;
@@ -33,7 +33,7 @@ namespace SimplCommerce.Module.Orders.Areas.Orders.Controllers
 
         public CheckoutController(
             IRepository<StateOrProvince> stateOrProvinceRepository,
-            IRepositoryWithTypedId<Country, string> countryRepository,
+            IRepository<Country, string> countryRepository,
             IRepository<UserAddress> userAddressRepository,
             IShippingPriceService shippingPriceService,
             IOrderService orderService,
@@ -125,7 +125,7 @@ namespace SimplCommerce.Module.Orders.Areas.Orders.Controllers
         private void PopulateShippingForm(DeliveryInformationVm model, User currentUser)
         {
             model.ExistingShippingAddresses = _userAddressRepository
-                .Query()
+                .GetAll()
                 .Where(x => (x.AddressType == AddressType.Shipping) && (x.UserId == currentUser.Id))
                 .Select(x => new ShippingAddressVm
                 {
@@ -147,7 +147,7 @@ namespace SimplCommerce.Module.Orders.Areas.Orders.Controllers
 
             model.UseShippingAddressAsBillingAddress = true;
 
-            model.NewAddressForm.ShipableContries = _countryRepository.Query()
+            model.NewAddressForm.ShipableContries = _countryRepository.GetAll()
                 .Where(x => x.IsShippingEnabled)
                 .OrderBy(x => x.Name)
                 .Select(x => new SelectListItem
@@ -161,7 +161,7 @@ namespace SimplCommerce.Module.Orders.Areas.Orders.Controllers
                 var onlyShipableCountryId = model.NewAddressForm.ShipableContries.First().Value;
 
                 model.NewAddressForm.StateOrProvinces = _stateOrProvinceRepository
-                .Query()
+                .GetAll()
                 .Where(x => x.CountryId == onlyShipableCountryId)
                 .OrderBy(x => x.Name)
                 .Select(x => new SelectListItem

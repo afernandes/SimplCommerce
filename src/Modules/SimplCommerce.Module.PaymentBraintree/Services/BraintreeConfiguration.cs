@@ -28,9 +28,9 @@ namespace SimplCommerce.Module.PaymentBraintree.Services
 
         private IBraintreeGateway _braintreeGateway { get; set; }
 
-        private readonly IRepositoryWithTypedId<PaymentProvider, string> _paymentProviderRepository;
+        private readonly IRepository<PaymentProvider, string> _paymentProviderRepository;
 
-        public BraintreeConfiguration(IRepositoryWithTypedId<PaymentProvider, string> paymentProviderRepository)
+        public BraintreeConfiguration(IRepository<PaymentProvider, string> paymentProviderRepository)
         {
             _paymentProviderRepository = paymentProviderRepository;
         }
@@ -38,7 +38,7 @@ namespace SimplCommerce.Module.PaymentBraintree.Services
 
         private async Task<IBraintreeGateway> CreateGateway()
         {
-            var braintreeProvider = await _paymentProviderRepository.Query().FirstOrDefaultAsync(x => x.Id == PaymentProviderHelper.BraintreeProviderId);
+            var braintreeProvider = await _paymentProviderRepository.GetAll().FirstOrDefaultAsync(x => x.Id == PaymentProviderHelper.BraintreeProviderId);
             var braintreeSetting = JsonConvert.DeserializeObject<BraintreeConfigForm>(braintreeProvider.AdditionalSettings);
 
             Environment = braintreeSetting.Environment;

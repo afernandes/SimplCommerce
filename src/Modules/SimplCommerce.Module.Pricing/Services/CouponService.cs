@@ -25,7 +25,7 @@ namespace SimplCommerce.Module.Pricing.Services
 
         public async Task<CouponValidationResult> Validate(long customerId, string couponCode, CartInfoForCoupon cart)
         {
-            var coupon = await _couponRepository.Query()
+            var coupon = await _couponRepository.GetAll()
                 .Include(x => x.CartRule).ThenInclude(c => c.Products)
                 .Include(x => x.CartRule).ThenInclude(c => c.Categories)
                 .FirstOrDefaultAsync(x => x.Code == couponCode);
@@ -49,14 +49,14 @@ namespace SimplCommerce.Module.Pricing.Services
                 return validationResult;
             }
 
-            var couponUsageCount = _cartRuleUsageRepository.Query().Count(x => x.CouponId == coupon.Id);
+            var couponUsageCount = _cartRuleUsageRepository.GetAll().Count(x => x.CouponId == coupon.Id);
             if(coupon.CartRule.UsageLimitPerCoupon.HasValue && couponUsageCount >= coupon.CartRule.UsageLimitPerCoupon)
             {
                 validationResult.ErrorMessage = $"The coupon {couponCode} is all used.";
                 return validationResult;
             }
 
-            var couponUsageByCustomerCount = _cartRuleUsageRepository.Query().Count(x => x.CouponId == coupon.Id && x.UserId == customerId);
+            var couponUsageByCustomerCount = _cartRuleUsageRepository.GetAll().Count(x => x.CouponId == coupon.Id && x.UserId == customerId);
             if (coupon.CartRule.UsageLimitPerCustomer.HasValue && couponUsageByCustomerCount >= coupon.CartRule.UsageLimitPerCustomer)
             {
                 validationResult.ErrorMessage = $"You can use the coupon {couponCode} only {coupon.CartRule.UsageLimitPerCustomer} times";
@@ -67,7 +67,7 @@ namespace SimplCommerce.Module.Pricing.Services
             if(!coupon.CartRule.Products.Any() && !coupon.CartRule.Categories.Any())
             {
                 var productIds = cart.Items.Select(x => x.ProductId);
-                discountableProducts = _productRepository.Query()
+                discountableProducts = _productRepository.GetAll()
                    .Where(x => productIds.Contains(x.Id))
                    .Select(x => new DiscountableProduct { Id = x.Id, Name = x.Name, Price = x.Price }).ToList();
             }
@@ -145,7 +145,7 @@ namespace SimplCommerce.Module.Pricing.Services
             if (cartRuleProducts.Any())
             {
                 var productIds = cartRuleProducts.Select(x => x.ProductId);
-                discountedProducts = _productRepository.Query()
+                discountedProducts = _productRepository.GetAll()
                     .Where(x => productIds.Contains(x.Id))
                     .Select(x => new DiscountableProduct { Id = x.Id, Name = x.Name, Price = x.Price }).ToList();
             }
@@ -153,7 +153,7 @@ namespace SimplCommerce.Module.Pricing.Services
             if (cartRuleCategorys.Any())
             {
                 var categoryIds = cartRuleCategorys.Select(x => x.CategoryId);
-                var discountedProductByCategories = _productRepository.Query()
+                var discountedProductByCategories = _productRepository.GetAll()
                     .Where(x => x.Categories.Any(c => categoryIds.Contains(c.Id)))
                     .Select(x => new DiscountableProduct { Id = x.Id, Name = x.Name, Price = x.Price }).ToList();
                 discountedProducts = discountedProducts.Concat(discountedProductByCategories).ToList();
@@ -181,7 +181,7 @@ namespace SimplCommerce.Module.Pricing.Services
                         CartRuleId = couponValidationResult.CartRule.Id
                     };
 
-                    _cartRuleUsageRepository.Add(couponUsage);
+                    _cartRuleUsageRepository.Insert(couponUsage);
                     break;
 
                 case "by_percent":
@@ -197,7 +197,7 @@ namespace SimplCommerce.Module.Pricing.Services
                                 CartRuleId = couponValidationResult.CartRule.Id
                             };
 
-                            _cartRuleUsageRepository.Add(couponUsage);
+                            _cartRuleUsageRepository.Insert(couponUsage);
                         }
                     }
 

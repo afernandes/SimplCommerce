@@ -23,7 +23,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
         [HttpGet("{id}")]
         public IActionResult Get(long id)
         {
-            var widgetInstance = _widgetInstanceRepository.Query().FirstOrDefault(x => x.Id == id);
+            var widgetInstance = _widgetInstanceRepository.GetAll().FirstOrDefault(x => x.Id == id);
             var model = new CategoryWidgetForm
             {
                 Id = widgetInstance.Id,
@@ -54,7 +54,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
                     Data = JsonConvert.SerializeObject(model.Settings)
                 };
 
-                _widgetInstanceRepository.Add(widgetInstance);
+                _widgetInstanceRepository.Insert(widgetInstance);
                 _widgetInstanceRepository.SaveChanges();
                 return Ok();
             }
@@ -66,7 +66,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
         {
             if (ModelState.IsValid)
             {
-                var widgetInstance = _widgetInstanceRepository.Query().FirstOrDefault(x => x.Id == id);
+                var widgetInstance = _widgetInstanceRepository.GetAll().FirstOrDefault(x => x.Id == id);
                 widgetInstance.Name = model.Name;
                 widgetInstance.WidgetZoneId = model.WidgetZoneId;
                 widgetInstance.PublishStart = model.PublishStart;

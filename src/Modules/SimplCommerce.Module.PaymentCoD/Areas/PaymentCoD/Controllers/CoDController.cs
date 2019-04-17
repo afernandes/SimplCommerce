@@ -21,13 +21,13 @@ namespace SimplCommerce.Module.PaymentCoD.Areas.PaymentCoD.Controllers
         private readonly IOrderService _orderService;
         private readonly IWorkContext _workContext;
         private readonly ICartService _cartService;
-        private readonly IRepositoryWithTypedId<PaymentProvider, string> _paymentProviderRepository;
+        private readonly IRepository<PaymentProvider, string> _paymentProviderRepository;
         private Lazy<CoDSetting> _setting;
 
         public CoDController(
             ICartService cartService,
             IOrderService orderService,
-            IRepositoryWithTypedId<PaymentProvider, string> paymentProviderRepository,
+            IRepository<PaymentProvider, string> paymentProviderRepository,
             IWorkContext workContext)
         {
             _paymentProviderRepository = paymentProviderRepository;
@@ -67,7 +67,7 @@ namespace SimplCommerce.Module.PaymentCoD.Areas.PaymentCoD.Controllers
 
         private CoDSetting GetSetting()
         {
-            var coDProvider = _paymentProviderRepository.Query().FirstOrDefault(x => x.Id == PaymentProviderHelper.CODProviderId);
+            var coDProvider = _paymentProviderRepository.GetAll().FirstOrDefault(x => x.Id == PaymentProviderHelper.CODProviderId);
             if (string.IsNullOrEmpty(coDProvider.AdditionalSettings))
             {
                 return new CoDSetting();

@@ -23,7 +23,7 @@ namespace SimplCommerce.Module.Core.Services
             var i = 2;
             while (true)
             {
-                var entity = _entityRepository.Query().FirstOrDefault(x => x.Slug == slug);
+                var entity = _entityRepository.GetAll().FirstOrDefault(x => x.Slug == slug);
                 if (entity != null && !(entity.EntityId == entityId && entity.EntityTypeId == entityTypeId))
                 {
                     slug = string.Format("{0}-{1}", slug, i);
@@ -40,7 +40,7 @@ namespace SimplCommerce.Module.Core.Services
 
         public Entity Get(long entityId, string entityTypeId)
         {
-            return _entityRepository.Query().FirstOrDefault(x => x.EntityId == entityId && x.EntityTypeId == entityTypeId);
+            return _entityRepository.GetAll().FirstOrDefault(x => x.EntityId == entityId && x.EntityTypeId == entityTypeId);
         }
 
         public void Add(string name, string slug, long entityId, string entityTypeId)
@@ -53,24 +53,24 @@ namespace SimplCommerce.Module.Core.Services
                 EntityTypeId = entityTypeId
             };
 
-            _entityRepository.Add(entity);
+            _entityRepository.Insert(entity);
         }
 
         public void Update(string newName, string newSlug, long entityId, string entityTypeId)
         {
-            var entity = _entityRepository.Query().First(x => x.EntityId == entityId && x.EntityTypeId == entityTypeId);
+            var entity = _entityRepository.GetAll().First(x => x.EntityId == entityId && x.EntityTypeId == entityTypeId);
             entity.Name = newName;
             entity.Slug = newSlug;
         }
 
         public async Task Remove(long entityId, string entityTypeId)
         {
-            var entity = _entityRepository.Query().FirstOrDefault(x => x.EntityId == entityId && x.EntityTypeId == entityTypeId);
+            var entity = _entityRepository.GetAll().FirstOrDefault(x => x.EntityId == entityId && x.EntityTypeId == entityTypeId);
 
             if (entity != null)
             {
                  await _mediator.Publish(new EntityDeleting { EntityId = entity.Id });
-                _entityRepository.Remove(entity);
+                _entityRepository.Delete(entity);
             }
         }
     }

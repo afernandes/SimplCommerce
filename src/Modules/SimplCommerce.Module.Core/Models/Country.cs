@@ -4,7 +4,7 @@ using SimplCommerce.Infrastructure.Models;
 
 namespace SimplCommerce.Module.Core.Models
 {
-    public class Country : EntityBaseWithTypedId<string>
+    public class Country : EntityBase<string>
     {
         public Country(string id)
         {

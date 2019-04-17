@@ -2,7 +2,7 @@
 
 namespace SimplCommerce.Infrastructure.Data
 {
-    public interface IRepository<T> : IRepositoryWithTypedId<T, long> where T : IEntityWithTypedId<long>
+    public interface IRepository<TEntity> : IRepository<TEntity, long> where TEntity : class, IEntity<long>
     {
     }
 }

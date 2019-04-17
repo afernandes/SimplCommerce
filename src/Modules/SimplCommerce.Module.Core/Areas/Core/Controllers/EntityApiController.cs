@@ -21,7 +21,7 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
         [HttpGet]
         public IActionResult Get(string entityTypeId, string name)
         {
-            var query = _entityRepository.Query().Where(x => x.EntityType.IsMenuable);
+            var query = _entityRepository.GetAll().Where(x => x.EntityType.IsMenuable);
             if (!string.IsNullOrWhiteSpace(entityTypeId))
             {
                 query = query.Where(x => x.EntityTypeId == entityTypeId);

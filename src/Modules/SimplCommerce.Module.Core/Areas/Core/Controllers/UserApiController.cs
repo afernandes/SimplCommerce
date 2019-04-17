@@ -29,7 +29,7 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
         [HttpGet("quick-search")]
         public async Task<IActionResult> QuickSearch(UserSearchOption searchOption)
         {
-            var query = _userRepository.Query().Where(x => !x.IsDeleted);
+            var query = _userRepository.GetAll().Where(x => !x.IsDeleted);
             if (!string.IsNullOrWhiteSpace(searchOption.Name))
             {
                 query = query.Where(x => x.FullName.Contains(searchOption.Name));
@@ -54,7 +54,7 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
         [HttpPost("grid")]
         public IActionResult List([FromBody] SmartTableParam param)
         {
-            var query = _userRepository.Query()
+            var query = _userRepository.GetAll()
                 .Include(x => x.Roles)
                     .ThenInclude(x => x.Role)
                 .Include(x => x.CustomerGroups)
@@ -123,7 +123,7 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(long id)
         {
-            var user = await _userRepository.Query()
+            var user = await _userRepository.GetAll()
                 .Include(x => x.Roles)
                 .Include(x => x.CustomerGroups)
                 .FirstOrDefaultAsync(x => x.Id == id);
@@ -197,7 +197,7 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await _userRepository.Query()
+                var user = await _userRepository.GetAll()
                     .Include(x => x.Roles)
                     .Include(x => x.CustomerGroups)
                     .FirstOrDefaultAsync(x => x.Id == id);
@@ -231,7 +231,7 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(long id)
         {
-            var user = await _userRepository.Query().FirstOrDefaultAsync(x => x.Id == id);
+            var user = await _userRepository.GetAll().FirstOrDefaultAsync(x => x.Id == id);
             if (user == null)
             {
                 return NotFound();

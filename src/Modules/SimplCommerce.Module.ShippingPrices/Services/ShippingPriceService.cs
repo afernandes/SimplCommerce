@@ -13,9 +13,9 @@ namespace SimplCommerce.Module.ShippingPrices.Services
     public class ShippingPriceService : IShippingPriceService
     {
         private HttpContext _httpContext;
-        private readonly IRepositoryWithTypedId<ShippingProvider, string> _shippingProviderRepository;
+        private readonly IRepository<ShippingProvider, string> _shippingProviderRepository;
 
-        public ShippingPriceService(IHttpContextAccessor contextAccessor, IRepositoryWithTypedId<ShippingProvider, string> shippingProviderRepository)
+        public ShippingPriceService(IHttpContextAccessor contextAccessor, IRepository<ShippingProvider, string> shippingProviderRepository)
         {
             _httpContext = contextAccessor.HttpContext;
             _shippingProviderRepository = shippingProviderRepository;
@@ -24,7 +24,7 @@ namespace SimplCommerce.Module.ShippingPrices.Services
         public async Task<IList<ShippingPrice>> GetApplicableShippingPrices(GetShippingPriceRequest request)
         {
             var applicableShippingPrices = new List<ShippingPrice>();
-            var providers = await _shippingProviderRepository.Query().ToListAsync();
+            var providers = await _shippingProviderRepository.GetAll().ToListAsync();
             var shippingRateServices = _httpContext.RequestServices.GetServices<IShippingPriceServiceProvider>();
 
             foreach(var provider in providers)

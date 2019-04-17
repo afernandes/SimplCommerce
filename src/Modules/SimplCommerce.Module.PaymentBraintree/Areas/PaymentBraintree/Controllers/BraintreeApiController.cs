@@ -15,9 +15,9 @@ namespace SimplCommerce.Module.PaymentBraintree.Areas.PaymentBraintree.Controlle
     [Route("api/braintree")]
     public class BraintreeApiController : Controller
     {
-        private readonly IRepositoryWithTypedId<PaymentProvider, string> _paymentProviderRepository;
+        private readonly IRepository<PaymentProvider, string> _paymentProviderRepository;
 
-        public BraintreeApiController(IRepositoryWithTypedId<PaymentProvider, string> paymentProviderRepository)
+        public BraintreeApiController(IRepository<PaymentProvider, string> paymentProviderRepository)
         {
             _paymentProviderRepository = paymentProviderRepository;
         }
@@ -25,7 +25,7 @@ namespace SimplCommerce.Module.PaymentBraintree.Areas.PaymentBraintree.Controlle
         [HttpGet("config")]
         public async Task<IActionResult> Config()
         {
-            var stripeProvider = await _paymentProviderRepository.Query().FirstOrDefaultAsync(x => x.Id == PaymentProviderHelper.BraintreeProviderId);
+            var stripeProvider = await _paymentProviderRepository.GetAll().FirstOrDefaultAsync(x => x.Id == PaymentProviderHelper.BraintreeProviderId);
             var model = JsonConvert.DeserializeObject<BraintreeConfigForm>(stripeProvider.AdditionalSettings);
             return Ok(model);
         }
@@ -35,7 +35,7 @@ namespace SimplCommerce.Module.PaymentBraintree.Areas.PaymentBraintree.Controlle
         {
             if (ModelState.IsValid)
             {
-                var stripeProvider = await _paymentProviderRepository.Query().FirstOrDefaultAsync(x => x.Id == PaymentProviderHelper.BraintreeProviderId);
+                var stripeProvider = await _paymentProviderRepository.GetAll().FirstOrDefaultAsync(x => x.Id == PaymentProviderHelper.BraintreeProviderId);
                 stripeProvider.AdditionalSettings = JsonConvert.SerializeObject(model);
                 await _paymentProviderRepository.SaveChangesAsync();
                 return Accepted();

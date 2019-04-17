@@ -116,7 +116,7 @@ namespace SimplCommerce.Module.Comments.Areas.Comments.Controllers
         [HttpPost("change-status/{id}")]
         public async Task<IActionResult> ChangeStatus(long id, [FromBody] int statusId)
         {
-            var comment = _commentRepository.Query().FirstOrDefault(x => x.Id == id);
+            var comment = _commentRepository.GetAll().FirstOrDefault(x => x.Id == id);
             if (comment == null)
             {
                 return NotFound();

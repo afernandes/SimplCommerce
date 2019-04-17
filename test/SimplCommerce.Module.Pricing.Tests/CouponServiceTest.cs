@@ -11,6 +11,7 @@ using SimplCommerce.Module.Core.Extensions;
 using SimplCommerce.Module.Core.Models;
 using SimplCommerce.Module.Pricing.Models;
 using SimplCommerce.Module.Pricing.Services;
+using SimplCommerce.Module.Core.Data.EntityFrameworkCore;
 
 namespace SimplCommerce.Module.Pricing.Tests
 {
@@ -304,10 +305,10 @@ namespace SimplCommerce.Module.Pricing.Tests
             Mock<DbSet<Product>> productsMockSet = BuildMockSetForProduct(MakeMockProducts().AsQueryable());
 
             var contextOptions = new DbContextOptions<SimplDbContext>();
-            var mockContext = new Mock<SimplDbContext>(contextOptions);
-            mockContext.Setup(c => c.Set<Coupon>()).Returns(couponMockSet.Object);
-            mockContext.Setup(c => c.Set<CartRuleUsage>()).Returns(cartRuleUsageMockSet.Object);
-            mockContext.Setup(c => c.Set<Product>()).Returns(productsMockSet.Object);
+            var mockContext = new Mock<IDbContextProvider<SimplDbContext>>(contextOptions);
+            mockContext.Setup(c => c.GetDbContext().Set<Coupon>()).Returns(couponMockSet.Object);
+            mockContext.Setup(c => c.GetDbContext().Set<CartRuleUsage>()).Returns(cartRuleUsageMockSet.Object);
+            mockContext.Setup(c => c.GetDbContext().Set<Product>()).Returns(productsMockSet.Object);
 
             var mockWorkContext = new Mock<IWorkContext>();
             mockWorkContext.Setup(x => x.GetCurrentUser()).Returns(Task.FromResult(user));

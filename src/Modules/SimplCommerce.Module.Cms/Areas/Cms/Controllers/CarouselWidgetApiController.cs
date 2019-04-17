@@ -33,8 +33,8 @@ namespace SimplCommerce.Module.Cms.Areas.Cms.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(long id)
         {
-            var totalWidgets = _widgetInstanceRepository.Query().ToList().Count();
-            var widgetInstance = await _widgetInstanceRepository.Query().FirstOrDefaultAsync(x => x.Id == id);
+            var totalWidgets = _widgetInstanceRepository.GetAll().ToList().Count();
+            var widgetInstance = await _widgetInstanceRepository.GetAll().FirstOrDefaultAsync(x => x.Id == id);
             var model = new CarouselWidgetForm
             {
                 Id = widgetInstance.Id,
@@ -76,7 +76,7 @@ namespace SimplCommerce.Module.Cms.Areas.Cms.Controllers
                     Data = JsonConvert.SerializeObject(model.Items)
                 };
 
-                _widgetInstanceRepository.Add(widgetInstance);
+                _widgetInstanceRepository.Insert(widgetInstance);
                 await _widgetInstanceRepository.SaveChangesAsync();
                 return CreatedAtAction(nameof(Get), new { id = widgetInstance.Id }, null);
             }
@@ -103,7 +103,7 @@ namespace SimplCommerce.Module.Cms.Areas.Cms.Controllers
 
             if (ModelState.IsValid)
             {
-                var widgetInstance = await _widgetInstanceRepository.Query().FirstOrDefaultAsync(x => x.Id == id);
+                var widgetInstance = await _widgetInstanceRepository.GetAll().FirstOrDefaultAsync(x => x.Id == id);
                 if(widgetInstance == null)
                 {
                     return NotFound();

@@ -15,9 +15,9 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
     public class StateOrProvinceApiController : Controller
     {
         private readonly IRepository<StateOrProvince> _stateOrProvinceRepository;
-        private readonly IRepositoryWithTypedId<Country, string> _countryRepository;
+        private readonly IRepository<Country, string> _countryRepository;
 
-        public StateOrProvinceApiController(IRepository<StateOrProvince> stateOrProvinceRepository, IRepositoryWithTypedId<Country, string> countryRepository)
+        public StateOrProvinceApiController(IRepository<StateOrProvince> stateOrProvinceRepository, IRepository<Country, string> countryRepository)
         {
             _stateOrProvinceRepository = stateOrProvinceRepository;
             _countryRepository = countryRepository;
@@ -26,7 +26,7 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
         [HttpGet("/api/countries/{countryId}/states-provinces")]
         public async Task<IActionResult> GetStatesOrProvinces(string countryId)
         {
-            var statesOrProvinces = await _stateOrProvinceRepository.Query()
+            var statesOrProvinces = await _stateOrProvinceRepository.GetAll()
                 .Where(x => x.CountryId == countryId)
                 .OrderBy(x => x.Name)
                 .Select(x => new
@@ -42,7 +42,7 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var statesOrProvinces = await _stateOrProvinceRepository.Query()
+            var statesOrProvinces = await _stateOrProvinceRepository.GetAll()
                 .OrderBy(x => x.Name)
                 .Select(x => new
                 {
@@ -57,7 +57,7 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
         [HttpPost("grid")]
         public IActionResult List(string countryId, [FromBody] SmartTableParam param)
         {
-            var query = _stateOrProvinceRepository.Query().Where(sp => sp.CountryId == countryId);
+            var query = _stateOrProvinceRepository.GetAll().Where(sp => sp.CountryId == countryId);
 
             if (param.Search.PredicateObject != null)
             {
@@ -86,7 +86,7 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(long id)
         {
-            var stateProvince = await _stateOrProvinceRepository.Query().FirstOrDefaultAsync(x => x.Id == id);
+            var stateProvince = await _stateOrProvinceRepository.GetAll().FirstOrDefaultAsync(x => x.Id == id);
             if (stateProvince == null)
             {
                 return NotFound();
@@ -113,7 +113,7 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
                 return BadRequest(ModelState);
             }
 
-            var stateProvince = await _stateOrProvinceRepository.Query().FirstOrDefaultAsync(x => x.Id == id);
+            var stateProvince = await _stateOrProvinceRepository.GetAll().FirstOrDefaultAsync(x => x.Id == id);
             if (stateProvince == null)
             {
                 return NotFound();
@@ -133,7 +133,7 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
         {
             if (ModelState.IsValid)
             {
-                var country = await _countryRepository.Query().FirstOrDefaultAsync(x => x.Id == model.CountryId);
+                var country = await _countryRepository.GetAll().FirstOrDefaultAsync(x => x.Id == model.CountryId);
                 if (country == null)
                 {
                     return NotFound();
@@ -147,7 +147,7 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
                     Country = country,
                     Type = model.Type
                 };
-                _stateOrProvinceRepository.Add(stateProvince);
+                _stateOrProvinceRepository.Insert(stateProvince);
                 await _stateOrProvinceRepository.SaveChangesAsync();
 
                 return CreatedAtAction(nameof(Get), new { id = stateProvince.Id }, null);
@@ -159,7 +159,7 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> Delete(long id)
         {
-            var stateProvince = await _stateOrProvinceRepository.Query().FirstOrDefaultAsync(x => x.Id == id);
+            var stateProvince = await _stateOrProvinceRepository.GetAll().FirstOrDefaultAsync(x => x.Id == id);
             if (stateProvince == null)
             {
                 return NotFound();
@@ -167,7 +167,7 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
 
             try
             {
-                _stateOrProvinceRepository.Remove(stateProvince);
+                _stateOrProvinceRepository.Delete(stateProvince);
                 await _stateOrProvinceRepository.SaveChangesAsync();
             }
             catch (DbUpdateException)

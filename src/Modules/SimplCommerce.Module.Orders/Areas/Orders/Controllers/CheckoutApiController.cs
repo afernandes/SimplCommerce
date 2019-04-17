@@ -39,7 +39,7 @@ namespace SimplCommerce.Module.Orders.Areas.Orders.Controllers
         public async Task<IActionResult> UpdateTaxAndShippingPrices(long cartId, [FromBody] TaxAndShippingPriceRequestVm model)
         {
             var currentUser = await _workContext.GetCurrentUser();
-            var cart = await _cartRepository.Query().FirstOrDefaultAsync(x => x.Id == cartId);
+            var cart = await _cartRepository.GetAll().FirstOrDefaultAsync(x => x.Id == cartId);
             if (cart == null)
             {
                 return NotFound();
@@ -58,7 +58,7 @@ namespace SimplCommerce.Module.Orders.Areas.Orders.Controllers
         public async Task<IActionResult> CreateOrder(long cartId, [FromBody] DeliveryInformationVm deliveryInformationVm)
         {
             var currentUser = await _workContext.GetCurrentUser();
-            var cart = await _cartRepository.Query().FirstOrDefaultAsync(x => x.Id == cartId);
+            var cart = await _cartRepository.GetAll().FirstOrDefaultAsync(x => x.Id == cartId);
             if (cart == null)
             {
                 return NotFound();
@@ -86,7 +86,7 @@ namespace SimplCommerce.Module.Orders.Areas.Orders.Controllers
         [HttpGet("api/users/{userId}/addresses")]
         public async Task<IActionResult> UserAddress(long userId, [FromServices] IRepository<UserAddress> userAddressRepository, [FromServices] IRepository<User> userRepository)
         {
-            var user = await userRepository.Query().FirstOrDefaultAsync(x => x.Id == userId);
+            var user = await userRepository.GetAll().FirstOrDefaultAsync(x => x.Id == userId);
             var defaultAddressId = user.DefaultShippingAddressId.HasValue ? user.DefaultShippingAddressId : 0;
             if(user == null)
             {
@@ -94,7 +94,7 @@ namespace SimplCommerce.Module.Orders.Areas.Orders.Controllers
             }
 
             var userAddress = await userAddressRepository
-                .Query()
+                .GetAll()
                 .Where(x => (x.AddressType == AddressType.Shipping) && (x.UserId == userId))
                 .Select(x => new ShippingAddressVm
                 {

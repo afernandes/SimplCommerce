@@ -15,9 +15,9 @@ namespace SimplCommerce.Module.PaymentPaypalExpress.Areas.PaymentPaypalExpress.C
     [Route("api/paypal-express")]
     public class PaypalExpressApiController : Controller
     {
-        private readonly IRepositoryWithTypedId<PaymentProvider, string> _paymentProviderRepository;
+        private readonly IRepository<PaymentProvider, string> _paymentProviderRepository;
 
-        public PaypalExpressApiController(IRepositoryWithTypedId<PaymentProvider, string> paymentProviderRepository)
+        public PaypalExpressApiController(IRepository<PaymentProvider, string> paymentProviderRepository)
         {
             _paymentProviderRepository = paymentProviderRepository;
         }
@@ -25,7 +25,7 @@ namespace SimplCommerce.Module.PaymentPaypalExpress.Areas.PaymentPaypalExpress.C
         [HttpGet("config")]
         public async Task<IActionResult> Config()
         {
-            var stripeProvider = await _paymentProviderRepository.Query().FirstOrDefaultAsync(x => x.Id == PaymentProviderHelper.PaypalExpressProviderId);
+            var stripeProvider = await _paymentProviderRepository.GetAll().FirstOrDefaultAsync(x => x.Id == PaymentProviderHelper.PaypalExpressProviderId);
             var model = JsonConvert.DeserializeObject<PaypalExpressConfigForm>(stripeProvider.AdditionalSettings);
             return Ok(model);
         }
@@ -35,7 +35,7 @@ namespace SimplCommerce.Module.PaymentPaypalExpress.Areas.PaymentPaypalExpress.C
         {
             if (ModelState.IsValid)
             {
-                var stripeProvider = await _paymentProviderRepository.Query().FirstOrDefaultAsync(x => x.Id == PaymentProviderHelper.PaypalExpressProviderId);
+                var stripeProvider = await _paymentProviderRepository.GetAll().FirstOrDefaultAsync(x => x.Id == PaymentProviderHelper.PaypalExpressProviderId);
                 stripeProvider.AdditionalSettings = JsonConvert.SerializeObject(model);
                 await _paymentProviderRepository.SaveChangesAsync();
                 return Accepted();

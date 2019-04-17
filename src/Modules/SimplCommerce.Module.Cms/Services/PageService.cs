@@ -23,7 +23,7 @@ namespace SimplCommerce.Module.Cms.Services
             using (var transaction = _pageRepository.BeginTransaction())
             {
                 page.Slug = _entityService.ToSafeSlug(page.Slug, page.Id, PageEntityTypeId);
-                _pageRepository.Add(page);
+                _pageRepository.Insert(page);
                 await _pageRepository.SaveChangesAsync();
 
                 _entityService.Add(page.Name, page.Slug, page.Id, PageEntityTypeId);
@@ -42,7 +42,7 @@ namespace SimplCommerce.Module.Cms.Services
 
         public async Task Delete(Page page)
         {
-            _pageRepository.Remove(page);
+            _pageRepository.Delete(page);
             await _entityService.Remove(page.Id, PageEntityTypeId);
             _pageRepository.SaveChanges();
         }

@@ -24,14 +24,14 @@ namespace SimplCommerce.Module.PaymentStripe.Areas.PaymentStripe.Controllers
         private readonly ICartService _cartService;
         private readonly IOrderService _orderService;
         private readonly IWorkContext _workContext;
-        private readonly IRepositoryWithTypedId<PaymentProvider, string> _paymentProviderRepository;
+        private readonly IRepository<PaymentProvider, string> _paymentProviderRepository;
         private readonly IRepository<Payment> _paymentRepository;
 
         public StripeController(
             ICartService cartService,
             IOrderService orderService,
             IWorkContext workContext,
-            IRepositoryWithTypedId<PaymentProvider, string> paymentProviderRepository,
+            IRepository<PaymentProvider, string> paymentProviderRepository,
             IRepository<Payment> paymentRepository)
         {
             _cartService = cartService;
@@ -43,7 +43,7 @@ namespace SimplCommerce.Module.PaymentStripe.Areas.PaymentStripe.Controllers
 
         public async Task<IActionResult> Charge(string stripeEmail, string stripeToken)
         {
-            var stripeProvider = await _paymentProviderRepository.Query().FirstOrDefaultAsync(x => x.Id == PaymentProviderHelper.StripeProviderId);
+            var stripeProvider = await _paymentProviderRepository.GetAll().FirstOrDefaultAsync(x => x.Id == PaymentProviderHelper.StripeProviderId);
             var stripeSetting = JsonConvert.DeserializeObject<StripeConfigForm>(stripeProvider.AdditionalSettings);
             var stripeChargeService = new ChargeService(stripeSetting.PrivateKey);
             var currentUser = await _workContext.GetCurrentUser();
@@ -88,7 +88,7 @@ namespace SimplCommerce.Module.PaymentStripe.Areas.PaymentStripe.Controllers
                 payment.GatewayTransactionId = charge.Id;
                 payment.Status = PaymentStatus.Succeeded;
                 order.OrderStatus = OrderStatus.PaymentReceived;
-                _paymentRepository.Add(payment);
+                _paymentRepository.Insert(payment);
                 await _paymentRepository.SaveChangesAsync();
                 return Redirect("~/checkout/congratulation");
             }
@@ -98,7 +98,7 @@ namespace SimplCommerce.Module.PaymentStripe.Areas.PaymentStripe.Controllers
                 payment.FailureMessage = ex.StripeError.Message;
                 order.OrderStatus = OrderStatus.PaymentFailed;
 
-                _paymentRepository.Add(payment);
+                _paymentRepository.Insert(payment);
                 await _paymentRepository.SaveChangesAsync();
                 TempData["Error"] = ex.StripeError.Message;
                 return Redirect("~/checkout/payment");

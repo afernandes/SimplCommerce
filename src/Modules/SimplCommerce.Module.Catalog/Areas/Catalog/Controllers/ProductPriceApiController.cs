@@ -28,7 +28,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
         [HttpPost("grid")]
         public async Task<IActionResult> List([FromBody] SmartTableParam param)
         {
-            var query = _productRepository.Query().Where(x => !x.HasOptions && !x.IsDeleted);
+            var query = _productRepository.GetAll().Where(x => !x.HasOptions && !x.IsDeleted);
             var currentUser = await _workContext.GetCurrentUser();
             if (!User.IsInRole("admin"))
             {
@@ -81,7 +81,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
                     continue;
                 }
 
-                var product = _productRepository.Query().FirstOrDefault(x => x.Id == item.Id);
+                var product = _productRepository.GetAll().FirstOrDefault(x => x.Id == item.Id);
                 if(product != null && (User.IsInRole("admin") || product.VendorId == currentUser.VendorId))
                 {
                     var productPriceHistory = new ProductPriceHistory

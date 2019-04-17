@@ -5,7 +5,7 @@ using SimplCommerce.Infrastructure.Models;
 
 namespace SimplCommerce.Module.Shipping.Models
 {
-    public class ShippingProvider : EntityBaseWithTypedId<string>
+    public class ShippingProvider : EntityBase<string>
     {
         public ShippingProvider()
         {

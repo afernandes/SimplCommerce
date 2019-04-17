@@ -15,9 +15,9 @@ namespace SimplCommerce.Module.PaymentStripe.Areas.PaymentStripe.Controllers
     [Route("api/stripe")]
     public class StripeApiController : Controller
     {
-        private readonly IRepositoryWithTypedId<PaymentProvider, string> _paymentProviderRepository;
+        private readonly IRepository<PaymentProvider, string> _paymentProviderRepository;
 
-        public StripeApiController(IRepositoryWithTypedId<PaymentProvider, string> paymentProviderRepository)
+        public StripeApiController(IRepository<PaymentProvider, string> paymentProviderRepository)
         {
             _paymentProviderRepository = paymentProviderRepository;
         }
@@ -25,7 +25,7 @@ namespace SimplCommerce.Module.PaymentStripe.Areas.PaymentStripe.Controllers
         [HttpGet("config")]
         public async Task<IActionResult> Config()
         {
-            var stripeProvider = await _paymentProviderRepository.Query().FirstOrDefaultAsync(x => x.Id == PaymentProviderHelper.StripeProviderId);
+            var stripeProvider = await _paymentProviderRepository.GetAll().FirstOrDefaultAsync(x => x.Id == PaymentProviderHelper.StripeProviderId);
             var model = JsonConvert.DeserializeObject<StripeConfigForm>(stripeProvider.AdditionalSettings);
             return Ok(model);
         }
@@ -35,7 +35,7 @@ namespace SimplCommerce.Module.PaymentStripe.Areas.PaymentStripe.Controllers
         {
             if (ModelState.IsValid)
             {
-                var stripeProvider = await _paymentProviderRepository.Query().FirstOrDefaultAsync(x => x.Id == PaymentProviderHelper.StripeProviderId);
+                var stripeProvider = await _paymentProviderRepository.GetAll().FirstOrDefaultAsync(x => x.Id == PaymentProviderHelper.StripeProviderId);
                 stripeProvider.AdditionalSettings = JsonConvert.SerializeObject(model);
                 await _paymentProviderRepository.SaveChangesAsync();
                 return Accepted();

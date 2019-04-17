@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using SimplCommerce.Infrastructure.Data;
 using SimplCommerce.Infrastructure.Web;
 using SimplCommerce.Module.Catalog.Models;
@@ -37,8 +36,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Components
         private IList<BreadcrumbViewModel> Create(long categoryId)
         {
             var category = _categoryRepository
-                .Query()
-                .Include(x => x.Parent)
+                .GetAllIncluding(x => x.Parent)                
                 .FirstOrDefault(x => x.Id == categoryId);
             var breadcrumbModels = new List<BreadcrumbViewModel>
             {

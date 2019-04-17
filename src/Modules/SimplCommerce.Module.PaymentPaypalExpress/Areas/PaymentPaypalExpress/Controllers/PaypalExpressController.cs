@@ -26,7 +26,7 @@ namespace SimplCommerce.Module.PaymentPaypalExpress.Areas.PaymentPaypalExpress.C
         private readonly ICartService _cartService;
         private readonly IOrderService _orderService;
         private readonly IWorkContext _workContext;
-        private readonly IRepositoryWithTypedId<PaymentProvider, string> _paymentProviderRepository;
+        private readonly IRepository<PaymentProvider, string> _paymentProviderRepository;
         private readonly IRepository<Payment> _paymentRepository;
         private Lazy<PaypalExpressConfigForm> _setting;
         private readonly IHttpClientFactory _httpClientFactory;
@@ -35,7 +35,7 @@ namespace SimplCommerce.Module.PaymentPaypalExpress.Areas.PaymentPaypalExpress.C
             ICartService cartService,
             IOrderService orderService,
             IWorkContext workContext,
-            IRepositoryWithTypedId<PaymentProvider, string> paymentProviderRepository,
+            IRepository<PaymentProvider, string> paymentProviderRepository,
             IRepository<Payment> paymentRepository,
             IHttpClientFactory httpClientFactory)
         {
@@ -148,7 +148,7 @@ namespace SimplCommerce.Module.PaymentPaypalExpress.Areas.PaymentPaypalExpress.C
                 string payPalPaymentId = responseObject.id;
                 payment.Status = PaymentStatus.Succeeded;
                 payment.GatewayTransactionId = payPalPaymentId;
-                _paymentRepository.Add(payment);
+                _paymentRepository.Insert(payment);
                 order.OrderStatus = OrderStatus.PaymentReceived;
                 await _paymentRepository.SaveChangesAsync();
                 return Ok(new { status = "success" });
@@ -156,7 +156,7 @@ namespace SimplCommerce.Module.PaymentPaypalExpress.Areas.PaymentPaypalExpress.C
 
             payment.Status = PaymentStatus.Failed;
             payment.FailureMessage = responseBody;
-            _paymentRepository.Add(payment);
+            _paymentRepository.Insert(payment);
             order.OrderStatus = OrderStatus.PaymentFailed;
             await _paymentRepository.SaveChangesAsync();
 
@@ -210,7 +210,7 @@ namespace SimplCommerce.Module.PaymentPaypalExpress.Areas.PaymentPaypalExpress.C
 
         private PaypalExpressConfigForm GetSetting()
         {
-            var paypalExpressProvider = _paymentProviderRepository.Query().FirstOrDefault(x => x.Id == PaymentProviderHelper.PaypalExpressProviderId);
+            var paypalExpressProvider = _paymentProviderRepository.GetAll().FirstOrDefault(x => x.Id == PaymentProviderHelper.PaypalExpressProviderId);
             var paypalExpressSetting = JsonConvert.DeserializeObject<PaypalExpressConfigForm>(paypalExpressProvider.AdditionalSettings);
             return paypalExpressSetting;
         }

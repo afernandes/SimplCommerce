@@ -14,9 +14,9 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
     [Route("api/countries")]
     public class CountryApiController : Controller
     {
-        private readonly IRepositoryWithTypedId<Country, string> _countryRepository;
+        private readonly IRepository<Country, string> _countryRepository;
 
-        public CountryApiController(IRepositoryWithTypedId<Country, string> countryRepository)
+        public CountryApiController(IRepository<Country, string> countryRepository)
         {
             _countryRepository = countryRepository;
         }
@@ -24,7 +24,7 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery]bool? shippingEnabled)
         {
-            var query = _countryRepository.Query();
+            var query = _countryRepository.GetAll();
             if (shippingEnabled.HasValue)
             {
                 query = query.Where(x => x.IsShippingEnabled == shippingEnabled.Value);
@@ -42,7 +42,7 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
         [HttpPost("grid")]
         public IActionResult List([FromBody] SmartTableParam param)
         {
-            var query = _countryRepository.Query();
+            var query = _countryRepository.GetAll();
 
             if (param.Search.PredicateObject != null)
             {
@@ -75,7 +75,7 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(string id)
         {
-            var country = await _countryRepository.Query().FirstOrDefaultAsync(x => x.Id == id);
+            var country = await _countryRepository.GetAll().FirstOrDefaultAsync(x => x.Id == id);
             if (country == null)
             {
                 return NotFound();
@@ -105,7 +105,7 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
                 return BadRequest(ModelState);
             }
 
-            var country = await _countryRepository.Query().FirstOrDefaultAsync(x => x.Id == id);
+            var country = await _countryRepository.GetAll().FirstOrDefaultAsync(x => x.Id == id);
             if (country == null)
             {
                 return NotFound();
@@ -141,7 +141,7 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
                     IsDistrictEnabled = model.IsDistrictEnabled
             };
 
-                _countryRepository.Add(country);
+                _countryRepository.Insert(country);
                 await _countryRepository.SaveChangesAsync();
 
                 return CreatedAtAction(nameof(Get), new { id = country.Id }, null);
@@ -153,7 +153,7 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> Delete(string id)
         {
-            var country = await _countryRepository.Query().FirstOrDefaultAsync(x => x.Id == id);
+            var country = await _countryRepository.GetAll().FirstOrDefaultAsync(x => x.Id == id);
             if (country == null)
             {
                 return NotFound();
@@ -161,7 +161,7 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
 
             try
             {
-                _countryRepository.Remove(country);
+                _countryRepository.Delete(country);
                 await _countryRepository.SaveChangesAsync();
             }
             catch (DbUpdateException)

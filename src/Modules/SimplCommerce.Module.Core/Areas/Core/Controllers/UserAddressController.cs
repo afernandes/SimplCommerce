@@ -17,13 +17,13 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
     public class UserAddressController : Controller
     {
         private readonly IRepository<UserAddress> _userAddressRepository;
-        private readonly IRepositoryWithTypedId<Country, string> _countryRepository;
+        private readonly IRepository<Country, string> _countryRepository;
         private readonly IRepository<StateOrProvince> _stateOrProvinceRepository;
         private readonly IRepository<District> _districtRepository;
         private readonly IRepository<User> _userRepository;
         private readonly IWorkContext _workContext;
 
-        public UserAddressController(IRepository<UserAddress> userAddressRepository, IRepositoryWithTypedId<Country, string> countryRepository, IRepository<StateOrProvince> stateOrProvinceRepository,
+        public UserAddressController(IRepository<UserAddress> userAddressRepository, IRepository<Country, string> countryRepository, IRepository<StateOrProvince> stateOrProvinceRepository,
             IRepository<District> districtRepository, IRepository<User> userRepository, IWorkContext workContext)
         {
             _userAddressRepository = userAddressRepository;
@@ -39,7 +39,7 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
         {
             var currentUser = await _workContext.GetCurrentUser();
             var model = _userAddressRepository
-                .Query()
+                .GetAll()
                 .Where(x => x.AddressType == AddressType.Shipping && x.UserId == currentUser.Id)
                 .Select(x => new UserAddressListItem
                 {
@@ -68,7 +68,7 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
         [HttpGet("api/country-states-provinces/{countryId}")]
         public async Task<IActionResult> Get(string countryId)
         {
-            var country = await _countryRepository.Query().Include(x => x.StatesOrProvinces).FirstOrDefaultAsync(x => x.Id == countryId);
+            var country = await _countryRepository.GetAll().Include(x => x.StatesOrProvinces).FirstOrDefaultAsync(x => x.Id == countryId);
             if (country == null)
             {
                 return NotFound();
@@ -127,7 +127,7 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
                     UserId = currentUser.Id
                 };
 
-                _userAddressRepository.Add(userAddress);
+                _userAddressRepository.Insert(userAddress);
                 _userAddressRepository.SaveChanges();
                 return RedirectToAction("List");
             }
@@ -141,7 +141,7 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
         {
             var currentUser = await _workContext.GetCurrentUser();
 
-            var userAddress = _userAddressRepository.Query()
+            var userAddress = _userAddressRepository.GetAll()
                 .Include(x => x.Address)
                 .FirstOrDefault(x => x.Id == id && x.UserId == currentUser.Id);
 
@@ -177,7 +177,7 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
             {
                 var currentUser = await _workContext.GetCurrentUser();
 
-                var userAddress = _userAddressRepository.Query()
+                var userAddress = _userAddressRepository.GetAll()
                     .Include(x => x.Address)
                     .FirstOrDefault(x => x.Id == id && x.UserId == currentUser.Id);
 
@@ -209,7 +209,7 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
         {
             var currentUser = await _workContext.GetCurrentUser();
 
-            var userAddress = _userAddressRepository.Query()
+            var userAddress = _userAddressRepository.GetAll()
                 .FirstOrDefault(x => x.Id == id && x.UserId == currentUser.Id);
 
             if (userAddress == null)
@@ -228,7 +228,7 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
         {
             var currentUser = await _workContext.GetCurrentUser();
 
-            var userAddress = _userAddressRepository.Query()
+            var userAddress = _userAddressRepository.GetAll()
                 .FirstOrDefault(x => x.Id == id && x.UserId == currentUser.Id);
 
             if (userAddress == null)
@@ -241,7 +241,7 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
                 currentUser.DefaultShippingAddressId = null;
             }
 
-            _userAddressRepository.Remove(userAddress);
+            _userAddressRepository.Delete(userAddress);
             _userAddressRepository.SaveChanges();
 
             return RedirectToAction("List");
@@ -249,7 +249,7 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
 
         private void PopulateAddressFormData(UserAddressFormViewModel model)
         {
-            var shippableCountries = _countryRepository.Query()
+            var shippableCountries = _countryRepository.GetAll()
                 .Where(x => x.IsShippingEnabled)
                 .OrderBy(x => x.Name);
 
@@ -275,7 +275,7 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
             }
 
             model.StateOrProvinces = _stateOrProvinceRepository
-                .Query()
+                .GetAll()
                 .Where(x => x.CountryId == selectedShipableCountryId)
                 .OrderBy(x => x.Name)
                 .Select(x => new SelectListItem
@@ -287,7 +287,7 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
             if (model.StateOrProvinceId > 0)
             {
                 model.Districts = _districtRepository
-                    .Query()
+                    .GetAll()
                     .Where(x => x.StateOrProvinceId == model.StateOrProvinceId)
                     .OrderBy(x => x.Name)
                     .Select(x => new SelectListItem

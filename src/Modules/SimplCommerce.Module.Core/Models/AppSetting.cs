@@ -3,7 +3,7 @@ using SimplCommerce.Infrastructure.Models;
 
 namespace SimplCommerce.Module.Core.Models
 {
-    public class AppSetting : EntityBaseWithTypedId<string>
+    public class AppSetting : EntityBase<string>
     {
         public AppSetting(string id)
         {

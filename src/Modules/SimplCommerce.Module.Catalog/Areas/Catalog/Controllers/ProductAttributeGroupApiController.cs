@@ -23,7 +23,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
         public IActionResult Get()
         {
             var attributeGroups = _productAttrGroupRepository
-                .Query()
+                .GetAll()
                 .Select(x => new ProductAttributeGroupFormVm
                 {
                     Id = x.Id,
@@ -36,7 +36,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
         [HttpGet("{id}")]
         public IActionResult Get(long id)
         {
-            var productAttributeGroup = _productAttrGroupRepository.Query().FirstOrDefault(x => x.Id == id);
+            var productAttributeGroup = _productAttrGroupRepository.GetAll().FirstOrDefault(x => x.Id == id);
             var model = new ProductAttributeGroupFormVm
             {
                 Id = productAttributeGroup.Id,
@@ -57,7 +57,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
                     Name = model.Name
                 };
 
-                _productAttrGroupRepository.Add(productAttributeGroup);
+                _productAttrGroupRepository.Insert(productAttributeGroup);
                 _productAttrGroupRepository.SaveChanges();
 
                 return Ok();
@@ -71,7 +71,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
         {
             if (ModelState.IsValid)
             {
-                var productAttributeGroup = _productAttrGroupRepository.Query().FirstOrDefault(x => x.Id == id);
+                var productAttributeGroup = _productAttrGroupRepository.GetAll().FirstOrDefault(x => x.Id == id);
                 productAttributeGroup.Name = model.Name;
 
                 _productAttrGroupRepository.SaveChanges();
@@ -86,13 +86,13 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
         [Authorize(Roles = "admin")]
         public IActionResult Delete(long id)
         {
-            var productAttributeGroup = _productAttrGroupRepository.Query().FirstOrDefault(x => x.Id == id);
+            var productAttributeGroup = _productAttrGroupRepository.GetAll().FirstOrDefault(x => x.Id == id);
             if (productAttributeGroup == null)
             {
                 return NotFound();
             }
 
-            _productAttrGroupRepository.Remove(productAttributeGroup);
+            _productAttrGroupRepository.Delete(productAttributeGroup);
             return Json(true);
         }
     }

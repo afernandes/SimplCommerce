@@ -24,7 +24,7 @@ namespace SimplCommerce.Module.Catalog.Services
 
         public async Task<IList<CategoryListItem>> GetAll()
         {
-            var categories = await _categoryRepository.Query().Where(x => !x.IsDeleted).ToListAsync();
+            var categories = await _categoryRepository.GetAll().Where(x => !x.IsDeleted).ToListAsync();
             var categoriesList = new List<CategoryListItem>();
             foreach (var category in categories)
             {
@@ -56,7 +56,7 @@ namespace SimplCommerce.Module.Catalog.Services
             using (var transaction = _categoryRepository.BeginTransaction())
             {
                 category.Slug = _entityService.ToSafeSlug(category.Slug, category.Id, CategoryEntityTypeId);
-                _categoryRepository.Add(category);
+                _categoryRepository.Insert(category);
                 await _categoryRepository.SaveChangesAsync();
 
                 _entityService.Add(category.Name, category.Slug, category.Id, CategoryEntityTypeId);

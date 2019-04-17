@@ -74,7 +74,7 @@ namespace SimplCommerce.Module.Notifications.Services
 
                 if (notificationDefinition?.ForRoles != null)
                 {
-                    var user = await _userRepository.Query().Include(x => x.Roles).ThenInclude(x => x.Role).FirstOrDefaultAsync(x => x.Id == userId);
+                    var user = await _userRepository.GetAll().Include(x => x.Roles).ThenInclude(x => x.Role).FirstOrDefaultAsync(x => x.Id == userId);
                     if (user == null)
                     {
                         return false;

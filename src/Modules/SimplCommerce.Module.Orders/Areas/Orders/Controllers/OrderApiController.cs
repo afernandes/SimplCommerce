@@ -41,7 +41,7 @@ namespace SimplCommerce.Module.Orders.Areas.Orders.Controllers
                 numRecords = 5;
             }
 
-            var query = _orderRepository.Query();
+            var query = _orderRepository.GetAll();
             if (orderStatus != 0)
             {
                 query = query.Where(x => x.OrderStatus == orderStatus);
@@ -72,7 +72,7 @@ namespace SimplCommerce.Module.Orders.Areas.Orders.Controllers
         public async Task<ActionResult> List([FromBody] SmartTableParam param)
         {
             var query = _orderRepository
-                .Query();
+                .GetAll();
 
             var currentUser = await _workContext.GetCurrentUser();
             if (!User.IsInRole("admin"))
@@ -135,7 +135,7 @@ namespace SimplCommerce.Module.Orders.Areas.Orders.Controllers
         public async Task<IActionResult> Get(long id)
         {
             var order = _orderRepository
-                .Query()
+                .GetAll()
                 .Include(x => x.ShippingAddress).ThenInclude(x => x.District)
                 .Include(x => x.ShippingAddress).ThenInclude(x => x.StateOrProvince)
                 .Include(x => x.ShippingAddress).ThenInclude(x => x.Country)
@@ -201,7 +201,7 @@ namespace SimplCommerce.Module.Orders.Areas.Orders.Controllers
 
             if (order.IsMasterOrder)
             {
-                model.SubOrderIds = _orderRepository.Query().Where(x => x.ParentId == order.Id).Select(x => x.Id).ToList();
+                model.SubOrderIds = _orderRepository.GetAll().Where(x => x.ParentId == order.Id).Select(x => x.Id).ToList();
             }
 
             await _mediator.Publish(new OrderDetailGot { OrderDetailVm = model });
@@ -212,7 +212,7 @@ namespace SimplCommerce.Module.Orders.Areas.Orders.Controllers
         [HttpPost("change-order-status/{id}")]
         public async Task<IActionResult> ChangeStatus(long id, [FromBody] OrderStatusForm model)
         {
-            var order = _orderRepository.Query().FirstOrDefault(x => x.Id == id);
+            var order = _orderRepository.GetAll().FirstOrDefault(x => x.Id == id);
             if (order == null)
             {
                 return NotFound();
@@ -257,7 +257,7 @@ namespace SimplCommerce.Module.Orders.Areas.Orders.Controllers
         [HttpPost("export")]
         public async Task<IActionResult> Export([FromBody] SmartTableParam param)
         {
-            var query = _orderRepository.Query();
+            var query = _orderRepository.GetAll();
 
             var currentUser = await _workContext.GetCurrentUser();
             if (!User.IsInRole("admin"))
@@ -356,7 +356,7 @@ namespace SimplCommerce.Module.Orders.Areas.Orders.Controllers
         [HttpPost("lines-export")]
         public async Task<IActionResult> OrderLinesExport([FromBody] SmartTableParam param, [FromServices] IRepository<OrderItem> orderItemRepository)
         {
-            var query = orderItemRepository.Query();
+            var query = orderItemRepository.GetAll();
 
             var currentUser = await _workContext.GetCurrentUser();
             if (!User.IsInRole("admin"))

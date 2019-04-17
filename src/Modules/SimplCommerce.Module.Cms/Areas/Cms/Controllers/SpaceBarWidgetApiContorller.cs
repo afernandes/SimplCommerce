@@ -32,7 +32,7 @@ namespace SimplCommerce.Module.Cms.Areas.Cms.Controllers
         [HttpGet("{id}")]
         public IActionResult Get(long id)
         {
-            var widgetInstance = _widgetInstanceRepository.Query().FirstOrDefault(x => x.Id == id);
+            var widgetInstance = _widgetInstanceRepository.GetAll().FirstOrDefault(x => x.Id == id);
             var model = new SpaceBarWidgetForm
             {
                 Id = widgetInstance.Id,
@@ -82,7 +82,7 @@ namespace SimplCommerce.Module.Cms.Areas.Cms.Controllers
                     Data = JsonConvert.SerializeObject(model.Items)
                 };
 
-                _widgetInstanceRepository.Add(widgetInstance);
+                _widgetInstanceRepository.Insert(widgetInstance);
                 _widgetInstanceRepository.SaveChanges();
                 return CreatedAtAction(nameof(Get), new { id = widgetInstance.Id }, null);
             }
@@ -109,7 +109,7 @@ namespace SimplCommerce.Module.Cms.Areas.Cms.Controllers
 
             if (ModelState.IsValid)
             {
-                var widgetInstance = _widgetInstanceRepository.Query().FirstOrDefault(x => x.Id == id);
+                var widgetInstance = _widgetInstanceRepository.GetAll().FirstOrDefault(x => x.Id == id);
                 widgetInstance.Name = model.Name;
                 widgetInstance.PublishStart = model.PublishStart;
                 widgetInstance.PublishEnd = model.PublishEnd;

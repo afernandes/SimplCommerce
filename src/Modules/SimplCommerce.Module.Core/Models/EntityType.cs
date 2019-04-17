@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SimplCommerce.Module.Core.Models
 {
-    public class EntityType : EntityBaseWithTypedId<string>
+    public class EntityType : EntityBase<string>
     {
         public EntityType()
         {

@@ -39,10 +39,10 @@ namespace SimplCommerce.Infrastructure.Helpers
         }
 
         /// <summary>
-        /// Execute's an async Task<T> method which has a T return type synchronously
+        /// Execute's an async Task<TEntity> method which has a TEntity return type synchronously
         /// </summary>
         /// <typeparam name="T">Return Type</typeparam>
-        /// <param name="task">Task<T> method to execute</param>
+        /// <param name="task">Task<TEntity> method to execute</param>
         /// <returns></returns>
         public static T RunSync<T>(Func<Task<T>> task)
         {

@@ -18,7 +18,7 @@ namespace SimplCommerce.Module.Notifications.Data
 
         private readonly IRepository<NotificationScheme> _notificationSchemeRepository;
         private readonly IRepository<NotificationDetail> _notificationDetailRepository;
-        private readonly IRepositoryWithTypedId<UserNotification, Guid> _userNotificationRepository;
+        private readonly IRepository<UserNotification, Guid> _userNotificationRepository;
         private readonly IRepository<NotificationSubscription> _notificationSubscriptionRepository;
 
         /// <summary>
@@ -27,7 +27,7 @@ namespace SimplCommerce.Module.Notifications.Data
         public NotificationRepository(SimplDbContext context,
             IRepository<NotificationScheme> notificationRepository,
             IRepository<NotificationDetail> tenantNotificationRepository,
-            IRepositoryWithTypedId<UserNotification, Guid> userNotificationRepository,
+            IRepository<UserNotification, Guid> userNotificationRepository,
             IRepository<NotificationSubscription> notificationSubscriptionRepository)
         {
             Context = context;
@@ -50,13 +50,13 @@ namespace SimplCommerce.Module.Notifications.Data
 
         public virtual Task InsertSubscriptionAsync(NotificationSubscription subscription)
         {
-            _notificationSubscriptionRepository.Add(subscription);
+            _notificationSubscriptionRepository.Insert(subscription);
             return Task.CompletedTask;
         }
 
         public virtual Task DeleteSubscriptionAsync(long userId, string notificationName, string entityTypeName, string entityId)
         {
-            var notificationSubscription = _notificationSubscriptionRepository.Query().FirstOrDefault(s =>
+            var notificationSubscription = _notificationSubscriptionRepository.GetAll().FirstOrDefault(s =>
                 s.UserId == userId &&
                 s.NotificationName == notificationName &&
                 s.EntityTypeName == entityTypeName &&
@@ -73,24 +73,24 @@ namespace SimplCommerce.Module.Notifications.Data
 
         public virtual Task InsertNotificationSchemeAsync(NotificationScheme notification)
         {
-            _notificationSchemeRepository.Add(notification);
+            _notificationSchemeRepository.Insert(notification);
             return Task.CompletedTask;
         }
 
         public virtual async Task<NotificationScheme> GetNotificationSchemeOrNullAsync(long notificationId)
         {
-            return await _notificationSchemeRepository.Query().FirstOrDefaultAsync(s => !s.IsDeleted && s.Id == notificationId);
+            return await _notificationSchemeRepository.GetAll().FirstOrDefaultAsync(s => !s.IsDeleted && s.Id == notificationId);
         }
 
         public virtual Task InsertUserNotificationAsync(UserNotification userNotification)
         {
-            _userNotificationRepository.Add(userNotification);
+            _userNotificationRepository.Insert(userNotification);
             return Task.CompletedTask;
         }
 
         public virtual async Task<List<NotificationSubscription>> GetSubscriptionsAsync(string notificationName, string entityTypeName, string entityId)
         {
-            return await _notificationSubscriptionRepository.Query().Where(s =>
+            return await _notificationSubscriptionRepository.GetAll().Where(s =>
                 !s.IsDeleted &&
                 s.NotificationName == notificationName &&
                 s.EntityTypeName == entityTypeName &&
@@ -100,12 +100,12 @@ namespace SimplCommerce.Module.Notifications.Data
 
         public virtual async Task<List<NotificationSubscription>> GetSubscriptionsAsync(long userId)
         {
-            return await _notificationSubscriptionRepository.Query().Where(s => !s.IsDeleted && s.UserId == userId).ToListAsync();
+            return await _notificationSubscriptionRepository.GetAll().Where(s => !s.IsDeleted && s.UserId == userId).ToListAsync();
         }
 
         public virtual async Task<bool> IsSubscribedAsync(long userId, string notificationName, string entityTypeName, string entityId)
         {
-            return await _notificationSubscriptionRepository.Query().AnyAsync(s =>
+            return await _notificationSubscriptionRepository.GetAll().AnyAsync(s =>
                 !s.IsDeleted &&
                 s.UserId == userId &&
                 s.NotificationName == notificationName &&
@@ -116,7 +116,7 @@ namespace SimplCommerce.Module.Notifications.Data
 
         public virtual async Task UpdateUserNotificationStateAsync(Guid userNotificationId, UserNotificationState state)
         {
-            var userNotification = await _userNotificationRepository.Query().FirstOrDefaultAsync(s => s.Id == userNotificationId);
+            var userNotification = await _userNotificationRepository.GetAll().FirstOrDefaultAsync(s => s.Id == userNotificationId);
             if (userNotification == null)
             {
                 return;
@@ -128,7 +128,7 @@ namespace SimplCommerce.Module.Notifications.Data
 
         public virtual async Task UpdateAllUserNotificationStatesAsync(long userId, UserNotificationState state)
         {
-            var userNotifications = await _userNotificationRepository.Query().Where(s => s.UserId == userId).ToListAsync();
+            var userNotifications = await _userNotificationRepository.GetAll().Where(s => s.UserId == userId).ToListAsync();
 
             foreach (var userNotification in userNotifications)
             {
@@ -139,7 +139,7 @@ namespace SimplCommerce.Module.Notifications.Data
 
         public virtual async Task DeleteUserNotificationAsync(Guid userNotificationId)
         {
-            var userNotification = await _userNotificationRepository.Query().FirstOrDefaultAsync(s => s.Id == userNotificationId);
+            var userNotification = await _userNotificationRepository.GetAll().FirstOrDefaultAsync(s => s.Id == userNotificationId);
             if (userNotification == null)
             {
                 return;
@@ -151,7 +151,7 @@ namespace SimplCommerce.Module.Notifications.Data
 
         public virtual Task DeleteAllUserNotificationsAsync(long userId)
         {
-            var userNotifications = _userNotificationRepository.Query().Where(s => s.UserId == userId);
+            var userNotifications = _userNotificationRepository.GetAll().Where(s => s.UserId == userId);
             foreach (var userNotification in userNotifications)
             {
                 userNotification.IsDeleted = true;
@@ -162,8 +162,8 @@ namespace SimplCommerce.Module.Notifications.Data
 
         public virtual async Task<List<UserNotificationWithNotificationDetail>> GetUserNotificationWithNotificationDetailsAsync(long userId, UserNotificationState? state = null, int skipCount = 0, int maxResultCount = int.MaxValue)
         {
-            var query = from userNotification in _userNotificationRepository.Query()
-                        join notificationDetail in _notificationDetailRepository.Query() on userNotification.NotificationDetailId equals notificationDetail.Id
+            var query = from userNotification in _userNotificationRepository.GetAll()
+                        join notificationDetail in _notificationDetailRepository.GetAll() on userNotification.NotificationDetailId equals notificationDetail.Id
                         where !userNotification.IsDeleted && userNotification.UserId == userId && (state == null || userNotification.State == state.Value)
                         orderby notificationDetail.CreatedOn descending
                         select new { userNotification, notificationDetail };
@@ -178,13 +178,13 @@ namespace SimplCommerce.Module.Notifications.Data
 
         public virtual async Task<int> GetUserNotificationCountAsync(long userId, UserNotificationState? state = null)
         {
-            return await _userNotificationRepository.Query().CountAsync(s => !s.IsDeleted && s.UserId == userId && (state == null || s.State == state.Value));
+            return await _userNotificationRepository.GetAll().CountAsync(s => !s.IsDeleted && s.UserId == userId && (state == null || s.State == state.Value));
         }
 
         public virtual async Task<UserNotificationWithNotificationDetail> GetUserNotificationWithNotificationDetailOrNullAsync(Guid userNotificationId)
         {
-            var query = from userNotification in _userNotificationRepository.Query()
-                        join notificationDetail in _notificationDetailRepository.Query() on userNotification.NotificationDetailId equals notificationDetail.Id
+            var query = from userNotification in _userNotificationRepository.GetAll()
+                        join notificationDetail in _notificationDetailRepository.GetAll() on userNotification.NotificationDetailId equals notificationDetail.Id
                         where !userNotification.IsDeleted && userNotification.Id == userNotificationId
                         select new { userNotification, notificationDetail };
 
@@ -194,7 +194,7 @@ namespace SimplCommerce.Module.Notifications.Data
 
         public virtual Task InsertNotificationDetailAsync(NotificationDetail tenantNotificationInfo)
         {
-            _notificationDetailRepository.Add(tenantNotificationInfo);
+            _notificationDetailRepository.Insert(tenantNotificationInfo);
             return Task.CompletedTask;
         }
 

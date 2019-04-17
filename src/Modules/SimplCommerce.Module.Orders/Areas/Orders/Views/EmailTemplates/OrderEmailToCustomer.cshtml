@@ -6,11 +6,11 @@
 @inject IRepository<District> DistrictRepository
 
 @{
-    var shippingStateOrProvince = StateOrProvinceRepository.Query().First(x => x.Id == Model.ShippingAddress.StateOrProvinceId);
+    var shippingStateOrProvince = StateOrProvinceRepository.GetAll().First(x => x.Id == Model.ShippingAddress.StateOrProvinceId);
     string shippingDistrictName = "";
     if (Model.ShippingAddress.DistrictId.HasValue)
     {
-        var district = DistrictRepository.Query().FirstOrDefault(x => x.Id == Model.ShippingAddress.DistrictId.Value);
+        var district = DistrictRepository.GetAll().FirstOrDefault(x => x.Id == Model.ShippingAddress.DistrictId.Value);
         shippingDistrictName = $"{district.Name}, ";
     }
 }

@@ -29,7 +29,7 @@ namespace SimplCommerce.Module.Core.Extensions
             var urlSlugRepository = context.HttpContext.RequestServices.GetService<IRepository<Entity>>();
 
             // Get the slug that matches.
-            var urlSlug = await urlSlugRepository.Query().Include(x => x.EntityType).FirstOrDefaultAsync(x => x.Slug == requestPath);
+            var urlSlug = await urlSlugRepository.GetAll().Include(x => x.EntityType).FirstOrDefaultAsync(x => x.Slug == requestPath);
 
             // Invoke MVC controller/action
             var oldRouteData = context.RouteData;

@@ -34,7 +34,7 @@ namespace SimplCommerce.Module.Orders.Areas.Orders.Controllers
         public async Task<IActionResult> Print(long id)
         {
             var order = await _orderRepository
-                .Query()
+                .GetAll()
                 .Include(x => x.ShippingAddress).ThenInclude(x => x.District)
                 .Include(x => x.ShippingAddress).ThenInclude(x => x.StateOrProvince)
                 .Include(x => x.ShippingAddress).ThenInclude(x => x.Country)

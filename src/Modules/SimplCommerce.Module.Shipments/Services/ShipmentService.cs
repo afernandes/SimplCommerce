@@ -28,7 +28,7 @@ namespace SimplCommerce.Module.Shipments.Services
         public async Task<IList<ShipmentItemVm>> GetItemToShip(long orderId, long warehouseId)
         {
             var itemsToShip = await GetShipmentItem(orderId);
-            var stocks = await _stockRepository.Query().Where(x => x.WarehouseId == warehouseId && itemsToShip.Any(p => p.ProductId == x.ProductId)).ToListAsync();
+            var stocks = await _stockRepository.GetAll().Where(x => x.WarehouseId == warehouseId && itemsToShip.Any(p => p.ProductId == x.ProductId)).ToListAsync();
             foreach(var item in itemsToShip)
             {
                 var stock = stocks.FirstOrDefault(x => x.ProductId == item.ProductId);
@@ -43,7 +43,7 @@ namespace SimplCommerce.Module.Shipments.Services
 
         public async Task<IList<ShipmentItemVm>> GetShipmentItem(long orderId)
         {
-            var orderedItems = await _orderItemRepository.Query()
+            var orderedItems = await _orderItemRepository.GetAll()
                 .Where(x => x.Order.Id == orderId)
                 .Select(x => new ShipmentItemVm
                 {
@@ -55,7 +55,7 @@ namespace SimplCommerce.Module.Shipments.Services
                 })
                 .ToListAsync();
 
-            var shippedItems = await _shipmentItemRepository.Query()
+            var shippedItems = await _shipmentItemRepository.GetAll()
                 .Where(x => x.Shipment.OrderId == orderId)
                 .ToListAsync();
 
@@ -97,7 +97,7 @@ namespace SimplCommerce.Module.Shipments.Services
                     return Result.Fail($"Quantity to ship cannot be larger than ordered quantity + shipped quantity");
                 }
 
-                var stock = await _stockRepository.Query().Where(x => x.ProductId == item.ProductId && x.WarehouseId == shipment.WarehouseId).FirstOrDefaultAsync();
+                var stock = await _stockRepository.GetAll().Where(x => x.ProductId == item.ProductId && x.WarehouseId == shipment.WarehouseId).FirstOrDefaultAsync();
                 if(stock == null || stock.Quantity < item.Quantity)
                 {
                     return Result.Fail($"The product {item.ProductId} is out of stock in warehouse {shipment.WarehouseId}");
@@ -106,7 +106,7 @@ namespace SimplCommerce.Module.Shipments.Services
                 stock.Quantity = stock.Quantity - item.Quantity;
             }
 
-            _shipmentRepository.Add(shipment);
+            _shipmentRepository.Insert(shipment);
             await _shipmentRepository.SaveChangesAsync();
             return Result.Ok();
         }

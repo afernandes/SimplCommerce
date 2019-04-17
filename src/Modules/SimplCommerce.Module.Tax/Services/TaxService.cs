@@ -22,7 +22,7 @@ namespace SimplCommerce.Module.Tax.Services
                 return 0;
             }
 
-            var query = _taxRateRepository.Query()
+            var query = _taxRateRepository.GetAll()
                            .Where(x => x.CountryId == countryId
                            && (x.StateOrProvinceId == stateOrProvinceId || x.StateOrProvinceId == null)
                            && x.TaxClassId == taxClassId.Value);

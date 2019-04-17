@@ -61,7 +61,7 @@ namespace SimplCommerce.Module.WishList.Areas.WishList.Controllers
                 var user = await _workContext.GetCurrentUser();
 
                 var wishList = await _wishListRepository
-                    .Query()
+                    .GetAll()
                     .SingleOrDefaultAsync(x => x.UserId == user.Id);
 
                 string sharingCode = String.Empty;
@@ -97,7 +97,7 @@ namespace SimplCommerce.Module.WishList.Areas.WishList.Controllers
             var user = await _workContext.GetCurrentUser();
 
             var wishList = await _wishListRepository
-                .Query()
+                .GetAll()
                 .SingleOrDefaultAsync(x => x.UserId == user.Id);
 
             if (wishList == null)
@@ -107,7 +107,7 @@ namespace SimplCommerce.Module.WishList.Areas.WishList.Controllers
                     UserId = user.Id
                 };
 
-                _wishListRepository.Add(wishList);
+                _wishListRepository.Insert(wishList);
                 await _wishListRepository.SaveChangesAsync();
             }
 
@@ -122,7 +122,7 @@ namespace SimplCommerce.Module.WishList.Areas.WishList.Controllers
             var user = await _workContext.GetCurrentUser();
 
             var wishList = await _wishListRepository
-                .Query()
+                .GetAll()
                 .SingleOrDefaultAsync(x => x.SharingCode == id);
 
             if (wishList == null)
@@ -148,7 +148,7 @@ namespace SimplCommerce.Module.WishList.Areas.WishList.Controllers
             };
 
             var wishListItemsQuery = _wishListItemRepository
-                .Query()
+                .GetAll()
                 .Where(x => x.WishListId == wishList.Id)
                 .Select(x => new WishListItemVm()
                 {
@@ -183,7 +183,7 @@ namespace SimplCommerce.Module.WishList.Areas.WishList.Controllers
                 var resultModel = new AddToWishListResult();
 
                 var product = await _productRepository
-                    .Query()
+                    .GetAll()
                     .Include(x => x.ThumbnailImage)
                     .SingleOrDefaultAsync(x => x.Id == model.ProductId);
 
@@ -193,7 +193,7 @@ namespace SimplCommerce.Module.WishList.Areas.WishList.Controllers
                 }
 
                 var wishList = await _wishListRepository
-                    .Query()
+                    .GetAll()
                     .Include(x => x.Items)
                     .SingleOrDefaultAsync(x => x.UserId == user.Id);
 
@@ -204,7 +204,7 @@ namespace SimplCommerce.Module.WishList.Areas.WishList.Controllers
                         UserId = user.Id
                     };
 
-                    _wishListRepository.Add(wishList);
+                    _wishListRepository.Insert(wishList);
                     await _wishListRepository.SaveChangesAsync();
                 }
 
@@ -233,7 +233,7 @@ namespace SimplCommerce.Module.WishList.Areas.WishList.Controllers
                         Quantity = model.Quantity
                     };
 
-                    _wishListItemRepository.Add(wishListItem);
+                    _wishListItemRepository.Insert(wishListItem);
 
                     wishList.LatestUpdatedOn = DateTimeOffset.Now;
                     await _wishListRepository.SaveChangesAsync();
@@ -262,7 +262,7 @@ namespace SimplCommerce.Module.WishList.Areas.WishList.Controllers
             var user = await _workContext.GetCurrentUser();
 
             var wishList = await _wishListRepository
-                .Query()
+                .GetAll()
                 .Include(x => x.Items)
                 .SingleOrDefaultAsync(x => x.UserId == user.Id);
 
@@ -280,7 +280,7 @@ namespace SimplCommerce.Module.WishList.Areas.WishList.Controllers
                 return NotFound();
             }
 
-            _wishListItemRepository.Remove(wishListItem);
+            _wishListItemRepository.Delete(wishListItem);
 
             wishList.LatestUpdatedOn = DateTimeOffset.Now;
             await _wishListRepository.SaveChangesAsync();
@@ -297,7 +297,7 @@ namespace SimplCommerce.Module.WishList.Areas.WishList.Controllers
                 var user = await _workContext.GetCurrentUser();
                 var returnModel = new AddToWishListResult();
 
-                var wishList = await _wishListRepository.Query()
+                var wishList = await _wishListRepository.GetAll()
                     .Include(x => x.Items)
                     .SingleOrDefaultAsync(x => x.UserId == user.Id);
 

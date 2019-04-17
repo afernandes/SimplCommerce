@@ -4,7 +4,7 @@ using SimplCommerce.Infrastructure.Models;
 
 namespace SimplCommerce.Infrastructure.Localization
 {
-    public class Culture : EntityBaseWithTypedId<string>
+    public class Culture : EntityBase<string>
     {
         public Culture(string id)
         {

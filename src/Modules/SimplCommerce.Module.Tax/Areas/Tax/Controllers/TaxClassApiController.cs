@@ -28,7 +28,7 @@ namespace SimplCommerce.Module.Tax.Areas.Tax.Controllers
         public async Task<IActionResult> Get()
         {
             var taxClasses = await _taxClassRepository
-                .Query()
+                .GetAll()
                 .Select(x => new { Id = x.Id, Name = x.Name })
                 .ToListAsync();
             return Json(taxClasses);
@@ -37,7 +37,7 @@ namespace SimplCommerce.Module.Tax.Areas.Tax.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(long id)
         {
-            var taxClass = await _taxClassRepository.Query().FirstOrDefaultAsync(x => x.Id == id);
+            var taxClass = await _taxClassRepository.GetAll().FirstOrDefaultAsync(x => x.Id == id);
             if(taxClass == null)
             {
                 return NotFound();
@@ -55,7 +55,7 @@ namespace SimplCommerce.Module.Tax.Areas.Tax.Controllers
         [HttpGet("default")]
         public async Task<IActionResult> Default()
         {
-            var defaultTaxClass = await _taxClassRepository.Query()
+            var defaultTaxClass = await _taxClassRepository.GetAll()
                 .Select(x => new
                 {
                     x.Id,
@@ -76,7 +76,7 @@ namespace SimplCommerce.Module.Tax.Areas.Tax.Controllers
                     Name = model.Name
                 };
 
-                _taxClassRepository.Add(tagClass);
+                _taxClassRepository.Insert(tagClass);
                 await _taxClassRepository.SaveChangesAsync();
 
                 return CreatedAtAction(nameof(Get), new { id = tagClass.Id }, null);
@@ -89,7 +89,7 @@ namespace SimplCommerce.Module.Tax.Areas.Tax.Controllers
         {
             if (ModelState.IsValid)
             {
-                var taxClass = await _taxClassRepository.Query().FirstOrDefaultAsync(x => x.Id == id);
+                var taxClass = await _taxClassRepository.GetAll().FirstOrDefaultAsync(x => x.Id == id);
                 if (taxClass == null)
                 {
                     return NotFound();
@@ -106,7 +106,7 @@ namespace SimplCommerce.Module.Tax.Areas.Tax.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(long id)
         {
-            var taxClass = await _taxClassRepository.Query().FirstOrDefaultAsync(x => x.Id == id);
+            var taxClass = await _taxClassRepository.GetAll().FirstOrDefaultAsync(x => x.Id == id);
             if (taxClass == null)
             {
                 return NotFound();
@@ -114,7 +114,7 @@ namespace SimplCommerce.Module.Tax.Areas.Tax.Controllers
 
             try
             {
-                _taxClassRepository.Remove(taxClass);
+                _taxClassRepository.Delete(taxClass);
                 await _taxClassRepository.SaveChangesAsync();
             }
             catch (DbUpdateException)

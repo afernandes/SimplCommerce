@@ -29,7 +29,7 @@ namespace SimplCommerce.Module.Vendors.Areas.Vendors.Controllers
         [HttpPost("grid")]
         public ActionResult List([FromBody] SmartTableParam param)
         {
-            var query = _vendorRepository.Query()
+            var query = _vendorRepository.GetAll()
                 .Where(x => !x.IsDeleted);
 
             if (param.Search.PredicateObject != null)
@@ -76,7 +76,7 @@ namespace SimplCommerce.Module.Vendors.Areas.Vendors.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var vendors = await _vendorRepository.Query().Select(x => new
+            var vendors = await _vendorRepository.GetAll().Select(x => new
             {
                 Id = x.Id,
                 Name = x.Name,
@@ -89,7 +89,7 @@ namespace SimplCommerce.Module.Vendors.Areas.Vendors.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(long id)
         {
-            var vendor = await _vendorRepository.Query().Include(x => x.Users).FirstOrDefaultAsync(x => x.Id == id);
+            var vendor = await _vendorRepository.GetAll().Include(x => x.Users).FirstOrDefaultAsync(x => x.Id == id);
             if(vendor == null)
             {
                 return NotFound();
@@ -134,7 +134,7 @@ namespace SimplCommerce.Module.Vendors.Areas.Vendors.Controllers
         {
             if (ModelState.IsValid)
             {
-                var vendor = _vendorRepository.Query().FirstOrDefault(x => x.Id == id);
+                var vendor = _vendorRepository.GetAll().FirstOrDefault(x => x.Id == id);
                 vendor.Name = model.Name;
                 vendor.Slug = model.Slug;
                 vendor.Email = model.Email;
@@ -152,7 +152,7 @@ namespace SimplCommerce.Module.Vendors.Areas.Vendors.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(long id)
         {
-            var vendor = await _vendorRepository.Query().FirstOrDefaultAsync(x => x.Id == id);
+            var vendor = await _vendorRepository.GetAll().FirstOrDefaultAsync(x => x.Id == id);
             if (vendor == null)
             {
                 return NotFound();

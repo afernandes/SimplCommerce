@@ -30,7 +30,7 @@ namespace SimplCommerce.Module.Core.Areas.Core.Components
 
             if (curentUser.DefaultShippingAddressId.HasValue)
             {
-                model.Address = await _userAddressRepository.Query()
+                model.Address = await _userAddressRepository.GetAll()
                     .Where(x => x.Id == curentUser.DefaultShippingAddressId.Value)
                     .Select(x => new UserAddressListItem {
                         UserAddressId = x.Id,

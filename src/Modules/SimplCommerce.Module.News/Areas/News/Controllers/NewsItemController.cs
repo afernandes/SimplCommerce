@@ -32,7 +32,7 @@ namespace SimplCommerce.Module.News.Areas.News.Controllers
         [HttpGet("news")]
         public IActionResult NewsHome(int page)
         {
-            var newsCategoryList = _newsCategoryRepository.Query()
+            var newsCategoryList = _newsCategoryRepository.GetAll()
                 .Include(x => x.NewsItems)
                 .Where(x => !x.IsDeleted)
                 .Select(x => new NewsCategoryVm()
@@ -48,7 +48,7 @@ namespace SimplCommerce.Module.News.Areas.News.Controllers
                 NewsCategory = newsCategoryList
             };
 
-            var query = _newsItemRepository.Query()
+            var query = _newsItemRepository.GetAll()
                 .Where(x => !x.IsDeleted && x.IsPublished)
                 .OrderByDescending(x => x.CreatedOn);
 
@@ -80,7 +80,7 @@ namespace SimplCommerce.Module.News.Areas.News.Controllers
 
         public IActionResult NewsItemDetail(long id)
         {
-            var newsItem = _newsItemRepository.Query()
+            var newsItem = _newsItemRepository.GetAll()
                 .Include(x => x.ThumbnailImage)
                 .FirstOrDefault(x => x.Id == id && x.IsPublished && !x.IsDeleted);
 

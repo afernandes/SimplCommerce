@@ -21,7 +21,7 @@ namespace SimplCommerce.Module.Catalog.Events
         {
             if (notification.EntityTypeId == "Product")
             {
-                var product = await _productRepository.Query().FirstAsync(x => x.Id == notification.EntityId);
+                var product = await _productRepository.GetAll().FirstAsync(x => x.Id == notification.EntityId);
                 product.ReviewsCount = notification.ReviewsCount;
                 product.RatingAverage = notification.RatingAverage;
             }

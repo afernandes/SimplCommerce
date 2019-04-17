@@ -22,7 +22,7 @@ namespace SimplCommerce.Module.Cms.Areas.Cms.Components
 
         public async Task<IViewComponentResult> InvokeAsync(long menuId)
         {
-            var menu = await _menuRepository.Query().Include(x => x.MenuItems).ThenInclude(m => m.Entity).FirstOrDefaultAsync(x => x.Id == menuId);
+            var menu = await _menuRepository.GetAll().Include(x => x.MenuItems).ThenInclude(m => m.Entity).FirstOrDefaultAsync(x => x.Id == menuId);
             if(menu == null)
             {
                 throw new ArgumentException($"Cannot found menu item id {menuId}");

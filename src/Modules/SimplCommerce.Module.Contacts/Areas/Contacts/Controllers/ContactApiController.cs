@@ -31,7 +31,7 @@ namespace SimplCommerce.Module.Contacts.Areas.Contacts.Controllers
         [HttpPost("grid")]
         public IActionResult Get([FromBody] SmartTableParam param)
         {
-            var query = _contactRepository.Query()
+            var query = _contactRepository.GetAll()
                 .Where(x => !x.IsDeleted);
 
             if (param.Search.PredicateObject != null)
@@ -82,7 +82,7 @@ namespace SimplCommerce.Module.Contacts.Areas.Contacts.Controllers
         [HttpGet("{id}")]
         public IActionResult Get(long id)
         {
-            var contact = _contactRepository.Query()
+            var contact = _contactRepository.GetAll()
                .Include(x => x.ContactArea)
                .FirstOrDefault(x => x.Id == id);
 
@@ -103,7 +103,7 @@ namespace SimplCommerce.Module.Contacts.Areas.Contacts.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(long id)
         {
-            var contact = _contactRepository.Query().FirstOrDefault(x => x.Id == id);
+            var contact = _contactRepository.GetAll().FirstOrDefault(x => x.Id == id);
 
             if (contact == null)
             {

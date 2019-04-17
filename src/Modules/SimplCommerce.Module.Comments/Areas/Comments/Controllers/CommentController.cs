@@ -44,7 +44,7 @@ namespace SimplCommerce.Module.Comments.Areas.Comments.Controllers
                     UserId = user.Id
                 };
 
-                _commentRepository.Add(comment);
+                _commentRepository.Insert(comment);
                 _commentRepository.SaveChanges();
 
                 return PartialView("_CommentFormSuccess", model);
@@ -74,7 +74,7 @@ namespace SimplCommerce.Module.Comments.Areas.Comments.Controllers
             model.EntitySlug = entity.EntitySlug;
 
             var query = _commentRepository
-                .Query()
+                .GetAll()
                 .Where(x => (x.EntityId == entityId) && (x.EntityTypeId == entityTypeId) && (x.Status == CommentStatus.Approved))
                 .Where(x => x.ParentId == null)
                 .OrderByDescending(x => x.CreatedOn)
@@ -134,7 +134,7 @@ namespace SimplCommerce.Module.Comments.Areas.Comments.Controllers
                     EntityTypeId = model.EntityTypeId,
                 };
 
-                _commentRepository.Add(reply);
+                _commentRepository.Insert(reply);
                 _commentRepository.SaveChanges();
 
                 return PartialView("_CommentFormSuccess", model);

@@ -20,7 +20,7 @@ namespace SimplCommerce.Module.Shipments.Events
 
         public async Task Handle(OrderDetailGot orderDetailGot, CancellationToken cancellationToken)
         {
-            var shippedItems = await _shipmentItemRepository.Query()
+            var shippedItems = await _shipmentItemRepository.GetAll()
                 .Where(x => x.Shipment.OrderId == orderDetailGot.OrderDetailVm.Id)
                 .ToListAsync();
 

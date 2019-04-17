@@ -20,7 +20,7 @@ namespace SimplCommerce.Module.ShippingTableRate.Services
         public async Task<GetShippingPriceResponse> GetShippingPrices(GetShippingPriceRequest request, ShippingProvider provider)
         {
             var response = new GetShippingPriceResponse { IsSuccess = true };
-            var priceAndDestinations = await _priceAndDestinationRepository.Query().ToListAsync();
+            var priceAndDestinations = await _priceAndDestinationRepository.GetAll().ToListAsync();
 
             var query = priceAndDestinations.Where(x =>
                 (x.CountryId == null || x.CountryId == request.ShippingAddress.CountryId)

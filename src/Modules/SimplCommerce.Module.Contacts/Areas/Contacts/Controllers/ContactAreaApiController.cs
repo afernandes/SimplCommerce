@@ -22,14 +22,14 @@ namespace SimplCommerce.Module.Contacts.Areas.Contacts.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            var categoryList = _contactRepository.Query().Where(x => !x.IsDeleted).ToList();
+            var categoryList = _contactRepository.GetAll().Where(x => !x.IsDeleted).ToList();
             return Json(categoryList);
         }
 
         [HttpGet("{id}")]
         public IActionResult Get(long id)
         {
-            var category = _contactRepository.Query().FirstOrDefault(x => x.Id == id);
+            var category = _contactRepository.GetAll().FirstOrDefault(x => x.Id == id);
             var model = new ContactAreaForm
             {
                 Id = category.Id,
@@ -49,7 +49,7 @@ namespace SimplCommerce.Module.Contacts.Areas.Contacts.Controllers
                     Name = model.Name
                 };
 
-                _contactRepository.Add(category);
+                _contactRepository.Insert(category);
                 _contactRepository.SaveChanges();
 
                 return Ok();
@@ -62,7 +62,7 @@ namespace SimplCommerce.Module.Contacts.Areas.Contacts.Controllers
         {
             if (ModelState.IsValid)
             {
-                var category = _contactRepository.Query().FirstOrDefault(x => x.Id == id);
+                var category = _contactRepository.GetAll().FirstOrDefault(x => x.Id == id);
                 category.Name = model.Name;
 
                 _contactRepository.SaveChanges();
@@ -76,7 +76,7 @@ namespace SimplCommerce.Module.Contacts.Areas.Contacts.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(long id)
         {
-            var category = _contactRepository.Query().FirstOrDefault(x => x.Id == id);
+            var category = _contactRepository.GetAll().FirstOrDefault(x => x.Id == id);
             if (category == null)
             {
                 return NotFound();

@@ -28,7 +28,7 @@ namespace SimplCommerce.Module.Cms.Tests.Controllers
         public void PageDetail_ShouldReturns_CorrectModelType()
         {
             var mock = new Mock<IRepository<Page>>();
-            mock.Setup(x => x.Query()).Returns(new List<Page>() { new Page() { Name = "Page" } }.AsQueryable());
+            mock.Setup(x => x.GetAll()).Returns(new List<Page>() { new Page() { Name = "Page" } }.AsQueryable());
             var pageController = new PageController(mock.Object);
 
             var result = pageController.PageDetail(It.IsAny<long>()) as ViewResult;
@@ -39,7 +39,7 @@ namespace SimplCommerce.Module.Cms.Tests.Controllers
         private Mock<IRepository<Page>> MakePageRepository()
         {
             var pageRepository = new Mock<IRepository<Page>>();
-            pageRepository.Setup(x => x.Query()).Returns(new List<Page>() { new Page() { Name = "Page" } }.AsQueryable());
+            pageRepository.Setup(x => x.GetAll()).Returns(new List<Page>() { new Page() { Name = "Page" } }.AsQueryable());
             return pageRepository;
         }
     }

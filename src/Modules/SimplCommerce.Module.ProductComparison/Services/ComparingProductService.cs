@@ -17,13 +17,13 @@ namespace SimplCommerce.Module.ProductComparison.Services
 
         public void AddToComparison(long userId, long productId)
         {
-            var numComparingProduct = _comparingProductRepository.Query().Where(x => x.UserId == userId).Count();
+            var numComparingProduct = _comparingProductRepository.GetAll().Where(x => x.UserId == userId).Count();
             if(numComparingProduct >= MaxNumComparingProduct)
             {
                 throw new TooManyComparingProductException(MaxNumComparingProduct);
             }
 
-            var isProductExisted = _comparingProductRepository.Query().Any(x => x.ProductId == productId && x.UserId == userId);
+            var isProductExisted = _comparingProductRepository.GetAll().Any(x => x.ProductId == productId && x.UserId == userId);
             if (!isProductExisted)
             {
                 var comparingProduct = new ComparingProduct
@@ -33,14 +33,14 @@ namespace SimplCommerce.Module.ProductComparison.Services
                     CreatedOn = DateTimeOffset.Now
                 };
 
-                _comparingProductRepository.Add(comparingProduct);
+                _comparingProductRepository.Insert(comparingProduct);
                 _comparingProductRepository.SaveChanges();
             }
         }
 
         public void MigrateComparingProduct(long fromUserId, long toUserId)
         {
-            var comparingProducts = _comparingProductRepository.Query().Where(x => x.UserId == fromUserId);
+            var comparingProducts = _comparingProductRepository.GetAll().Where(x => x.UserId == fromUserId);
             foreach(var item in comparingProducts)
             {
                 item.UserId = toUserId;

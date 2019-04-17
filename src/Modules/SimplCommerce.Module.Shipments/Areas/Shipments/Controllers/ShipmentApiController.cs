@@ -36,7 +36,7 @@ namespace SimplCommerce.Module.Shipments.Areas.Shipments.Controllers
         public async Task<IActionResult> GetItemsToShip(long orderId, long warehouseId)
         {
             var currentUser = await _workContext.GetCurrentUser();
-            var order = _orderRepository.Query().FirstOrDefault(x => x.Id == orderId);
+            var order = _orderRepository.GetAll().FirstOrDefault(x => x.Id == orderId);
             if(order == null)
             {
                 return NotFound();
@@ -67,7 +67,7 @@ namespace SimplCommerce.Module.Shipments.Areas.Shipments.Controllers
         public async Task<IActionResult> GetByOrder(long orderId)
         {
             var currentUser = await _workContext.GetCurrentUser();
-            var order = _orderRepository.Query().FirstOrDefault(x => x.Id == orderId);
+            var order = _orderRepository.GetAll().FirstOrDefault(x => x.Id == orderId);
             if (order == null)
             {
                 return NotFound();
@@ -78,7 +78,7 @@ namespace SimplCommerce.Module.Shipments.Areas.Shipments.Controllers
                 return BadRequest(new { error = "You don't have permission to manage this order" });
             }
 
-            var shipments = await _shipmentRepository.Query()
+            var shipments = await _shipmentRepository.GetAll()
                 .Where(x => x.OrderId == orderId)
                 .Select(x => new
                 {
@@ -95,7 +95,7 @@ namespace SimplCommerce.Module.Shipments.Areas.Shipments.Controllers
         [HttpPost("grid")]
         public async Task<IActionResult> List([FromBody] SmartTableParam param)
         {
-            var query = _shipmentRepository.Query();
+            var query = _shipmentRepository.GetAll();
 
             var currentUser = await _workContext.GetCurrentUser();
             if (!User.IsInRole("admin"))
@@ -155,7 +155,7 @@ namespace SimplCommerce.Module.Shipments.Areas.Shipments.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(long id)
         {
-            var shipment = await _shipmentRepository.Query()
+            var shipment = await _shipmentRepository.GetAll()
                 .Select(x => new {
                     x.Id,
                     x.OrderId,

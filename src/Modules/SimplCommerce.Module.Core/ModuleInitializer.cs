@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using SimplCommerce.Infrastructure.Modules;
+using SimplCommerce.Module.Core.Data;
+using SimplCommerce.Module.Core.Data.EntityFrameworkCore;
 using SimplCommerce.Module.Core.Extensions;
 using SimplCommerce.Module.Core.Models;
 using SimplCommerce.Module.Core.Services;
@@ -23,6 +25,9 @@ namespace SimplCommerce.Module.Core
             serviceCollection.AddScoped<ISmsSender, SmsSender>();
             serviceCollection.AddSingleton<SettingDefinitionProvider>();
             serviceCollection.AddScoped<ISettingService, SettingService>();
+
+            serviceCollection.AddTransient(typeof(IDbContextProvider<>), typeof(SimpleDbContextProvider<>));
+            serviceCollection.AddTransient<IActiveTransactionProvider, EfCoreActiveTransactionProvider>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

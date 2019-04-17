@@ -26,7 +26,7 @@ namespace SimplCommerce.Module.Pricing.Areas.Pricing.Controllers
         public IActionResult List([FromBody] SmartTableParam param)
         {
             IQueryable<CartRule> query = _cartRuleRepository
-                .Query();
+                .GetAll();
 
             var cartRules = query.ToSmartTableResult(
                 param,
@@ -45,7 +45,7 @@ namespace SimplCommerce.Module.Pricing.Areas.Pricing.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(long id)
         {
-            var catrtRule = await _cartRuleRepository.Query()
+            var catrtRule = await _cartRuleRepository.GetAll()
                 .Include(x => x.Coupons)
                 .Include(x => x.Products).ThenInclude(p => p.Product)
                 .FirstOrDefaultAsync(x => x.Id == id);
@@ -121,7 +121,7 @@ namespace SimplCommerce.Module.Pricing.Areas.Pricing.Controllers
                     cartRule.Products.Add(cartRuleProduct);
                 }
 
-                _cartRuleRepository.Add(cartRule);
+                _cartRuleRepository.Insert(cartRule);
                 await _cartRuleRepository.SaveChangesAsync();
 
                 return CreatedAtAction(nameof(Get), new { id = cartRule.Id }, null);
@@ -134,7 +134,7 @@ namespace SimplCommerce.Module.Pricing.Areas.Pricing.Controllers
         {
             if (ModelState.IsValid)
             {
-                var cartRule = await _cartRuleRepository.Query()
+                var cartRule = await _cartRuleRepository.GetAll()
                     .Include(x => x.Coupons)
                     .Include(x => x.Products)
                     .FirstOrDefaultAsync(x => x.Id == id);
@@ -206,7 +206,7 @@ namespace SimplCommerce.Module.Pricing.Areas.Pricing.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(long id)
         {
-            var cartRule = await _cartRuleRepository.Query().FirstOrDefaultAsync(x => x.Id == id);
+            var cartRule = await _cartRuleRepository.GetAll().FirstOrDefaultAsync(x => x.Id == id);
             if (cartRule == null)
             {
                 return NotFound();
@@ -214,7 +214,7 @@ namespace SimplCommerce.Module.Pricing.Areas.Pricing.Controllers
 
             try
             {
-                _cartRuleRepository.Remove(cartRule);
+                _cartRuleRepository.Delete(cartRule);
                 await _cartRuleRepository.SaveChangesAsync();
             }
             catch (DbUpdateException)

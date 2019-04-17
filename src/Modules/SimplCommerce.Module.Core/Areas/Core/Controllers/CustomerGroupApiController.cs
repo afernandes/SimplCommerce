@@ -26,7 +26,7 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
         [HttpPost("grid")]
         public ActionResult List([FromBody] SmartTableParam param)
         {
-            var query = _customerGroupRepository.Query()
+            var query = _customerGroupRepository.GetAll()
                 .Where(x => !x.IsDeleted);
 
             if (param.Search.PredicateObject != null)
@@ -72,7 +72,7 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var customerGroups = await _customerGroupRepository.Query().Select(x => new
+            var customerGroups = await _customerGroupRepository.GetAll().Select(x => new
             {
                 Id = x.Id,
                 Name = x.Name
@@ -84,7 +84,7 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(long id)
         {
-            var customerGroup = await _customerGroupRepository.Query().FirstOrDefaultAsync(x => x.Id == id);
+            var customerGroup = await _customerGroupRepository.GetAll().FirstOrDefaultAsync(x => x.Id == id);
             if(customerGroup == null)
             {
                 return NotFound();
@@ -113,7 +113,7 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
                     IsActive = model.IsActive
                 };
 
-                _customerGroupRepository.Add(customerGroup);
+                _customerGroupRepository.Insert(customerGroup);
                 await _customerGroupRepository.SaveChangesAsync();
                 return CreatedAtAction(nameof(Get), new { id = customerGroup.Id }, null);
             }
@@ -126,7 +126,7 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
         {
             if (ModelState.IsValid)
             {
-                var customerGroup = await _customerGroupRepository.Query().FirstOrDefaultAsync(x => x.Id == id);
+                var customerGroup = await _customerGroupRepository.GetAll().FirstOrDefaultAsync(x => x.Id == id);
                 if(customerGroup == null)
                 {
                     return NotFound();
@@ -147,7 +147,7 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(long id)
         {
-            var customerGroup = await _customerGroupRepository.Query().FirstOrDefaultAsync(x => x.Id == id);
+            var customerGroup = await _customerGroupRepository.GetAll().FirstOrDefaultAsync(x => x.Id == id);
             if (customerGroup == null)
             {
                 return NotFound();

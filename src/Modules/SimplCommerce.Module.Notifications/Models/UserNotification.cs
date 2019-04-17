@@ -8,7 +8,7 @@ namespace SimplCommerce.Module.Notifications.Models
     /// Used to store a user notification.
     /// </summary>
     [Serializable]
-    public class UserNotification : EntityBaseWithTypedId<Guid>
+    public class UserNotification : EntityBase<Guid>
     {
         /// <summary>
         /// User Id.

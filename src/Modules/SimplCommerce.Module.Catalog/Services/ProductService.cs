@@ -23,7 +23,7 @@ namespace SimplCommerce.Module.Catalog.Services
             using (var transaction = _productRepository.BeginTransaction())
             {
                 product.Slug = _entityService.ToSafeSlug(product.Slug, product.Id, ProductEntityTypeId);
-                _productRepository.Add(product);
+                _productRepository.Insert(product);
                 _productRepository.SaveChanges();
 
                 _entityService.Add(product.Name, product.Slug, product.Id, ProductEntityTypeId);

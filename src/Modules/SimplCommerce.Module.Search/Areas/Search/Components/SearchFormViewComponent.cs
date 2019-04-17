@@ -21,7 +21,7 @@ namespace SimplCommerce.Module.Search.Areas.Search.Components
         {
             var model = new SearchForm();
             model.AvailableCategories = _categoryRepository
-                .Query()
+                .GetAll()
                 .Where(x => x.IsPublished && x.Parent == null)
                 .Select(x => new SelectListItem
                 {

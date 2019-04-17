@@ -30,7 +30,7 @@ namespace SimplCommerce.Module.Tax.Areas.Tax.Controllers
         public async Task<IActionResult> Get()
         {
             var taxRates = await _taxRateRepository
-                .Query()
+                .GetAll()
                 .Select(x => new
                 {
                     x.Id,
@@ -48,7 +48,7 @@ namespace SimplCommerce.Module.Tax.Areas.Tax.Controllers
         public async Task<IActionResult> Export()
         {
             var taxRates = await _taxRateRepository
-                .Query()
+                .GetAll()
                 .Select(x => new TaxRateImport
                 {
                     TaxClassId = x.TaxClassId,
@@ -69,7 +69,7 @@ namespace SimplCommerce.Module.Tax.Areas.Tax.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(long id)
         {
-            var taxRate = await _taxRateRepository.Query().FirstOrDefaultAsync(x => x.Id == id);
+            var taxRate = await _taxRateRepository.GetAll().FirstOrDefaultAsync(x => x.Id == id);
             if(taxRate == null)
             {
                 return NotFound();
@@ -102,7 +102,7 @@ namespace SimplCommerce.Module.Tax.Areas.Tax.Controllers
                     Rate = model.Rate
                 };
 
-                _taxRateRepository.Add(tagRate);
+                _taxRateRepository.Insert(tagRate);
                 await _taxRateRepository.SaveChangesAsync();
 
                 return CreatedAtAction(nameof(Get), new { id = tagRate.Id }, null);
@@ -115,7 +115,7 @@ namespace SimplCommerce.Module.Tax.Areas.Tax.Controllers
         {
             if (ModelState.IsValid)
             {
-                var taxRate = await _taxRateRepository.Query().FirstOrDefaultAsync(x => x.Id == id);
+                var taxRate = await _taxRateRepository.GetAll().FirstOrDefaultAsync(x => x.Id == id);
                 if (taxRate == null)
                 {
                     return NotFound();
@@ -137,7 +137,7 @@ namespace SimplCommerce.Module.Tax.Areas.Tax.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(long id)
         {
-            var taxRate = await _taxRateRepository.Query().FirstOrDefaultAsync(x => x.Id == id);
+            var taxRate = await _taxRateRepository.GetAll().FirstOrDefaultAsync(x => x.Id == id);
             if (taxRate == null)
             {
                 return NotFound();
@@ -145,7 +145,7 @@ namespace SimplCommerce.Module.Tax.Areas.Tax.Controllers
 
             try
             {
-                _taxRateRepository.Remove(taxRate);
+                _taxRateRepository.Delete(taxRate);
                 await _taxRateRepository.SaveChangesAsync();
             }
             catch (DbUpdateException)
@@ -169,7 +169,7 @@ namespace SimplCommerce.Module.Tax.Areas.Tax.Controllers
 
             foreach(var record in records)
             {
-                var stateOrProvince = _stateOrProvinceRepository.Query().FirstOrDefault(x => x.Name == record.StateOrProvinceName);
+                var stateOrProvince = _stateOrProvinceRepository.GetAll().FirstOrDefault(x => x.Name == record.StateOrProvinceName);
                 var taxRate = new TaxRate
                 {
                     TaxClassId = record.TaxClassId,
@@ -178,7 +178,7 @@ namespace SimplCommerce.Module.Tax.Areas.Tax.Controllers
                     ZipCode = record.ZipCode,
                     Rate = record.Rate
                 };
-                _taxRateRepository.Add(taxRate);
+                _taxRateRepository.Insert(taxRate);
             }
 
             await _taxRateRepository.SaveChangesAsync();

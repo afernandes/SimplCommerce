@@ -19,10 +19,10 @@ namespace SimplCommerce.Module.Cms.Events
 
         public Task Handle(EntityDeleting notification, CancellationToken cancellationToken)
         {
-            var items = _menuItemRepository.Query().Where(x => x.EntityId == notification.EntityId).ToList();
+            var items = _menuItemRepository.GetAll().Where(x => x.EntityId == notification.EntityId).ToList();
             foreach(var item in items)
             {
-                _menuItemRepository.Remove(item);
+                _menuItemRepository.Delete(item);
             }
 
             return Task.CompletedTask;

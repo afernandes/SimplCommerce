@@ -33,7 +33,7 @@ namespace SimplCommerce.Module.ActivityLog.Events
                 CreatedOn = DateTimeOffset.Now
             };
 
-            _activityRepository.Add(activity);
+            _activityRepository.Insert(activity);
         }
     }
 }

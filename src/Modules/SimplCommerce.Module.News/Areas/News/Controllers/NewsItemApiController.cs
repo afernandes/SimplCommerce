@@ -39,7 +39,7 @@ namespace SimplCommerce.Module.News.Areas.News.Controllers
         [HttpPost("grid")]
         public IActionResult Get([FromBody] SmartTableParam param)
         {
-            var query = _newsItemRepository.Query().Where(x => !x.IsDeleted);
+            var query = _newsItemRepository.GetAll().Where(x => !x.IsDeleted);
 
             if (param.Search.PredicateObject != null)
             {
@@ -83,7 +83,7 @@ namespace SimplCommerce.Module.News.Areas.News.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(long id)
         {
-            var newsItem = await _newsItemRepository.Query()
+            var newsItem = await _newsItemRepository.GetAll()
                .Include(x => x.ThumbnailImage)
                .Include(x => x.Categories)
                .FirstOrDefaultAsync(x => x.Id == id);
@@ -156,7 +156,7 @@ namespace SimplCommerce.Module.News.Areas.News.Controllers
                 return BadRequest(ModelState);
             } 
 
-            var newsItem = await _newsItemRepository.Query()
+            var newsItem = await _newsItemRepository.GetAll()
                .Include(x => x.ThumbnailImage)
                .Include(x => x.Categories)
                .FirstOrDefaultAsync(x => x.Id == id);
@@ -193,7 +193,7 @@ namespace SimplCommerce.Module.News.Areas.News.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(long id)
         {
-            var newsItem = await _newsItemRepository.Query().FirstOrDefaultAsync(x => x.Id == id);
+            var newsItem = await _newsItemRepository.GetAll().FirstOrDefaultAsync(x => x.Id == id);
             if (newsItem == null)
             {
                 return NotFound();

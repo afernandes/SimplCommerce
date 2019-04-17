@@ -11,9 +11,9 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
     [Route("api/entity-types")]
     public class EntityTypeApiController : Controller
     {
-        private readonly IRepositoryWithTypedId<EntityType, string> _entityTypeRepository;
+        private readonly IRepository<EntityType, string> _entityTypeRepository;
 
-        public EntityTypeApiController(IRepositoryWithTypedId<EntityType, string> entityTypeRepository)
+        public EntityTypeApiController(IRepository<EntityType, string> entityTypeRepository)
         {
             _entityTypeRepository = entityTypeRepository;
         }
@@ -21,7 +21,7 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
         [HttpGet("menuable")]
         public IActionResult GetMenuable()
         {
-            var entityTypes = _entityTypeRepository.Query()
+            var entityTypes = _entityTypeRepository.GetAll()
                 .Where(x => x.IsMenuable)
                 .Select(x => new
                 {

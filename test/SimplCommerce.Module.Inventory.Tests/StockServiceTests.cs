@@ -36,7 +36,7 @@ namespace SimplCommerce.Module.Inventory.Tests
             await service.AddAllProduct(_testWarehouse);
 
             _stockRepoMock.Verify(m =>
-                m.AddRange(It.Is<IEnumerable<Stock>>(arg => arg.Count() == productsCount - stocksCount)));
+                m.Insert(It.Is<IEnumerable<Stock>>(arg => arg.Count() == productsCount - stocksCount)));
         }
 
         private void InitializeMocks(int productsCount, int stocksCount)
@@ -49,8 +49,8 @@ namespace SimplCommerce.Module.Inventory.Tests
                     { ProductId = i, Quantity = 5, WarehouseId = _testWarehouse.Id };
             }
 
-            _stockRepoMock.Setup(x => x.Query()).Returns(() => new TestAsyncEnumerable<Stock>(stocks.AsQueryable()));
-            _stockRepoMock.Setup(x => x.AddRange(It.IsAny<IEnumerable<Stock>>()));
+            _stockRepoMock.Setup(x => x.GetAll()).Returns(() => new TestAsyncEnumerable<Stock>(stocks.AsQueryable()));
+            _stockRepoMock.Setup(x => x.Insert(It.IsAny<IEnumerable<Stock>>()));
             _productRepoMock = new Mock<IRepository<Product>>();
             var products = new Product[productsCount];
 
@@ -60,7 +60,7 @@ namespace SimplCommerce.Module.Inventory.Tests
                 typeof(Product).GetProperty("Id").SetValue(products[i - 1], i);
             }
 
-            _productRepoMock.Setup(x => x.Query()).Returns(new TestAsyncEnumerable<Product>(products.AsQueryable()));
+            _productRepoMock.Setup(x => x.GetAll()).Returns(new TestAsyncEnumerable<Product>(products.AsQueryable()));
         }
     }
 }

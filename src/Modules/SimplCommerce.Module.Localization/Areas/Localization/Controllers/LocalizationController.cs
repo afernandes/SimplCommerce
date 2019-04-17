@@ -10,10 +10,10 @@ namespace SimplCommerce.Module.Localization.Areas.Localization.Controllers
     [ApiExplorerSettings(IgnoreApi = true)]
     public class LocalizationController : Controller
     {
-        private readonly IRepositoryWithTypedId<User, long> _userRepository;
+        private readonly IRepository<User, long> _userRepository;
         private readonly IWorkContext _workContext;
 
-        public LocalizationController(IRepositoryWithTypedId<User, long> userRepository, IWorkContext workContext)
+        public LocalizationController(IRepository<User, long> userRepository, IWorkContext workContext)
         {
             _userRepository = userRepository;
             _workContext = workContext;

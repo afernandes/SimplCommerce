@@ -12,7 +12,7 @@ namespace SimplCommerce.Module.Notifications.Helpers
     {
         public static bool IsEntity(Type type)
         {
-            return ReflectionHelper.IsAssignableToGenericType(type, typeof (IEntityWithTypedId<>));
+            return ReflectionHelper.IsAssignableToGenericType(type, typeof (IEntity<>));
         }
 
         public static Type GetPrimaryKeyType<TEntity>()
@@ -27,13 +27,13 @@ namespace SimplCommerce.Module.Notifications.Helpers
         {
             foreach (var interfaceType in entityType.GetTypeInfo().GetInterfaces())
             {
-                if (interfaceType.GetTypeInfo().IsGenericType && interfaceType.GetGenericTypeDefinition() == typeof (IEntityWithTypedId<>))
+                if (interfaceType.GetTypeInfo().IsGenericType && interfaceType.GetGenericTypeDefinition() == typeof (IEntity<>))
                 {
                     return interfaceType.GenericTypeArguments[0];
                 }
             }
 
-            throw new Exception("Can not find primary key type of given entity type: " + entityType + ". Be sure that this entity type implements IEntityWithTypedId<TPrimaryKey> interface");
+            throw new Exception("Can not find primary key type of given entity type: " + entityType + ". Be sure that this entity type implements IEntity<TPrimaryKey> interface");
         }
     }
 }

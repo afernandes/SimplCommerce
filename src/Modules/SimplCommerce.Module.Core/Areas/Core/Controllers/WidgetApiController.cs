@@ -13,9 +13,9 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
     [Route("api/widgets")]
     public class WidgetApiController : Controller
     {
-        private readonly IRepositoryWithTypedId<Widget, string> _widgetRespository;
+        private readonly IRepository<Widget, string> _widgetRespository;
 
-        public WidgetApiController(IRepositoryWithTypedId<Widget, string> widgetRespository)
+        public WidgetApiController(IRepository<Widget, string> widgetRespository)
         {
             _widgetRespository = widgetRespository;
         }
@@ -23,7 +23,7 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var widgets = await _widgetRespository.Query().Select(x => new
+            var widgets = await _widgetRespository.GetAll().Select(x => new
             {
                 Id = x.Id,
                 Name = x.Name,

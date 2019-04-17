@@ -19,12 +19,12 @@ namespace SimplCommerce.Module.PaymentBraintree.Areas.PaymentBraintree.Component
     {
         private readonly ICartService _cartService;
         private readonly IWorkContext _workContext;
-        private readonly IRepositoryWithTypedId<PaymentProvider, string> _paymentProviderRepository;
+        private readonly IRepository<PaymentProvider, string> _paymentProviderRepository;
         private readonly IBraintreeConfiguration _braintreeConfiguration;
 
         public BraintreeLandingViewComponent(ICartService cartService, 
             IWorkContext workContext, 
-            IRepositoryWithTypedId<PaymentProvider, string> paymentProviderRepository,
+            IRepository<PaymentProvider, string> paymentProviderRepository,
             IBraintreeConfiguration braintreeConfiguration)
         {
             _cartService = cartService;
@@ -35,7 +35,7 @@ namespace SimplCommerce.Module.PaymentBraintree.Areas.PaymentBraintree.Component
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            var stripeProvider = await _paymentProviderRepository.Query().FirstOrDefaultAsync(x => x.Id == PaymentProviderHelper.BraintreeProviderId);
+            var stripeProvider = await _paymentProviderRepository.GetAll().FirstOrDefaultAsync(x => x.Id == PaymentProviderHelper.BraintreeProviderId);
             var stripeSetting = JsonConvert.DeserializeObject<BraintreeConfigForm>(stripeProvider.AdditionalSettings);
             var curentUser = await _workContext.GetCurrentUser();
             var cart = await _cartService.GetActiveCartDetails(curentUser.Id);

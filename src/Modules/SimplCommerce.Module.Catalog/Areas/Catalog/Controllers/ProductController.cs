@@ -35,7 +35,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
         [HttpGet("product/product-overview")]
         public async Task<IActionResult> ProductOverview(long id)
         {
-            var product = await _productRepository.Query()
+            var product = await _productRepository.GetAll()
                 .Include(x => x.OptionValues)
                 .Include(x => x.ProductLinks).ThenInclude(p => p.LinkedProduct)
                 .Include(x => x.ThumbnailImage)
@@ -70,7 +70,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
 
         public async Task<IActionResult> ProductDetail(long id)
         {
-            var product = _productRepository.Query()
+            var product = _productRepository.GetAll()
                 .Include(x => x.OptionValues)
                 .Include(x => x.Categories).ThenInclude(c => c.Category)
                 .Include(x => x.AttributeValues).ThenInclude(a => a.Attribute)
@@ -142,7 +142,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
         private void MapProductVariantToProductVm(Product product, ProductDetail model)
         {
             var variations = _productRepository
-                .Query()
+                .GetAll()
                 .Include(x => x.OptionCombinations).ThenInclude(o => o.Option)
                 .Where(x => x.LinkedProductLinks.Any(link => link.ProductId == product.Id && link.LinkType == ProductLinkType.Super))
                 .Where(x => x.IsPublished)

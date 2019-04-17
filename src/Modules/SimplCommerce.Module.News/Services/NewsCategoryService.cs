@@ -24,7 +24,7 @@ namespace SimplCommerce.Module.News.Services
             using (var transaction = _categoryRepository.BeginTransaction())
             {
                 category.Slug = _entityService.ToSafeSlug(category.Slug, category.Id, NewsCategoryEntityTypeId);
-                _categoryRepository.Add(category);
+                _categoryRepository.Insert(category);
                 await _categoryRepository.SaveChangesAsync();
 
                 _entityService.Add(category.Name, category.Slug, category.Id, NewsCategoryEntityTypeId);
@@ -43,7 +43,7 @@ namespace SimplCommerce.Module.News.Services
 
         public async Task Delete(long id)
         {
-            var category = _categoryRepository.Query().First(x => x.Id == id);
+            var category = _categoryRepository.GetAll().First(x => x.Id == id);
             await Delete(category);
         }
 

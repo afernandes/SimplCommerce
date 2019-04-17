@@ -45,7 +45,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(long id)
         {
-            var category = await _categoryRepository.Query().Include(x => x.ThumbnailImage).FirstOrDefaultAsync(x => x.Id == id);
+            var category = await _categoryRepository.GetAll().Include(x => x.ThumbnailImage).FirstOrDefaultAsync(x => x.Id == id);
             var model = new CategoryForm
             {
                 Id = category.Id,
@@ -99,7 +99,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
         {
             if (ModelState.IsValid)
             {
-                var category = await _categoryRepository.Query().FirstOrDefaultAsync(x => x.Id == id);
+                var category = await _categoryRepository.GetAll().FirstOrDefaultAsync(x => x.Id == id);
                 if(category == null)
                 {
                     return NotFound();
@@ -135,7 +135,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> Delete(long id)
         {
-            var category = _categoryRepository.Query().Include(x => x.Children).FirstOrDefault(x => x.Id == id);
+            var category = _categoryRepository.GetAll().Include(x => x.Children).FirstOrDefault(x => x.Id == id);
             if (category == null)
             {
                 return NotFound();
@@ -153,7 +153,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
         [HttpPost("{id}/products")]
         public IActionResult GetProducts(long id, [FromBody] SmartTableParam param)
         {
-            var query = _productCategoryRepository.Query().Include(x => x.Product)
+            var query = _productCategoryRepository.GetAll().Include(x => x.Product)
                 .Where(x => x.CategoryId == id && !x.Product.IsDeleted && x.Product.IsVisibleIndividually);
 
             if (param.Search.PredicateObject != null)
@@ -189,7 +189,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
         [HttpPut("update-product/{id}")]
         public async Task<IActionResult> UpdateProduct(long id, [FromBody] ProductCategoryForm model)
         {
-            var productCategory = await _productCategoryRepository.Query().FirstOrDefaultAsync(x => x.Id == id);
+            var productCategory = await _productCategoryRepository.GetAll().FirstOrDefaultAsync(x => x.Id == id);
             if(productCategory == null)
             {
                 return NotFound();
@@ -228,7 +228,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
 
         private async Task<bool> HaveCircularNesting(long childId, long parentId)
         {
-            var category = await _categoryRepository.Query().FirstOrDefaultAsync(x => x.Id == parentId);
+            var category = await _categoryRepository.GetAll().FirstOrDefaultAsync(x => x.Id == parentId);
             var parentCategoryId = category.ParentId;
             while (parentCategoryId.HasValue)
             {
@@ -237,7 +237,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
                     return true;
                 }
 
-                var parentCategory = await _categoryRepository.Query().FirstAsync(x => x.Id == parentCategoryId);
+                var parentCategory = await _categoryRepository.GetAll().FirstAsync(x => x.Id == parentCategoryId);
                 parentCategoryId = parentCategory.ParentId;
             }
 

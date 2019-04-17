@@ -31,7 +31,7 @@ namespace SimplCommerce.Module.Cms.Areas.Cms.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var pageList = await _pageRepository.Query()
+            var pageList = await _pageRepository.GetAll()
                 .Where(x => !x.IsDeleted)
                 .Select(x => new
                 {
@@ -49,7 +49,7 @@ namespace SimplCommerce.Module.Cms.Areas.Cms.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(long id)
         {
-            var page = await _pageRepository.Query().FirstOrDefaultAsync(x => x.Id == id);
+            var page = await _pageRepository.GetAll().FirstOrDefaultAsync(x => x.Id == id);
             var model = new PageForm
             {
                 Id = page.Id,
@@ -95,7 +95,7 @@ namespace SimplCommerce.Module.Cms.Areas.Cms.Controllers
         {
             if (ModelState.IsValid)
             {
-                var page = await _pageRepository.Query().FirstOrDefaultAsync(x => x.Id == id);
+                var page = await _pageRepository.GetAll().FirstOrDefaultAsync(x => x.Id == id);
                 if(page == null)
                 {
                     return NotFound();
@@ -123,7 +123,7 @@ namespace SimplCommerce.Module.Cms.Areas.Cms.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(long id)
         {
-            var page = await _pageRepository.Query().FirstOrDefaultAsync(x => x.Id == id);
+            var page = await _pageRepository.GetAll().FirstOrDefaultAsync(x => x.Id == id);
             if (page == null)
             {
                 return NotFound();

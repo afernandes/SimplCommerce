@@ -57,7 +57,7 @@ namespace SimplCommerce.Module.ProductComparison.Areas.ProductComparison.Control
                 returnModel.Message = $"Can not add to comparison items. Can only comparison {ex.MaxNumComparingProduct} items";
             }
 
-            var comparingProducts = _comparingProductRepository.Query()
+            var comparingProducts = _comparingProductRepository.GetAll()
                 .Where(x => x.UserId == currentUser.Id)
                 .Select(x => new ComparingProductVm()
                 {
@@ -77,14 +77,14 @@ namespace SimplCommerce.Module.ProductComparison.Areas.ProductComparison.Control
         public async Task<IActionResult> Remove(long id)
         {
             var currentUser = await _workContext.GetCurrentUser();
-            var productComparison = _comparingProductRepository.Query().FirstOrDefault(x => x.UserId == currentUser.Id && x.ProductId == id);
+            var productComparison = _comparingProductRepository.GetAll().FirstOrDefault(x => x.UserId == currentUser.Id && x.ProductId == id);
 
             if (productComparison == null)
             {
                 return NotFound();
             }
 
-            _comparingProductRepository.Remove(productComparison);
+            _comparingProductRepository.Delete(productComparison);
             _comparingProductRepository.SaveChanges();
 
             return Ok();
@@ -94,7 +94,7 @@ namespace SimplCommerce.Module.ProductComparison.Areas.ProductComparison.Control
         public async Task<IActionResult> Index()
         {
             var currentUser = await _workContext.GetCurrentUser();
-            var comparingProducts = _comparingProductRepository.Query()
+            var comparingProducts = _comparingProductRepository.GetAll()
                 .Include(x => x.Product).ThenInclude(p => p.ThumbnailImage)
                 .Include(x => x.Product).ThenInclude(p => p.AttributeValues).ThenInclude(a => a.Attribute)
                 .Where(x => x.UserId == currentUser.Id).ToList();

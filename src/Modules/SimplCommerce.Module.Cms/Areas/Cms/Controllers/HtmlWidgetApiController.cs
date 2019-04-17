@@ -23,7 +23,7 @@ namespace SimplCommerce.Module.Cms.Areas.Cms.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(long id)
         {
-            var widget = await _widgetInstanceRepository.Query().FirstOrDefaultAsync(x => x.Id == id);
+            var widget = await _widgetInstanceRepository.GetAll().FirstOrDefaultAsync(x => x.Id == id);
             var model = new HtmlWidgetForm
             {
                 Id = widget.Id,
@@ -54,7 +54,7 @@ namespace SimplCommerce.Module.Cms.Areas.Cms.Controllers
                     DisplayOrder = model.DisplayOrder,
                 };
 
-                _widgetInstanceRepository.Add(widgetInstance);
+                _widgetInstanceRepository.Insert(widgetInstance);
                 await _widgetInstanceRepository.SaveChangesAsync();
                 return CreatedAtAction(nameof(Get), new { id = widgetInstance.Id }, null);
             }
@@ -66,7 +66,7 @@ namespace SimplCommerce.Module.Cms.Areas.Cms.Controllers
         {
             if (ModelState.IsValid)
             {
-                var widgetInstance = await _widgetInstanceRepository.Query().FirstOrDefaultAsync(x => x.Id == id);
+                var widgetInstance = await _widgetInstanceRepository.GetAll().FirstOrDefaultAsync(x => x.Id == id);
                 widgetInstance.Name = model.Name;
                 widgetInstance.WidgetZoneId = model.WidgetZoneId;
                 widgetInstance.HtmlData = model.HtmlContent;

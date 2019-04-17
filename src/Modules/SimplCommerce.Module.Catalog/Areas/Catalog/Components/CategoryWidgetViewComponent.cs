@@ -31,7 +31,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Components
             var settings = JsonConvert.DeserializeObject<CategoryWidgetSettings>(widgetInstance.Data);
             if (settings != null)
             {
-                var category = _categoriesRepository.Query()
+                var category = _categoriesRepository.GetAll()
                     .Include(c => c.ThumbnailImage)
                     .FirstOrDefault(c => c.Id == settings.CategoryId);
                 model.Category = new CategoryThumbnail() {

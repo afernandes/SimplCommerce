@@ -50,7 +50,7 @@ namespace SimplCommerce.Module.Search.Areas.Search.Controllers
                 return Redirect("~/");
             }
 
-            var brand = _brandRepository.Query().FirstOrDefault(x => x.Name == searchOption.Query && x.IsPublished);
+            var brand = _brandRepository.GetAll().FirstOrDefault(x => x.Name == searchOption.Query && x.IsPublished);
             if (brand != null)
             {
                 return Redirect(string.Format("~/{0}", brand.Slug));
@@ -62,7 +62,7 @@ namespace SimplCommerce.Module.Search.Areas.Search.Controllers
                 FilterOption = new FilterOption()
             };
 
-            var query = _productRepository.Query().Where(x => x.Name.Contains(searchOption.Query) && x.IsPublished && x.IsVisibleIndividually);
+            var query = _productRepository.GetAll().Where(x => x.Name.Contains(searchOption.Query) && x.IsPublished && x.IsVisibleIndividually);
 
             if (!query.Any())
             {
@@ -87,7 +87,7 @@ namespace SimplCommerce.Module.Search.Areas.Search.Controllers
                 var categories = searchOption.GetCategories();
                 if (categories.Any())
                 {
-                    var categoryIds = _categoryRepository.Query().Where(x => categories.Contains(x.Slug)).Select(x => x.Id).ToList();
+                    var categoryIds = _categoryRepository.GetAll().Where(x => categories.Contains(x.Slug)).Select(x => x.Id).ToList();
                     query = query.Where(x => x.Categories.Any(c => categoryIds.Contains(c.CategoryId)));
                 }
             }
@@ -95,7 +95,7 @@ namespace SimplCommerce.Module.Search.Areas.Search.Controllers
             var brands = searchOption.GetBrands();
             if (brands.Any())
             {
-                var brandIs = _brandRepository.Query().Where(x => brands.Contains(x.Slug)).Select(x => x.Id).ToList();
+                var brandIs = _brandRepository.GetAll().Where(x => brands.Contains(x.Slug)).Select(x => x.Id).ToList();
                 query = query.Where(x => x.BrandId.HasValue && brandIs.Contains(x.BrandId.Value));
             }
 
@@ -194,7 +194,7 @@ namespace SimplCommerce.Module.Search.Areas.Search.Controllers
                 ResultsCount = model.TotalProduct
             };
 
-            _queryRepository.Add(query);
+            _queryRepository.Insert(query);
             _queryRepository.SaveChanges();
         }
     }

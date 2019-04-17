@@ -35,7 +35,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Components
 
             foreach (var item in model.Setting.Products)
             {
-                var product = _productRepository.Query().Where(x => x.Id == item.Id).FirstOrDefault();
+                var product = _productRepository.GetAll().Where(x => x.Id == item.Id).FirstOrDefault();
 
                 if (product != null)
                 {

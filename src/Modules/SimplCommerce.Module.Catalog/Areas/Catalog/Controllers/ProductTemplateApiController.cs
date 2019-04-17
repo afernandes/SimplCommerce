@@ -29,7 +29,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
         public IActionResult Get()
         {
             var productTemplates = _productTemplateRepository
-                .Query()
+                .GetAll()
                 .Select(x => new
                 {
                     x.Id,
@@ -43,7 +43,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
         public IActionResult Get(long id)
         {
             var productTemplate = _productTemplateRepository
-                .Query()
+                .GetAll()
                 .Include(x => x.ProductAttributes).ThenInclude(x => x.ProductAttribute).ThenInclude(x => x.Group)
                 .FirstOrDefault(x => x.Id == id);
             var model = new ProductTemplateFrom
@@ -81,7 +81,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
                 productTemplate.AddAttribute(attributeVm.Id);
             }
 
-            _productTemplateRepository.Add(productTemplate);
+            _productTemplateRepository.Insert(productTemplate);
             _productAttributeRepository.SaveChanges();
 
             return Ok();
@@ -97,7 +97,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
             }
 
             var productTemplate = _productTemplateRepository
-                .Query()
+                .GetAll()
                 .Include(x => x.ProductAttributes)
                 .FirstOrDefault(x => x.Id == id);
 
@@ -130,13 +130,13 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
         [Authorize(Roles = "admin")]
         public IActionResult Delete(long id)
         {
-            var productTemplate = _productTemplateRepository.Query().FirstOrDefault(x => x.Id == id);
+            var productTemplate = _productTemplateRepository.GetAll().FirstOrDefault(x => x.Id == id);
             if (productTemplate == null)
             {
                 return NotFound();
             }
 
-            _productTemplateRepository.Remove(productTemplate);
+            _productTemplateRepository.Delete(productTemplate);
             _productAttributeRepository.SaveChanges();
             return Json(true);
         }

@@ -18,7 +18,7 @@ namespace SimplCommerce.Module.Cms.Areas.Cms.Controllers
 
         public IActionResult PageDetail(long id)
         {
-            var page = _pageRepository.Query().FirstOrDefault(x => x.Id == id);
+            var page = _pageRepository.GetAll().FirstOrDefault(x => x.Id == id);
 
             return View(page);
         }

@@ -98,7 +98,7 @@ namespace SimplCommerce.Module.ShoppingCart.Areas.ShoppingCart.Controllers
                 return CreateCartLockedResult();
             }
 
-            var cartItem = _cartItemRepository.Query().FirstOrDefault(x => x.Id == model.CartItemId && x.Cart.CreatedById == currentUser.Id);
+            var cartItem = _cartItemRepository.GetAll().FirstOrDefault(x => x.Id == model.CartItemId && x.Cart.CreatedById == currentUser.Id);
             if (cartItem == null)
             {
                 return NotFound();
@@ -165,13 +165,13 @@ namespace SimplCommerce.Module.ShoppingCart.Areas.ShoppingCart.Controllers
                 return CreateCartLockedResult();
             }
 
-            var cartItem = _cartItemRepository.Query().FirstOrDefault(x => x.Id == itemId && x.Cart.CreatedById == currentUser.Id);
+            var cartItem = _cartItemRepository.GetAll().FirstOrDefault(x => x.Id == itemId && x.Cart.CreatedById == currentUser.Id);
             if (cartItem == null)
             {
                 return NotFound();
             }
 
-            _cartItemRepository.Remove(cartItem);
+            _cartItemRepository.Delete(cartItem);
             _cartItemRepository.SaveChanges();
 
             return await List();

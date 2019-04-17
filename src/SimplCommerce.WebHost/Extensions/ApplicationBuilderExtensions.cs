@@ -105,8 +105,8 @@ namespace SimplCommerce.WebHost.Extensions
         {
             using (var scope = app.ApplicationServices.CreateScope())
             {
-                var cultureRepository = scope.ServiceProvider.GetRequiredService<IRepositoryWithTypedId<Culture, string>>();
-                GlobalConfiguration.Cultures = cultureRepository.Query().ToList();
+                var cultureRepository = scope.ServiceProvider.GetRequiredService<IRepository<Culture, string>>();
+                GlobalConfiguration.Cultures = cultureRepository.GetAll().ToList();
             }
 
             var supportedCultures = GlobalConfiguration.Cultures.Select(c => c.Id).ToArray();

@@ -24,7 +24,7 @@ namespace SimplCommerce.Module.ShippingTableRate.Areas.ShippingTableRate.Control
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var items = await _priceAndDestinationRepository.Query()
+            var items = await _priceAndDestinationRepository.GetAll()
                 .Select(x => new PriceAndDestinationForm
                 {
                     Id = x.Id,
@@ -46,7 +46,7 @@ namespace SimplCommerce.Module.ShippingTableRate.Areas.ShippingTableRate.Control
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(long id)
         {
-            var returnModel = await _priceAndDestinationRepository.Query().Where(x => x.Id == id).Select(x => new PriceAndDestinationForm
+            var returnModel = await _priceAndDestinationRepository.GetAll().Where(x => x.Id == id).Select(x => new PriceAndDestinationForm
             {
                 Id = x.Id,
                 CountryId = x.CountryId,
@@ -79,7 +79,7 @@ namespace SimplCommerce.Module.ShippingTableRate.Areas.ShippingTableRate.Control
                     Note = model.Note
                 };
 
-                _priceAndDestinationRepository.Add(priceAndDestination);
+                _priceAndDestinationRepository.Insert(priceAndDestination);
                 await _priceAndDestinationRepository.SaveChangesAsync();
                 return await Get(priceAndDestination.Id);
             }
@@ -92,7 +92,7 @@ namespace SimplCommerce.Module.ShippingTableRate.Areas.ShippingTableRate.Control
         {
             if (ModelState.IsValid)
             {
-                var priceAndDestination = await _priceAndDestinationRepository.Query().FirstOrDefaultAsync(x => x.Id == id);
+                var priceAndDestination = await _priceAndDestinationRepository.GetAll().FirstOrDefaultAsync(x => x.Id == id);
                 if (priceAndDestination == null)
                 {
                     return NotFound();
@@ -115,13 +115,13 @@ namespace SimplCommerce.Module.ShippingTableRate.Areas.ShippingTableRate.Control
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(long id)
         {
-            var priceAndDestination = await _priceAndDestinationRepository.Query().FirstOrDefaultAsync(x => x.Id == id);
+            var priceAndDestination = await _priceAndDestinationRepository.GetAll().FirstOrDefaultAsync(x => x.Id == id);
             if (priceAndDestination == null)
             {
                 return NotFound();
             }
 
-            _priceAndDestinationRepository.Remove(priceAndDestination);
+            _priceAndDestinationRepository.Delete(priceAndDestination);
             await _priceAndDestinationRepository.SaveChangesAsync();
             return NoContent();
         }

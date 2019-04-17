@@ -19,9 +19,9 @@ namespace SimplCommerce.Module.Localization.Areas.Localization.Controllers
         private const string STANDARD_CULTURE_ID = "vi-VN";
         private readonly IStringLocalizer _localizer;
         private readonly IRepository<Resource> _resourceRepository;
-        private readonly IRepositoryWithTypedId<Culture, string> _cultureRepository;
+        private readonly IRepository<Culture, string> _cultureRepository;
 
-        public LocalizationApiController(IStringLocalizerFactory stringLocalizerFactory, IRepository<Resource> resourceRepository, IRepositoryWithTypedId<Culture, string> cultureRepository)
+        public LocalizationApiController(IStringLocalizerFactory stringLocalizerFactory, IRepository<Resource> resourceRepository, IRepository<Culture, string> cultureRepository)
         {
             _localizer = stringLocalizerFactory.Create(null);
             _resourceRepository = resourceRepository;
@@ -38,14 +38,14 @@ namespace SimplCommerce.Module.Localization.Areas.Localization.Controllers
         [HttpGet("get-cultures")]
         public async Task<IActionResult> GetCultures()
         {
-            var cultures = await _cultureRepository.Query().Where(x => x.Id != GlobalConfiguration.DefaultCulture).ToListAsync();
+            var cultures = await _cultureRepository.GetAll().Where(x => x.Id != GlobalConfiguration.DefaultCulture).ToListAsync();
             return Ok(cultures);
         }
 
         [HttpGet("get-resources")]
         public async Task<IActionResult> GetResources(string cultureId)
         {
-            var resources = await _resourceRepository.Query()
+            var resources = await _resourceRepository.GetAll()
                 .Where(x => x.CultureId == cultureId)
                 .Select(x => new ResourceItemVm {
                     Key = x.Key,
@@ -57,7 +57,7 @@ namespace SimplCommerce.Module.Localization.Areas.Localization.Controllers
 
             if(cultureId != STANDARD_CULTURE_ID)
             {
-                var standardResources = await _resourceRepository.Query()
+                var standardResources = await _resourceRepository.GetAll()
                 .Where(x => x.CultureId == STANDARD_CULTURE_ID)
                 .ToListAsync();
 
@@ -77,7 +77,7 @@ namespace SimplCommerce.Module.Localization.Areas.Localization.Controllers
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> UpdateResource(string cultureId, [FromBody] IList<ResourceItemVm> model)
         {
-            var resources = await _resourceRepository.Query().Where(x => x.CultureId == cultureId).ToListAsync();
+            var resources = await _resourceRepository.GetAll().Where(x => x.CultureId == cultureId).ToListAsync();
 
             foreach(var resourceItemForm in model)
             {
@@ -88,7 +88,7 @@ namespace SimplCommerce.Module.Localization.Areas.Localization.Controllers
                 }
                 else if(resourceItemForm.Key != resourceItemForm.Value)
                 {
-                    _resourceRepository.Add(new Resource
+                    _resourceRepository.Insert(new Resource
                     {
                         CultureId = cultureId,
                         Key = resourceItemForm.Key,

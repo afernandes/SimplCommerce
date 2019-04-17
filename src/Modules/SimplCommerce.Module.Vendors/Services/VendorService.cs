@@ -24,7 +24,7 @@ namespace SimplCommerce.Module.Vendors.Services
             using (var transaction = _vendorRepository.BeginTransaction())
             {
                 vendor.Slug = _entityService.ToSafeSlug(vendor.Slug, vendor.Id, VendorEntityTypeId);
-                _vendorRepository.Add(vendor);
+                _vendorRepository.Insert(vendor);
                 await _vendorRepository.SaveChangesAsync();
 
                 _entityService.Add(vendor.Name, vendor.Slug, vendor.Id, VendorEntityTypeId);
@@ -43,7 +43,7 @@ namespace SimplCommerce.Module.Vendors.Services
 
         public async Task Delete(long id)
         {
-            var vendor = _vendorRepository.Query().First(x => x.Id == id);
+            var vendor = _vendorRepository.GetAll().First(x => x.Id == id);
             await Delete(vendor);
         }
 

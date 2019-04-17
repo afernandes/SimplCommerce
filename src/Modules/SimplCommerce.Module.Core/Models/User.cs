@@ -6,7 +6,7 @@ using SimplCommerce.Infrastructure.Models;
 
 namespace SimplCommerce.Module.Core.Models
 {
-    public class User : IdentityUser<long>, IEntityWithTypedId<long>, IExtendableObject
+    public class User : IdentityUser<long>, IEntity<long>, IExtendableObject
     {
         public User()
         {
@@ -52,5 +52,11 @@ namespace SimplCommerce.Module.Core.Models
 
         /// <inheritdoc />
         public string ExtensionData { get; set; }
+
+        public virtual bool IsTransient()
+        {
+            //Workaround for EF Core since it sets int/long to min value when attaching to dbcontext            
+            return Convert.ToInt64(Id) <= 0;
+        }
     }
 }

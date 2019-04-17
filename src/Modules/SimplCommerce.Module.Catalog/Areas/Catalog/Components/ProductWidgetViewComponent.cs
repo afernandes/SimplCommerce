@@ -34,7 +34,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Components
                 Setting = JsonConvert.DeserializeObject<ProductWidgetSetting>(widgetInstance.Data)
             };
 
-            var query = _productRepository.Query()
+            var query = _productRepository.GetAll()
               .Where(x => x.IsPublished && x.IsVisibleIndividually);
 
             if (model.Setting.CategoryId.HasValue && model.Setting.CategoryId.Value > 0)

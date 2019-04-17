@@ -22,7 +22,7 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
         public async Task<IActionResult> GetDistricts(long stateOrProvinceId)
         {
             var districts = await _districtRepository
-                .Query()
+                .GetAll()
                 .Where(x => x.StateOrProvinceId == stateOrProvinceId)
                 .OrderBy(x => x.Name)
                 .Select(x => new

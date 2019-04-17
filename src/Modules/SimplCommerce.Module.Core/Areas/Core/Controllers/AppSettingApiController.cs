@@ -15,10 +15,10 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
     [Route("api/appsettings")]
     public class AppSettingApiController : Controller
     {
-        private readonly IRepositoryWithTypedId<AppSetting, string> _appSettingRepository;
+        private readonly IRepository<AppSetting, string> _appSettingRepository;
         private readonly IConfigurationRoot _configurationRoot;
 
-        public AppSettingApiController(IRepositoryWithTypedId<AppSetting, string> appSettingRepository, IConfiguration configuration)
+        public AppSettingApiController(IRepository<AppSetting, string> appSettingRepository, IConfiguration configuration)
         {
             _appSettingRepository = appSettingRepository;
             _configurationRoot = (IConfigurationRoot)configuration;
@@ -27,7 +27,7 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var settings = await _appSettingRepository.Query().Where(x => x.IsVisibleInCommonSettingPage).ToListAsync();
+            var settings = await _appSettingRepository.GetAll().Where(x => x.IsVisibleInCommonSettingPage).ToListAsync();
             return Json(settings);
         }
 
@@ -36,7 +36,7 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
         {
             if (ModelState.IsValid)
             {
-                var settings = await _appSettingRepository.Query().Where(x => x.IsVisibleInCommonSettingPage).ToListAsync();
+                var settings = await _appSettingRepository.GetAll().Where(x => x.IsVisibleInCommonSettingPage).ToListAsync();
                 foreach(var item in settings)
                 {
                     var vm = model.FirstOrDefault(x => x.Id == item.Id);

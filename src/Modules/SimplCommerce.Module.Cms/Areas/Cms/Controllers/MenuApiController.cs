@@ -27,7 +27,7 @@ namespace SimplCommerce.Module.Cms.Areas.Cms.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var menuList = await _menuRepository.Query()
+            var menuList = await _menuRepository.GetAll()
                 .Select(x => new
                 {
                     x.Id,
@@ -42,7 +42,7 @@ namespace SimplCommerce.Module.Cms.Areas.Cms.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(long id)
         {
-            var menu = await _menuRepository.Query()
+            var menu = await _menuRepository.GetAll()
                 .Include(x => x.MenuItems)
                 .ThenInclude(m => m.Entity)
                 .FirstOrDefaultAsync(x => x.Id == id);
@@ -75,7 +75,7 @@ namespace SimplCommerce.Module.Cms.Areas.Cms.Controllers
         {
             if (ModelState.IsValid)
             {
-                var menu = await _menuRepository.Query().Include(x => x.MenuItems).FirstOrDefaultAsync(x => x.Id == id);
+                var menu = await _menuRepository.GetAll().Include(x => x.MenuItems).FirstOrDefaultAsync(x => x.Id == id);
                 if(menu == null)
                 {
                     return NotFound();
@@ -113,13 +113,13 @@ namespace SimplCommerce.Module.Cms.Areas.Cms.Controllers
         [HttpDelete("delete-item/{id}")]
         public async Task<IActionResult> DeleteItem(long id)
         {
-            var menuItem = await _menuItemRepository.Query().FirstOrDefaultAsync(x => x.Id == id);
+            var menuItem = await _menuItemRepository.GetAll().FirstOrDefaultAsync(x => x.Id == id);
             if (menuItem == null)
             {
                 return NotFound();
             }
 
-            _menuItemRepository.Remove(menuItem);
+            _menuItemRepository.Delete(menuItem);
             await _menuItemRepository.SaveChangesAsync();
 
             return NoContent();
@@ -136,7 +136,7 @@ namespace SimplCommerce.Module.Cms.Areas.Cms.Controllers
                     IsPublished = model.IsPublished
                 };
 
-                _menuRepository.Add(menu);
+                _menuRepository.Insert(menu);
                 await _menuRepository.SaveChangesAsync();
 
                 return Json(menu);
@@ -149,7 +149,7 @@ namespace SimplCommerce.Module.Cms.Areas.Cms.Controllers
         {
             if (ModelState.IsValid)
             {
-                var menu = await _menuRepository.Query().Include(x => x.MenuItems).FirstOrDefaultAsync(x => x.Id == id);
+                var menu = await _menuRepository.GetAll().Include(x => x.MenuItems).FirstOrDefaultAsync(x => x.Id == id);
                 if(menu == null)
                 {
                     return NotFound();
@@ -175,7 +175,7 @@ namespace SimplCommerce.Module.Cms.Areas.Cms.Controllers
                 var deletedMenuItems = menu.MenuItems.Where(x => !model.Items.Any(m => m.Id == x.Id));
                 foreach (var item in deletedMenuItems)
                 {
-                    _menuItemRepository.Remove(item);
+                    _menuItemRepository.Delete(item);
                 }
 
                 await _menuRepository.SaveChangesAsync();
@@ -188,7 +188,7 @@ namespace SimplCommerce.Module.Cms.Areas.Cms.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(long id)
         {
-            var menu = await _menuRepository.Query().FirstOrDefaultAsync(x => x.Id == id);
+            var menu = await _menuRepository.GetAll().FirstOrDefaultAsync(x => x.Id == id);
             if (menu == null)
             {
                 return NotFound();
@@ -199,7 +199,7 @@ namespace SimplCommerce.Module.Cms.Areas.Cms.Controllers
                 return BadRequest(new { Error = "A system menu cannot be deleted." });
             }
 
-            _menuRepository.Remove(menu);
+            _menuRepository.Delete(menu);
             await _menuRepository.SaveChangesAsync();
             return NoContent();
         }

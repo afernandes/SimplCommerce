@@ -27,7 +27,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var brandList = await _brandRepository.Query().Where(x => !x.IsDeleted).ToListAsync();
+            var brandList = await _brandRepository.GetAll().Where(x => !x.IsDeleted).ToListAsync();
 
             return Json(brandList);
         }
@@ -35,7 +35,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(long id)
         {
-            var brand = await _brandRepository.Query().FirstOrDefaultAsync(x => x.Id == id);
+            var brand = await _brandRepository.GetAll().FirstOrDefaultAsync(x => x.Id == id);
             var model = new BrandForm
             {
                 Id = brand.Id,
@@ -72,7 +72,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
         {
             if (ModelState.IsValid)
             {
-                var brand = _brandRepository.Query().FirstOrDefault(x => x.Id == id);
+                var brand = _brandRepository.GetAll().FirstOrDefault(x => x.Id == id);
                 if(brand == null)
                 {
                     return NotFound();
@@ -93,7 +93,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> Delete(long id)
         {
-            var brand = _brandRepository.Query().FirstOrDefault(x => x.Id == id);
+            var brand = _brandRepository.GetAll().FirstOrDefault(x => x.Id == id);
             if (brand == null)
             {
                 return NotFound();

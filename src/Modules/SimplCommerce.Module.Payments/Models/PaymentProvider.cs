@@ -3,7 +3,7 @@ using SimplCommerce.Infrastructure.Models;
 
 namespace SimplCommerce.Module.Payments.Models
 {
-    public class PaymentProvider : EntityBaseWithTypedId<string>
+    public class PaymentProvider : EntityBase<string>
     {
         public PaymentProvider(string id)
         {

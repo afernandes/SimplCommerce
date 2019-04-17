@@ -38,7 +38,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
 
         public IActionResult BrandDetail(long id, SearchOption searchOption)
         {
-            var brand = _brandRepository.Query().FirstOrDefault(x => x.Id == id);
+            var brand = _brandRepository.GetAll().FirstOrDefault(x => x.Id == id);
 
             var model = new ProductsByBrand
             {
@@ -49,7 +49,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
                 FilterOption = new FilterOption()
             };
 
-            var query = _productRepository.Query().Where(x => x.BrandId == id && x.IsPublished && x.IsVisibleIndividually);
+            var query = _productRepository.GetAll().Where(x => x.BrandId == id && x.IsPublished && x.IsVisibleIndividually);
 
             if (query.Count() == 0)
             {
@@ -72,7 +72,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
             var categories = searchOption.GetCategories();
             if (categories.Any())
             {
-                var categoryIds = _categoryRepository.Query().Where(x => categories.Contains(x.Slug)).Select(x => x.Id).ToList();
+                var categoryIds = _categoryRepository.GetAll().Where(x => categories.Contains(x.Slug)).Select(x => x.Id).ToList();
                 query = query.Where(x => x.Categories.Any(c => categoryIds.Contains(c.CategoryId)));
             }
 

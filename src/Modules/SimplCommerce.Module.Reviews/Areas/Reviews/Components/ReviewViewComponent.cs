@@ -33,7 +33,7 @@ namespace SimplCommerce.Module.Reviews.Areas.Reviews.Components
             };
 
             model.Items.Data = await _reviewRepository
-                .Query()
+                .GetAll()
                 .Where(x => (x.EntityId == entityId) && (x.EntityTypeId == entityTypeId) && (x.Status == ReviewStatus.Approved))
                 .OrderByDescending(x => x.CreatedOn)
                 .Select(x => new ReviewItem
@@ -68,7 +68,7 @@ namespace SimplCommerce.Module.Reviews.Areas.Reviews.Components
                 var user = await _workContext.GetCurrentUser();
                 model.LoggedUserName = user.FullName;
                 var currentUserOrder = _orderRepository
-                    .Query()
+                    .GetAll()
                     .Where(x => x.CreatedById == user.Id);
 
                 var userOrderedProduct = currentUserOrder

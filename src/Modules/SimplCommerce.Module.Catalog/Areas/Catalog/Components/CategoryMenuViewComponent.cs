@@ -19,7 +19,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Components
 
         public IViewComponentResult Invoke()
         {
-            var categories = _categoryRepository.Query().Where(x => !x.IsDeleted && x.IncludeInMenu).ToList();
+            var categories = _categoryRepository.GetAll().Where(x => !x.IsDeleted && x.IncludeInMenu).ToList();
 
             var categoryMenuItems = new List<CategoryMenuItem>();
             var topCategories = categories.Where(x => !x.ParentId.HasValue).OrderByDescending(x => x.DisplayOrder);

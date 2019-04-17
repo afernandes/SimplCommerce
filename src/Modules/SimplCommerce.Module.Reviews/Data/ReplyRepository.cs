@@ -1,4 +1,5 @@
 ﻿using SimplCommerce.Module.Core.Data;
+using SimplCommerce.Module.Core.Data.EntityFrameworkCore;
 using SimplCommerce.Module.Core.Models;
 using SimplCommerce.Module.Reviews.Models;
 using System.Linq;
@@ -7,7 +8,7 @@ namespace SimplCommerce.Module.Reviews.Data
 {
     public class ReplyRepository : Repository<Reply>, IReplyRepository
     {
-        public ReplyRepository(SimplDbContext context) : base(context)
+        public ReplyRepository(IDbContextProvider<SimplDbContext> dbContextProvider) : base(dbContextProvider)
         {
         }
 

@@ -61,7 +61,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
         [HttpGet("quick-search")]
         public async Task<IActionResult> QuickSearch(string name)
         {
-            var query = _productRepository.Query()
+            var query = _productRepository.GetAll()
                 .Where(x => !x.IsDeleted && !x.HasOptions && x.IsAllowToOrder);
 
             if (!string.IsNullOrWhiteSpace(name))
@@ -81,7 +81,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(long id)
         {
-            var product = _productRepository.Query()
+            var product = _productRepository.GetAll()
                 .Include(x => x.ThumbnailImage)
                 .Include(x => x.Medias).ThenInclude(m => m.Media)
                 .Include(x => x.ProductLinks).ThenInclude(p => p.LinkedProduct)
@@ -210,7 +210,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
         [HttpPost("grid")]
         public async Task<IActionResult> List([FromBody] SmartTableParam param)
         {
-            var query = _productRepository.Query().Where(x => !x.IsDeleted);
+            var query = _productRepository.GetAll().Where(x => !x.IsDeleted);
             var currentUser = await _workContext.GetCurrentUser();
             if (!User.IsInRole("admin"))
             {
@@ -378,7 +378,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
                 return BadRequest(ModelState);
             }
 
-            var product = _productRepository.Query()
+            var product = _productRepository.GetAll()
                 .Include(x => x.ThumbnailImage)
                 .Include(x => x.Medias).ThenInclude(m => m.Media)
                 .Include(x => x.ProductLinks).ThenInclude(x => x.LinkedProduct)
@@ -444,7 +444,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
             foreach (var productMediaId in model.Product.DeletedMediaIds)
             {
                 var productMedia = product.Medias.First(x => x.Id == productMediaId);
-                _productMediaRepository.Remove(productMedia);
+                _productMediaRepository.Delete(productMedia);
                 await _mediaService.DeleteMediaAsync(productMedia.Media);
             }
 
@@ -462,7 +462,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
         [HttpPost("change-status/{id}")]
         public async Task<IActionResult> ChangeStatus(long id)
         {
-            var product = _productRepository.Query().FirstOrDefault(x => x.Id == id);
+            var product = _productRepository.GetAll().FirstOrDefault(x => x.Id == id);
             if (product == null)
             {
                 return NotFound();
@@ -483,7 +483,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(long id)
         {
-            var product = _productRepository.Query().FirstOrDefault(x => x.Id == id);
+            var product = _productRepository.GetAll().FirstOrDefault(x => x.Id == id);
             if (product == null)
             {
                 return NotFound();
@@ -607,7 +607,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
             {
                 deletedProductCategory.Product = null;
                 product.Categories.Remove(deletedProductCategory);
-                _productCategoryRepository.Remove(deletedProductCategory);
+                _productCategoryRepository.Delete(deletedProductCategory);
             }
         }
 
@@ -642,7 +642,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
             foreach (var productOptionValue in deletedProductOptionValues)
             {
                 product.OptionValues.Remove(productOptionValue);
-                _productOptionValueRepository.Remove(productOptionValue);
+                _productOptionValueRepository.Delete(productOptionValue);
             }
         }
 
@@ -718,7 +718,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
             {
                 if (model.Product.Variations.All(x => x.Name != productLink.LinkedProduct.Name))
                 {
-                    _productLinkRepository.Remove(productLink);
+                    _productLinkRepository.Delete(productLink);
                     productLink.LinkedProduct.IsDeleted = true;
                 }
             }
@@ -739,7 +739,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
                         LinkedProductId = relatedProductVm.Id,
                     };
 
-                    _productLinkRepository.Add(productLink);
+                    _productLinkRepository.Insert(productLink);
                 }
             }
 
@@ -747,7 +747,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
             {
                 if (model.Product.RelatedProducts.All(x => x.Id != productLink.LinkedProductId))
                 {
-                    _productLinkRepository.Remove(productLink);
+                    _productLinkRepository.Delete(productLink);
                 }
             }
 
@@ -763,7 +763,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
                         LinkedProductId = crossSellProductVm.Id,
                     };
 
-                    _productLinkRepository.Add(productLink);
+                    _productLinkRepository.Insert(productLink);
                 }
             }
 
@@ -771,7 +771,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
             {
                 if (model.Product.CrossSellProducts.All(x => x.Id != productLink.LinkedProductId))
                 {
-                    _productLinkRepository.Remove(productLink);
+                    _productLinkRepository.Delete(productLink);
                 }
             }
         }
@@ -805,7 +805,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
             {
                 deletedAttrValue.Product = null;
                 product.AttributeValues.Remove(deletedAttrValue);
-                _productAttributeValueRepository.Remove(deletedAttrValue);
+                _productAttributeValueRepository.Delete(deletedAttrValue);
             }
         }
 

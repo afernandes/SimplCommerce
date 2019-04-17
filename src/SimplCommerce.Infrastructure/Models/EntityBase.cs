@@ -6,9 +6,9 @@
     ///     entities.
     ///     Since nearly all of the entities you create will have a type of int Id, this
     ///     base class leverages this assumption.  If you want an entity with a type other
-    ///     than int, such as string, then use <see cref="EntityBaseWithTypedId{TId}" /> instead.
+    ///     than int, such as string, then use <see cref="EntityBase{TPrimaryKey}" /> instead.
     /// </summary>
-    public abstract class EntityBase : EntityBaseWithTypedId<long>
+    public abstract class EntityBase : EntityBase<long>, IEntity
     {
     }
 }

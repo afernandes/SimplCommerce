@@ -118,7 +118,7 @@ namespace SimplCommerce.Module.Reviews.Areas.Reviews.Controllers
         [HttpPost("change-status/{id}")]
         public async Task<IActionResult> ChangeStatus(long id, [FromBody] int statusId)
         {
-            var review = _reviewRepository.Query().FirstOrDefault(x => x.Id == id);
+            var review = _reviewRepository.GetAll().FirstOrDefault(x => x.Id == id);
             if (review == null)
             {
                 return NotFound();
@@ -129,7 +129,7 @@ namespace SimplCommerce.Module.Reviews.Areas.Reviews.Controllers
                 review.Status = (ReviewStatus) statusId;
                 _reviewRepository.SaveChanges();
 
-                var rattings = _reviewRepository.Query()
+                var rattings = _reviewRepository.GetAll()
                     .Where(x => x.EntityId == review.EntityId && x.EntityTypeId == review.EntityTypeId && x.Status == ReviewStatus.Approved);
 
                 var reviewSummary = new ReviewSummaryChanged
