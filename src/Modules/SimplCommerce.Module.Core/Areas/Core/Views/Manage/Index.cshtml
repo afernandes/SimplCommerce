@@ -2,9 +2,9 @@
 @{
     ViewData["Title"] = "Manage your account";
 }
-@if (ViewData["StatusMessage"] != null)
+@if (!string.IsNullOrWhiteSpace(ViewData["StatusMessage"].ToString()))
 {
-    <p class="text-success">@ViewData["StatusMessage"]</p>
+    <div class="alert alert-success" role="alert">@ViewData["StatusMessage"]</div>
 }
 <div class="row">
     <div class="col-md-3">
