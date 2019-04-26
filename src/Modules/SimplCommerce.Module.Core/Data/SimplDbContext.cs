@@ -8,9 +8,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SimplCommerce.Infrastructure;
-using SimplCommerce.Infrastructure.Data;
+using SimplCommerce.Domain.Repositories;
 using SimplCommerce.Infrastructure.Models;
 using SimplCommerce.Module.Core.Models;
+using SimplCommerce.Infrastructure.Data;
 
 namespace SimplCommerce.Module.Core.Data
 {

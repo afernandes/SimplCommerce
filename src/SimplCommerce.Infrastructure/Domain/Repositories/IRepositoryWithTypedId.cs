@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.Storage;
 using SimplCommerce.Infrastructure.Models;
 
-namespace SimplCommerce.Infrastructure.Data
+namespace SimplCommerce.Domain.Repositories
 {
     /// <summary>
     /// This interface is implemented by all repositories to ensure implementation of fixed methods.

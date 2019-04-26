@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using SimplCommerce.Infrastructure.Data;
+using SimplCommerce.Domain.Repositories;
 using SimplCommerce.Module.ActivityLog.Models;
 using SimplCommerce.Module.Core.Events;
 using SimplCommerce.Module.Core.Extensions;

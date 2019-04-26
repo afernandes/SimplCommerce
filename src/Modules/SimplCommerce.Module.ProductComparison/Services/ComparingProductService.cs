@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using SimplCommerce.Module.ProductComparison.Models;
-using SimplCommerce.Infrastructure.Data;
+using SimplCommerce.Domain.Repositories;
 
 namespace SimplCommerce.Module.ProductComparison.Services
 {

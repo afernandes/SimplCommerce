@@ -12,6 +12,7 @@ using SimplCommerce.Module.Core.Models;
 using SimplCommerce.Module.Pricing.Models;
 using SimplCommerce.Module.Pricing.Services;
 using SimplCommerce.Module.Core.Data.EntityFrameworkCore;
+using SimplCommerce.Module.Core.Data.EntityFrameworkCore.Repositories;
 
 namespace SimplCommerce.Module.Pricing.Tests
 {

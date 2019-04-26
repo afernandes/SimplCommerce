@@ -3,7 +3,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SimplCommerce.Infrastructure.Data;
+using SimplCommerce.Domain.Repositories;
 using SimplCommerce.Infrastructure.Web.SmartTable;
 using SimplCommerce.Module.Contacts.Areas.Contacts.ViewModels;
 using SimplCommerce.Module.Contacts.Models;

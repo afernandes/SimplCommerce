@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using SimplCommerce.Infrastructure.Data;
+using SimplCommerce.Domain.Repositories;
 using SimplCommerce.Infrastructure.Helpers;
 using SimplCommerce.Infrastructure.Web;
 using SimplCommerce.Module.Core.Extensions;

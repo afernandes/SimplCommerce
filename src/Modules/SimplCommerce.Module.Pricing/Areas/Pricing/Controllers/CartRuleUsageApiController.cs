@@ -2,7 +2,7 @@
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SimplCommerce.Infrastructure.Data;
+using SimplCommerce.Domain.Repositories;
 using SimplCommerce.Infrastructure.Web.SmartTable;
 using SimplCommerce.Module.Pricing.Models;
 

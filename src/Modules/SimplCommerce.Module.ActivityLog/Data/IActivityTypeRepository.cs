@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using SimplCommerce.Infrastructure.Data;
+using SimplCommerce.Domain.Repositories;
 using SimplCommerce.Module.ActivityLog.Models;
 
 namespace SimplCommerce.Module.ActivityLog.Data

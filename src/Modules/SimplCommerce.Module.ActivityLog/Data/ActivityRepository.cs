@@ -2,6 +2,7 @@
 using SimplCommerce.Module.ActivityLog.Models;
 using SimplCommerce.Module.Core.Data;
 using SimplCommerce.Module.Core.Data.EntityFrameworkCore;
+using SimplCommerce.Module.Core.Data.EntityFrameworkCore.Repositories;
 using SimplCommerce.Module.Core.Models;
 
 namespace SimplCommerce.Module.ActivityLog.Data

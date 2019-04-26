@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using SimplCommerce.Infrastructure.Data;
+using SimplCommerce.Domain.Repositories;
+using SimplCommerce.Domain.Repositories;
 using SimplCommerce.Module.Cms.Models;
 
 namespace SimplCommerce.Module.Cms.Areas.Cms.Controllers

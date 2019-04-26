@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc.TagHelpers;
+﻿using System;
+using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
-using Microsoft.Extensions.Configuration;
 
 namespace SimplCommerce.Module.Core.Extensions.TagHelpers
 {
@@ -24,12 +24,22 @@ namespace SimplCommerce.Module.Core.Extensions.TagHelpers
         {
             base.Process(context, output);
 
-            if (IsInvariant && output.TagName == "input" && For.Model != null && For.Model.GetType() == typeof(decimal))
+            if ((IsInvariant || IsInputTypeNumeric(output)) && output.TagName == "input" && For.Model != null && For.Model.GetType() == typeof(decimal))
             {
                 decimal value = (decimal)(For.Model);
                 var invariantValue = value.ToString(System.Globalization.CultureInfo.InvariantCulture);
                 output.Attributes.SetAttribute(new TagHelperAttribute("value", invariantValue));
             }
         }
+
+        private bool IsInputTypeNumeric(TagHelperOutput output)
+        {
+            if (output.Attributes.TryGetAttribute("type", out var inputType ))
+            {
+                return inputType.Value.ToString().Equals("numeric", StringComparison.InvariantCultureIgnoreCase);
+            }
+            return false;
+        }
+
     }
 }

@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
-using SimplCommerce.Infrastructure.Data;
+
+using SimplCommerce.Domain.Repositories;
 using SimplCommerce.Infrastructure.Localization;
 
 namespace SimplCommerce.Module.Localization

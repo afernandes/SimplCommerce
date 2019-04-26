@@ -1,8 +1,9 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
-using SimplCommerce.Infrastructure.Data;
+using SimplCommerce.Domain.Repositories;
 using SimplCommerce.Module.Cms.Models;
 using SimplCommerce.Module.Core.Models;
+using SimplCommerce.Infrastructure.Data;
 
 namespace SimplCommerce.Module.Cms.Data
 {

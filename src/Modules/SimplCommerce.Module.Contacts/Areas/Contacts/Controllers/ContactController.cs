@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using SimplCommerce.Infrastructure.Data;
+using SimplCommerce.Domain.Repositories;
 using SimplCommerce.Module.Contacts.Areas.Contacts.ViewModels;
 using SimplCommerce.Module.Contacts.Models;
 using SimplCommerce.Module.Core.Extensions;

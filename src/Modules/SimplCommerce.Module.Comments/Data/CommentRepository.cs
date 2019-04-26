@@ -3,6 +3,7 @@ using SimplCommerce.Module.Core.Data;
 using SimplCommerce.Module.Core.Models;
 using SimplCommerce.Module.Comments.Models;
 using SimplCommerce.Module.Core.Data.EntityFrameworkCore;
+using SimplCommerce.Module.Core.Data.EntityFrameworkCore.Repositories;
 
 namespace SimplCommerce.Module.Comments.Data
 {

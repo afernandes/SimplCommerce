@@ -4,10 +4,10 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.Storage;
-using SimplCommerce.Infrastructure.Data;
+using SimplCommerce.Domain.Repositories;
 using SimplCommerce.Infrastructure.Models;
 
-namespace SimplCommerce.Module.Core.Data
+namespace SimplCommerce.Domain.Repositories
 {
     /// <summary>
     /// Base class to implement <see cref="IRepository{TEntity,TPrimaryKey}"/>.
@@ -15,7 +15,9 @@ namespace SimplCommerce.Module.Core.Data
     /// </summary>
     /// <typeparam name="TEntity">Type of the Entity for this repository</typeparam>
     /// <typeparam name="TPrimaryKey">Primary key of the entity</typeparam>
-    public abstract class RepositoryBase<TEntity, TPrimaryKey> : IRepository<TEntity, TPrimaryKey> //, IUnitOfWorkManagerAccessor
+    public abstract class RepositoryBase<TEntity, TPrimaryKey> : 
+        IRepository<TEntity, TPrimaryKey> //, IUnitOfWorkManagerAccessor
+        
         where TEntity : class, IEntity<TPrimaryKey>
     {
         /// <summary>

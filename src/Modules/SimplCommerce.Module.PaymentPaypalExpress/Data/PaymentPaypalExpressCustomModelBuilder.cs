@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SimplCommerce.Infrastructure.Data;
+using SimplCommerce.Domain.Repositories;
 using SimplCommerce.Module.Payments.Models;
+using SimplCommerce.Infrastructure.Data;
 
 namespace SimplCommerce.Module.PaymentPaypalExpress.Data
 {

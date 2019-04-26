@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using SimplCommerce.Infrastructure.Data;
+using SimplCommerce.Domain.Repositories;
 using SimplCommerce.Module.Core.Events;
 using SimplCommerce.Module.Core.Extensions;
 using SimplCommerce.Module.ProductRecentlyViewed.Models;

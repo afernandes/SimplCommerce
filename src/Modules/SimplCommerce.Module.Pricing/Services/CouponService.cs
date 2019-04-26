@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using SimplCommerce.Infrastructure.Data;
+using SimplCommerce.Domain.Repositories;
 using SimplCommerce.Module.Core.Extensions;
 using SimplCommerce.Module.Pricing.Models;
 using SimplCommerce.Module.Catalog.Models;
+using SimplCommerce.Domain.Repositories;
 
 namespace SimplCommerce.Module.Pricing.Services
 {

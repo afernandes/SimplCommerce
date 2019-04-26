@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using SimplCommerce.Module.Shipping.Models;
 using SimplCommerce.Module.ShippingPrices.Services;
 using SimplCommerce.Module.ShippingTableRate.Models;
-using SimplCommerce.Infrastructure.Data;
+using SimplCommerce.Domain.Repositories;
 
 namespace SimplCommerce.Module.ShippingTableRate.Services
 {

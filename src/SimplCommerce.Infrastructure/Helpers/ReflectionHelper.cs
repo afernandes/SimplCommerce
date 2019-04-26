@@ -34,5 +34,33 @@ namespace SimplCommerce.Infrastructure.Helpers
 
             return IsAssignableToGenericType(givenTypeInfo.BaseType, genericType);
         }
+
+        /// <summary>
+        /// Gets value of a property by it's full path from given object
+        /// </summary>
+        /// <param name="obj">Object to get value from</param>
+        /// <param name="objectType">Type of given object</param>
+        /// <param name="propertyPath">Full path of property</param>
+        /// <returns></returns>
+        internal static object GetValueByPath(object obj, Type objectType, string propertyPath)
+        {
+            var value = obj;
+            var currentType = objectType;
+            var objectPath = currentType.FullName;
+            var absolutePropertyPath = propertyPath;
+            if (absolutePropertyPath.StartsWith(objectPath))
+            {
+                absolutePropertyPath = absolutePropertyPath.Replace(objectPath + ".", "");
+            }
+
+            foreach (var propertyName in absolutePropertyPath.Split('.'))
+            {
+                var property = currentType.GetProperty(propertyName);
+                value = property.GetValue(value, null);
+                currentType = property.PropertyType;
+            }
+
+            return value;
+        }
     }
 }

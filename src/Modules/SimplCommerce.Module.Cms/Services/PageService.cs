@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using SimplCommerce.Infrastructure.Data;
+using SimplCommerce.Domain.Repositories;
 using SimplCommerce.Module.Cms.Models;
 using SimplCommerce.Module.Core.Services;
 

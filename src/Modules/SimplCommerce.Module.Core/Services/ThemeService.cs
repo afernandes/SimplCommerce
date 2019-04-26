@@ -9,7 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using SimplCommerce.Infrastructure;
 using SimplCommerce.Module.Core.Models;
-using SimplCommerce.Infrastructure.Data;
+using SimplCommerce.Domain.Repositories;
 using SimplCommerce.Module.Core.Areas.Core.ViewModels;
 
 namespace SimplCommerce.Module.Core.Services

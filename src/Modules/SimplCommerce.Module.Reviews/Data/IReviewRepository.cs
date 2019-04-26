@@ -1,4 +1,5 @@
-﻿using SimplCommerce.Infrastructure.Data;
+﻿using SimplCommerce.Domain.Repositories;
+using SimplCommerce.Domain.Repositories;
 using SimplCommerce.Module.Reviews.Models;
 using System.Linq;
 

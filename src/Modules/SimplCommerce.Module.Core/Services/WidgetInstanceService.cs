@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using SimplCommerce.Infrastructure.Data;
+using SimplCommerce.Domain.Repositories;
 using SimplCommerce.Module.Core.Models;
 
 namespace SimplCommerce.Module.Core.Services

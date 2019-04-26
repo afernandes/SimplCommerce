@@ -5,8 +5,9 @@ using System.Linq;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
-using SimplCommerce.Infrastructure.Data;
+using SimplCommerce.Domain.Repositories;
 using SimplCommerce.Infrastructure.Localization;
+using SimplCommerce.Domain.Repositories;
 
 namespace SimplCommerce.Module.Localization
 {

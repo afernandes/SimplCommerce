@@ -1,7 +1,8 @@
-﻿using SimplCommerce.Infrastructure.Data;
+﻿using SimplCommerce.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 using SimplCommerce.Module.News.Models;
 using SimplCommerce.Module.Core.Models;
+using SimplCommerce.Infrastructure.Data;
 
 namespace SimplCommerce.Module.News.Data
 {

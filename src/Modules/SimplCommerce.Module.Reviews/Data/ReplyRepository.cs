@@ -1,5 +1,6 @@
 ﻿using SimplCommerce.Module.Core.Data;
 using SimplCommerce.Module.Core.Data.EntityFrameworkCore;
+using SimplCommerce.Module.Core.Data.EntityFrameworkCore.Repositories;
 using SimplCommerce.Module.Core.Models;
 using SimplCommerce.Module.Reviews.Models;
 using System.Linq;

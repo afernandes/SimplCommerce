@@ -12,13 +12,15 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.WebEncoders;
 using Swashbuckle.AspNetCore.Swagger;
 using SimplCommerce.Infrastructure;
-using SimplCommerce.Infrastructure.Data;
+using SimplCommerce.Domain.Repositories;
 using SimplCommerce.Infrastructure.Modules;
 using SimplCommerce.Infrastructure.Web;
 using SimplCommerce.Module.Core.Data;
 using SimplCommerce.Module.Localization.Extensions;
 using SimplCommerce.Module.Localization.TagHelpers;
 using SimplCommerce.WebHost.Extensions;
+using SimplCommerce.Domain.Repositories;
+using SimplCommerce.Module.Core.Data.EntityFrameworkCore.Repositories;
 
 namespace SimplCommerce.WebHost
 {
@@ -51,6 +53,7 @@ namespace SimplCommerce.WebHost
             services.AddHttpClient();
             services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
             services.AddTransient(typeof(IRepository<,>), typeof(Repository<,>));
+            //services.AddTransient(typeof(IRepository<,>), typeof(Repository<,,>));
 
             services.AddCustomizedLocalization();
 

@@ -2,6 +2,7 @@
 using SimplCommerce.Module.Catalog.Models;
 using SimplCommerce.Module.Core.Data;
 using SimplCommerce.Module.Core.Data.EntityFrameworkCore;
+using SimplCommerce.Module.Core.Data.EntityFrameworkCore.Repositories;
 using SimplCommerce.Module.ProductRecentlyViewed.Models;
 
 namespace SimplCommerce.Module.ProductRecentlyViewed.Data

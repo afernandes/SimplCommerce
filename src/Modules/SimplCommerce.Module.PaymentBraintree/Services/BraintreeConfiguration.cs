@@ -2,7 +2,7 @@
 using Braintree;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using SimplCommerce.Infrastructure.Data;
+using SimplCommerce.Domain.Repositories;
 using SimplCommerce.Module.PaymentBraintree.Areas.PaymentBraintree.ViewModels;
 using SimplCommerce.Module.PaymentBraintree.Models;
 using SimplCommerce.Module.Payments.Models;

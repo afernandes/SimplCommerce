@@ -1,13 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
-
-using SimplCommerce.Infrastructure.Data;
+using SimplCommerce.Domain.Repositories;
+using SimplCommerce.Domain.Repositories;
 using SimplCommerce.Infrastructure.Models;
 using SimplCommerce.Module.Core.Data.EntityFrameworkCore;
 
 
-namespace SimplCommerce.Module.Core.Data
+namespace SimplCommerce.Module.Core.Data.EntityFrameworkCore.Repositories
 {
-    public class Repository<TEntity, TPrimaryKey> : Repository<SimplDbContext, TEntity, TPrimaryKey>, IRepository<TEntity, TPrimaryKey>
+    public class Repository<TEntity, TPrimaryKey> : 
+        Repository<SimplDbContext, TEntity, TPrimaryKey>, 
+        IRepository<TEntity, TPrimaryKey>
+        
         where TEntity : class, IEntity<TPrimaryKey>        
     {
         public Repository(IDbContextProvider<SimplDbContext> dbContextProvider)
@@ -17,7 +20,10 @@ namespace SimplCommerce.Module.Core.Data
     }
 
 
-    public class Repository<TEntity> : Repository<SimplDbContext, TEntity, long>, IRepository<TEntity>
+    public class Repository<TEntity> : 
+        Repository<SimplDbContext, TEntity, long>, 
+        IRepository<TEntity>
+        
         where TEntity : class, IEntity<long>
     {
         public Repository(IDbContextProvider<SimplDbContext> dbContextProvider)
@@ -27,7 +33,10 @@ namespace SimplCommerce.Module.Core.Data
     }
 
 
-    public class RepositoryContext<TDbContext, TEntity> : Repository<TDbContext, TEntity, long>, IRepository<TEntity>
+    public class RepositoryContext<TDbContext, TEntity> : 
+        Repository<TDbContext, TEntity, long>, 
+        IRepository<TEntity>
+
         where TEntity : class, IEntity<long>
         where TDbContext : DbContext
     {

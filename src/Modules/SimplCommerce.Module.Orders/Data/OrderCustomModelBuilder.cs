@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using SimplCommerce.Infrastructure.Data;
+using SimplCommerce.Domain.Repositories;
 using SimplCommerce.Module.Orders.Models;
+using SimplCommerce.Infrastructure.Data;
 
 namespace SimplCommerce.Module.Orders.Data
 {

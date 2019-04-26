@@ -8,13 +8,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using SimplCommerce.Infrastructure.Data;
-using SimplCommerce.Module.Core.Data;
+using SimplCommerce.Domain.Repositories;
+using SimplCommerce.Infrastructure.Extensions;
 using SimplCommerce.Infrastructure.Models;
 using SimplCommerce.Module.Core.Data.EntityFrameworkCore;
-using SimplCommerce.Infrastructure.Extensions;
 
-namespace SimplCommerce.Module.Core.Data
+namespace SimplCommerce.Module.Core.Data.EntityFrameworkCore.Repositories
 {
     /// <summary>
     /// Implements IRepository for Entity Framework.

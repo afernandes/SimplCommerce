@@ -9,10 +9,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Net.Http.Headers;
 using SimplCommerce.Module.Core.Extensions;
-using SimplCommerce.Infrastructure.Data;
+using SimplCommerce.Domain.Repositories;
 using SimplCommerce.Infrastructure;
 using SimplCommerce.Infrastructure.Localization;
 using SimplCommerce.Module.Localization;
+using SimplCommerce.Domain.Repositories;
 
 namespace SimplCommerce.WebHost.Extensions
 {
