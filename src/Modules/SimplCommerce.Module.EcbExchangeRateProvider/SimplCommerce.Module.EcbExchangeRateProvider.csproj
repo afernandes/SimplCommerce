@@ -7,6 +7,7 @@
     <ProjectReference Include="..\..\SimplCommerce.Infrastructure\SimplCommerce.Infrastructure.csproj" />
     <ProjectReference Include="..\SimplCommerce.Module.Core\SimplCommerce.Module.Core.csproj" />
     <ProjectReference Include="..\SimplCommerce.Module.Currency\SimplCommerce.Module.Currencies.csproj" />
+    <ProjectReference Include="..\SimplCommerce.Module.HangfireJobs\SimplCommerce.Module.HangfireJobs.csproj" />
   </ItemGroup>
 
 </Project>

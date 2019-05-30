@@ -18,7 +18,7 @@ namespace SimplCommerce.Module.Currencies.Services
         /// <param name="exchangeRateCurrencyCode">Exchange rate currency code</param>
         /// <param name="customer">Load records allowed only to a specified customer; pass null to ignore ACL permissions</param>
         /// <returns>Exchange rates</returns>
-        IList<ExchangeRate> GetCurrencyLiveRates(string exchangeRateCurrencyCode, Customer customer = null);
+        IList<ExchangeRate> GetCurrencyLiveRates(string exchangeRateCurrencyCode/*, Customer customer = null*/);
 
         /// <summary>
         /// Deletes currency

@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
 using SimplCommerce.Infrastructure.Modules;
 using SimplCommerce.Module.Core.Services;
+using SimplCommerce.Module.Currencies.Services;
 
 namespace SimplCommerce.Module.EcbExchangeRateProvider
 {
@@ -10,12 +11,12 @@ namespace SimplCommerce.Module.EcbExchangeRateProvider
     {
         public void ConfigureServices(IServiceCollection serviceCollection)
         {
-            //serviceCollection.AddSingleton<IStorageService, S3StorageService>();
+            serviceCollection.AddTransient<IExchangeRateProvider, EcbExchangeRateProvider>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            
+
         }
     }
 }

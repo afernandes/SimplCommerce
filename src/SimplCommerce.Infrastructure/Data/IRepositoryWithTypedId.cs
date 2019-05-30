@@ -16,6 +16,8 @@ namespace SimplCommerce.Infrastructure.Data
 
         IDbContextTransaction BeginTransaction();
 
+        T Update(T entity);
+
         void SaveChanges();
 
         Task SaveChangesAsync();

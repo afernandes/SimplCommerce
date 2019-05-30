@@ -52,7 +52,27 @@ namespace SimplCommerce.Module.Core.Data
 
         public void Remove(T entity)
         {
+            AttachIfNot(entity);
             DbSet.Remove(entity);
         }
+
+        public T Update(T entity)
+        {
+            AttachIfNot(entity);
+            Context.Entry(entity).State = EntityState.Modified;
+            return entity;
+        }
+
+        protected virtual void AttachIfNot(T entity)
+        {
+            var entry = Context.ChangeTracker.Entries().FirstOrDefault(ent => ent.Entity == entity);
+            if (entry != null)
+            {
+                return;
+            }
+
+            DbSet.Attach(entity);
+        }
+
     }
 }

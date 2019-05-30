@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using MediatR;
+using SimplCommerce.Infrastructure.Caching;
 using SimplCommerce.Infrastructure.Data;
 using SimplCommerce.Module.Core.Events;
 using SimplCommerce.Module.Currencies.Directory;
@@ -17,35 +18,43 @@ namespace SimplCommerce.Module.Currencies.Services
     {
         #region Fields
 
-        private readonly CurrencySettings _currencySettings;
+        //private readonly CurrencySettings _currencySettings;
         //private readonly IEventPublisher _eventPublisher;
         private readonly IMediator _mediator;
 
-        private readonly IPluginService _pluginService;
+        //private readonly IPluginService _pluginService;
         private readonly IRepository<Currency> _currencyRepository;
         private readonly IStaticCacheManager _cacheManager;
-        private readonly IStoreMappingService _storeMappingService;
+        //private readonly IStoreMappingService _storeMappingService;
+
+        private readonly IExchangeRateProvider _exchangeRateProvider;
 
         #endregion
 
         #region Ctor
 
-        public CurrencyService(CurrencySettings currencySettings,
+        public CurrencyService(
+            //CurrencySettings currencySettings,
             //IEventPublisher eventPublisher,
             IMediator mediator,
-            IPluginService pluginService,
+            //IPluginService pluginService,
             IRepository<Currency> currencyRepository,
             IStaticCacheManager cacheManager,
-            IStoreMappingService storeMappingService)
+            //IStoreMappingService storeMappingService
+            IExchangeRateProvider exchangeRateProvider
+            )
         {
-            _currencySettings = currencySettings;
+            //_currencySettings = currencySettings;
             //_eventPublisher = eventPublisher;
             _mediator = mediator;
-            _pluginService = pluginService;
+            //_pluginService = pluginService;
             _currencyRepository = currencyRepository;
             _cacheManager = cacheManager;
-            _storeMappingService = storeMappingService;
+            //_storeMappingService = storeMappingService;
+
+            _exchangeRateProvider = exchangeRateProvider;
         }
+
 
         #endregion
 
@@ -59,9 +68,9 @@ namespace SimplCommerce.Module.Currencies.Services
         /// <param name="exchangeRateCurrencyCode">Exchange rate currency code</param>
         /// <param name="customer">Load records allowed only to a specified customer; pass null to ignore ACL permissions</param>
         /// <returns>Exchange rates</returns>
-        public virtual IList<ExchangeRate> GetCurrencyLiveRates(string exchangeRateCurrencyCode, Customer customer = null)
+        public virtual IList<ExchangeRate> GetCurrencyLiveRates(string exchangeRateCurrencyCode/*, Customer customer = null*/)
         {
-            var exchangeRateProvider = LoadActiveExchangeRateProvider(customer);
+            var exchangeRateProvider = LoadActiveExchangeRateProvider(/*customer*/);
             if (exchangeRateProvider == null)
                 throw new Exception("Active exchange rate provider cannot be loaded");
 
@@ -144,7 +153,7 @@ namespace SimplCommerce.Module.Currencies.Services
         {
             IList<Currency> LoadCurrenciesFunc()
             {
-                var query = _currencyRepository.Table;
+                var query = _currencyRepository.Query();
                 if (!showHidden) query = query.Where(c => c.Published);
                 query = query.OrderBy(c => c.DisplayOrder).ThenBy(c => c.Id);
                 return query.ToList();
@@ -191,12 +200,12 @@ namespace SimplCommerce.Module.Currencies.Services
             if (currency is IEntityForCaching)
                 throw new ArgumentException("Cacheable entities are not supported by Entity Framework");
 
-            _currencyRepository.Insert(currency);
+            _currencyRepository.Add(currency);
 
             _cacheManager.RemoveByPattern(NopDirectoryDefaults.CurrenciesPatternCacheKey);
 
             //event notification
-            _eventPublisher.EntityInserted(currency);
+            //_eventPublisher.EntityInserted(currency);
         }
 
         /// <summary>
@@ -216,7 +225,7 @@ namespace SimplCommerce.Module.Currencies.Services
             _cacheManager.RemoveByPattern(NopDirectoryDefaults.CurrenciesPatternCacheKey);
 
             //event notification
-            _eventPublisher.EntityUpdated(currency);
+            //_eventPublisher.EntityUpdated(currency);
         }
 
         #endregion
@@ -355,12 +364,14 @@ namespace SimplCommerce.Module.Currencies.Services
         /// </summary>
         /// <param name="customer">Load records allowed only to a specified customer; pass null to ignore ACL permissions</param>
         /// <returns>Active exchange rate provider</returns>
-        public virtual IExchangeRateProvider LoadActiveExchangeRateProvider(Customer customer = null)
+        public virtual IExchangeRateProvider LoadActiveExchangeRateProvider(/*Customer customer = null*/)
         {
-            var exchangeRateProvider = LoadExchangeRateProviderBySystemName(_currencySettings.ActiveExchangeRateProviderSystemName, customer)
-                ?? LoadAllExchangeRateProviders(customer).FirstOrDefault();
+            /*var exchangeRateProvider = LoadExchangeRateProviderBySystemName(_currencySettings.ActiveExchangeRateProviderSystemName, customer)
+                ?? LoadAllExchangeRateProviders(customer).FirstOrDefault();*/
 
-            return exchangeRateProvider;
+            return _exchangeRateProvider;
+
+            //return exchangeRateProvider;
         }
 
         /// <summary>

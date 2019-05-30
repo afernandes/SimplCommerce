@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
 using SimplCommerce.Infrastructure.Modules;
 using SimplCommerce.Module.Core.Services;
+using SimplCommerce.Module.Currencies.Services;
 
 namespace SimplCommerce.Module.Currencies
 {
@@ -10,7 +11,7 @@ namespace SimplCommerce.Module.Currencies
     {
         public void ConfigureServices(IServiceCollection serviceCollection)
         {
-            //serviceCollection.AddSingleton<IStorageService, S3StorageService>();
+            serviceCollection.AddTransient<ICurrencyService, CurrencyService>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
