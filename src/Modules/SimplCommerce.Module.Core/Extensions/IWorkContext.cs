@@ -3,7 +3,7 @@ using SimplCommerce.Module.Core.Models;
 
 namespace SimplCommerce.Module.Core.Extensions
 {
-    public interface IWorkContext
+    public partial interface IWorkContext
     {
         Task<User> GetCurrentUser();
 

@@ -6,9 +6,8 @@ using System.Net;
 using System.Xml;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
-using SimplCommerce.Module.Currencies.Domain;
-using SimplCommerce.Module.Currencies.Services;
-using SimplCommerce.Module.Currency.Directory;
+using SimplCommerce.Module.Core.Models;
+using SimplCommerce.Module.Core.Services;
 
 namespace SimplCommerce.Module.EcbExchangeRateProvider
 {

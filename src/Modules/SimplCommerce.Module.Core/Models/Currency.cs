@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using SimplCommerce.Infrastructure.Models;
 
-namespace SimplCommerce.Module.Currencies.Domain
+namespace SimplCommerce.Module.Core.Models
 {
     /// <summary>
     /// Represents a currency

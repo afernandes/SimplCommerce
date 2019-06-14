@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using SimplCommerce.Module.Currencies.Domain;
+using SimplCommerce.Module.Core.Models;
 
-namespace SimplCommerce.Module.Currencies.Services
+namespace SimplCommerce.Module.Core.Services
 {
     /// <summary>
     /// Currency service
@@ -85,7 +85,7 @@ namespace SimplCommerce.Module.Currencies.Services
         decimal ConvertCurrency(decimal amount, Currency sourceCurrencyCode, Currency targetCurrencyCode);
 
         /// <summary>
-        /// Converts to primary exchange rate currency 
+        /// Converts to primary exchange rate currency
         /// </summary>
         /// <param name="amount">Amount</param>
         /// <param name="sourceCurrencyCode">Source currency code</param>
@@ -101,7 +101,7 @@ namespace SimplCommerce.Module.Currencies.Services
         decimal ConvertFromPrimaryExchangeRateCurrency(decimal amount, Currency targetCurrencyCode);
 
         /// <summary>
-        /// Converts to primary store currency 
+        /// Converts to primary store currency
         /// </summary>
         /// <param name="amount">Amount</param>
         /// <param name="sourceCurrencyCode">Source currency code</param>
@@ -120,27 +120,27 @@ namespace SimplCommerce.Module.Currencies.Services
 
         #region Exchange rate providers
 
-        /// <summary>
+        /*/// <summary>
         /// Load active exchange rate provider
         /// </summary>
         /// <param name="customer">Load records allowed only to a specified customer; pass null to ignore ACL permissions</param>
         /// <returns>Active exchange rate provider</returns>
-        IExchangeRateProvider LoadActiveExchangeRateProvider(Customer customer = null);
+        IExchangeRateProvider LoadActiveExchangeRateProvider(Customer customer = null);*/
 
-        /// <summary>
+        /*/// <summary>
         /// Load exchange rate provider by system name
         /// </summary>
         /// <param name="systemName">System name</param>
         /// <param name="customer">Load records allowed only to a specified customer; pass null to ignore ACL permissions</param>
         /// <returns>Found exchange rate provider</returns>
-        IExchangeRateProvider LoadExchangeRateProviderBySystemName(string systemName, Customer customer = null);
+        IExchangeRateProvider LoadExchangeRateProviderBySystemName(string systemName, Customer customer = null);*/
 
-        /// <summary>
+        /*/// <summary>
         /// Load all exchange rate providers
         /// </summary>
         /// <param name="customer">Load records allowed only to a specified customer; pass null to ignore ACL permissions</param>
         /// <returns>Exchange rate providers</returns>
-        IList<IExchangeRateProvider> LoadAllExchangeRateProviders(Customer customer = null);
+        IList<IExchangeRateProvider> LoadAllExchangeRateProviders(Customer customer = null);*/
 
         #endregion
     }

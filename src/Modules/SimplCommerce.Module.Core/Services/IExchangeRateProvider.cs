@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using SimplCommerce.Module.Currencies.Domain;
+using SimplCommerce.Module.Core.Models;
 
-namespace SimplCommerce.Module.Currencies.Services
+namespace SimplCommerce.Module.Core.Services
 {
     public interface IExchangeRateProvider
     {

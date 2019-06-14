@@ -8,4 +8,9 @@
     <ProjectReference Include="..\SimplCommerce.Module.Core\SimplCommerce.Module.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Domain\" />
+    <Folder Include="Services\" />
+  </ItemGroup>
+
 </Project>

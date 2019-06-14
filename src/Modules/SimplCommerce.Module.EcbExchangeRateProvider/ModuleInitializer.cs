@@ -3,7 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
 using SimplCommerce.Infrastructure.Modules;
 using SimplCommerce.Module.Core.Services;
-using SimplCommerce.Module.Currencies.Services;
 
 namespace SimplCommerce.Module.EcbExchangeRateProvider
 {

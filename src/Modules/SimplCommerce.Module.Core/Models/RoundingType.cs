@@ -1,5 +1,5 @@
 ﻿
-namespace SimplCommerce.Module.Currencies.Domain
+namespace SimplCommerce.Module.Core.Models
 {
     /// <summary>
     /// Rounding type

@@ -45,6 +45,12 @@ namespace SimplCommerce.Infrastructure.Caching
         void RemoveByPattern(string pattern);
 
         /// <summary>
+        /// Removes items by key prefix
+        /// </summary>
+        /// <param name="prefix">String key prefix</param>
+        void RemoveByPrefix(string prefix);
+
+        /// <summary>
         /// Clear all cache data
         /// </summary>
         void Clear();

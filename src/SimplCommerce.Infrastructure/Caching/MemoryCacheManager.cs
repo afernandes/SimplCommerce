@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -10,7 +11,7 @@ using Microsoft.Extensions.Primitives;
 namespace SimplCommerce.Infrastructure.Caching
 {
     /// <summary>
-    /// Represents a memory cache manager 
+    /// Represents a memory cache manager
     /// </summary>
     public partial class MemoryCacheManager : IStaticCacheManager
     {
@@ -21,7 +22,7 @@ namespace SimplCommerce.Infrastructure.Caching
         /// <summary>
         /// All keys of cache
         /// </summary>
-        /// <remarks>Dictionary value indicating whether a key still exists in cache</remarks> 
+        /// <remarks>Dictionary value indicating whether a key still exists in cache</remarks>
         protected static readonly ConcurrentDictionary<string, bool> _allKeys;
 
         /// <summary>
@@ -254,6 +255,23 @@ namespace SimplCommerce.Infrastructure.Caching
             //get cache keys that matches pattern
             var regex = new Regex(pattern, RegexOptions.Singleline | RegexOptions.Compiled | RegexOptions.IgnoreCase);
             var matchesKeys = _allKeys.Where(p => p.Value).Select(p => p.Key).Where(key => regex.IsMatch(key)).ToList();
+
+            //remove matching values
+            foreach (var key in matchesKeys)
+            {
+                _cache.Remove(RemoveKey(key));
+            }
+        }
+
+        /// <summary>
+        /// Removes items by key prefix
+        /// </summary>
+        /// <param name="prefix">String key prefix</param>
+        public void RemoveByPrefix(string prefix)
+        {
+            var matchesKeys = _allKeys.Keys
+                .Where(x => x.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+                .ToList();
 
             //remove matching values
             foreach (var key in matchesKeys)

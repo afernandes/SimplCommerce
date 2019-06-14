@@ -6,16 +6,20 @@ using MediatR;
 using SimplCommerce.Infrastructure.Caching;
 using SimplCommerce.Infrastructure.Data;
 using SimplCommerce.Module.Core.Events;
-using SimplCommerce.Module.Currencies.Directory;
-using SimplCommerce.Module.Currencies.Domain;
+using SimplCommerce.Module.Core.Models;
 
-namespace SimplCommerce.Module.Currencies.Services
+namespace SimplCommerce.Module.Core.Services
 {
     /// <summary>
     /// Currency service
     /// </summary>
     public partial class CurrencyService : ICurrencyService
     {
+        /// <summary>
+        /// Gets a key pattern to clear cache
+        /// </summary>
+        public const string CurrenciesPrefixCacheKey = "Nop.currency.";
+
         #region Fields
 
         //private readonly CurrencySettings _currencySettings;
@@ -86,12 +90,13 @@ namespace SimplCommerce.Module.Currencies.Services
             if (currency == null)
                 throw new ArgumentNullException(nameof(currency));
 
-            if (currency is IEntityForCaching)
+            //if (currency is IEntityForCaching)
+            if(currency is CurrencyForCaching)
                 throw new ArgumentException("Cacheable entities are not supported by Entity Framework");
 
             _currencyRepository.Remove(currency);
 
-            _cacheManager.RemoveByPattern(NopDirectoryDefaults.CurrenciesPatternCacheKey);
+            _cacheManager.RemoveByPrefix(CurrenciesPrefixCacheKey);
 
             //event notification
             //_eventPublisher.EntityDeleted(currency);
@@ -197,7 +202,8 @@ namespace SimplCommerce.Module.Currencies.Services
             if (currency == null)
                 throw new ArgumentNullException(nameof(currency));
 
-            if (currency is IEntityForCaching)
+            //if (currency is IEntityForCaching)
+            if(currency is CurrencyForCaching)
                 throw new ArgumentException("Cacheable entities are not supported by Entity Framework");
 
             _currencyRepository.Add(currency);
@@ -217,7 +223,8 @@ namespace SimplCommerce.Module.Currencies.Services
             if (currency == null)
                 throw new ArgumentNullException(nameof(currency));
 
-            if (currency is IEntityForCaching)
+            //if (currency is IEntityForCaching)
+            if(currency is CurrencyForCaching)
                 throw new ArgumentException("Cacheable entities are not supported by Entity Framework");
 
             _currencyRepository.Update(currency);
@@ -273,7 +280,7 @@ namespace SimplCommerce.Module.Currencies.Services
         }
 
         /// <summary>
-        /// Converts to primary exchange rate currency 
+        /// Converts to primary exchange rate currency
         /// </summary>
         /// <param name="amount">Amount</param>
         /// <param name="sourceCurrencyCode">Source currency code</param>
@@ -327,7 +334,7 @@ namespace SimplCommerce.Module.Currencies.Services
         }
 
         /// <summary>
-        /// Converts to primary store currency 
+        /// Converts to primary store currency
         /// </summary>
         /// <param name="amount">Amount</param>
         /// <param name="sourceCurrencyCode">Source currency code</param>

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using SimplCommerce.Module.Currencies.Services;
+using SimplCommerce.Module.Core.Services;
 using SimplCommerce.Module.HangfireJobs.Models;
 
 namespace SimplCommerce.Module.EcbExchangeRateProvider
@@ -27,6 +27,8 @@ namespace SimplCommerce.Module.EcbExchangeRateProvider
         }
 
         #endregion
+
+        public override string Schedule => "";
 
         #region Methods
 

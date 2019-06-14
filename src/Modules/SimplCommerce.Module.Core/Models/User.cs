@@ -32,6 +32,10 @@ namespace SimplCommerce.Module.Core.Models
 
         public IList<UserAddress> UserAddresses { get; set; } = new List<UserAddress>();
 
+        public Currency DefaultCurrency { get; set; }
+
+        public long? DefaultCurrencyId { get; set; }
+
         public UserAddress DefaultShippingAddress { get; set; }
 
         public long? DefaultShippingAddressId { get; set; }

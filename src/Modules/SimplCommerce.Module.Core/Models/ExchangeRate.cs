@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SimplCommerce.Module.Currencies.Domain
+namespace SimplCommerce.Module.Core.Models
 {
     /// <summary>
     /// Represents an exchange rate
