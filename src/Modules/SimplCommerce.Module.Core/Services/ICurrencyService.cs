@@ -49,7 +49,7 @@ namespace SimplCommerce.Module.Core.Services
         /// <param name="storeId">Load records allowed only in a specified store; pass 0 to load all records</param>
         /// <param name="loadCacheableCopy">A value indicating whether to load a copy that could be cached (workaround until Entity Framework supports 2-level caching)</param>
         /// <returns>Currencies</returns>
-        IList<Currency> GetAllCurrencies(bool showHidden = false, int storeId = 0, bool loadCacheableCopy = true);
+        IList<Currency> GetAllCurrencies(bool showHidden = false, /*int storeId = 0,*/ bool loadCacheableCopy = true);
 
         /// <summary>
         /// Inserts a currency

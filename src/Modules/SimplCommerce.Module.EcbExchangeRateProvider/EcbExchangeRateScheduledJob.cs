@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using SimplCommerce.Module.Core.Models;
 using SimplCommerce.Module.Core.Services;
 using SimplCommerce.Module.HangfireJobs.Models;
 
@@ -28,7 +29,7 @@ namespace SimplCommerce.Module.EcbExchangeRateProvider
 
         #endregion
 
-        public override string Schedule => "";
+        public override string Schedule => "* * * * *";
 
         #region Methods
 
@@ -37,12 +38,22 @@ namespace SimplCommerce.Module.EcbExchangeRateProvider
         /// </summary>
         protected override Task ExecuteAsync(Hangfire.IJobCancellationToken cancellationToken)
         {
-            var exchangeRates = _currencyService.GetCurrencyLiveRates();
+            //TODO: Get exchangeRateCurrencyCode from global config, store config...
+            var exchangeRates = _currencyService.GetCurrencyLiveRates("eur");
             foreach (var exchageRate in exchangeRates)
             {
                 var currency = _currencyService.GetCurrencyByCode(exchageRate.CurrencyCode, false);
                 if (currency == null)
-                    continue;
+                {
+                    currency = new Currency
+                    {
+                        CurrencyCode = exchageRate.CurrencyCode,
+                        Rate = exchageRate.Rate,
+                        UpdatedOnUtc = exchageRate.UpdatedOn
+                    };
+                    _currencyService.InsertCurrency(currency);
+                }
+
 
                 currency.Rate = exchageRate.Rate;
                 currency.UpdatedOnUtc = DateTime.UtcNow;

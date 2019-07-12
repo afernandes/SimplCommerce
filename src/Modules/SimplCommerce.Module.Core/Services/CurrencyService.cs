@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using MediatR;
+using Microsoft.Extensions.Configuration;
 using SimplCommerce.Infrastructure.Caching;
 using SimplCommerce.Infrastructure.Data;
 using SimplCommerce.Module.Core.Events;
@@ -25,13 +26,12 @@ namespace SimplCommerce.Module.Core.Services
         //private readonly CurrencySettings _currencySettings;
         //private readonly IEventPublisher _eventPublisher;
         private readonly IMediator _mediator;
-
         //private readonly IPluginService _pluginService;
         private readonly IRepository<Currency> _currencyRepository;
         private readonly IStaticCacheManager _cacheManager;
         //private readonly IStoreMappingService _storeMappingService;
-
         private readonly IExchangeRateProvider _exchangeRateProvider;
+        private readonly IConfiguration _configuration;
 
         #endregion
 
@@ -45,7 +45,8 @@ namespace SimplCommerce.Module.Core.Services
             IRepository<Currency> currencyRepository,
             IStaticCacheManager cacheManager,
             //IStoreMappingService storeMappingService
-            IExchangeRateProvider exchangeRateProvider
+            IExchangeRateProvider exchangeRateProvider,
+            IConfiguration configuration
             )
         {
             //_currencySettings = currencySettings;
@@ -55,8 +56,8 @@ namespace SimplCommerce.Module.Core.Services
             _currencyRepository = currencyRepository;
             _cacheManager = cacheManager;
             //_storeMappingService = storeMappingService;
-
             _exchangeRateProvider = exchangeRateProvider;
+            _configuration = configuration;
         }
 
 
@@ -91,10 +92,11 @@ namespace SimplCommerce.Module.Core.Services
                 throw new ArgumentNullException(nameof(currency));
 
             //if (currency is IEntityForCaching)
-            if(currency is CurrencyForCaching)
+            if (currency is CurrencyForCaching)
                 throw new ArgumentException("Cacheable entities are not supported by Entity Framework");
 
             _currencyRepository.Remove(currency);
+            _currencyRepository.SaveChanges();
 
             _cacheManager.RemoveByPrefix(CurrenciesPrefixCacheKey);
 
@@ -154,7 +156,7 @@ namespace SimplCommerce.Module.Core.Services
         /// <param name="storeId">Load records allowed only in a specified store; pass 0 to load all records</param>
         /// <param name="loadCacheableCopy">A value indicating whether to load a copy that could be cached (workaround until Entity Framework supports 2-level caching)</param>
         /// <returns>Currencies</returns>
-        public virtual IList<Currency> GetAllCurrencies(bool showHidden = false, int storeId = 0, bool loadCacheableCopy = true)
+        public virtual IList<Currency> GetAllCurrencies(bool showHidden = false, /*int storeId = 0,*/ bool loadCacheableCopy = true)
         {
             IList<Currency> LoadCurrenciesFunc()
             {
@@ -183,12 +185,12 @@ namespace SimplCommerce.Module.Core.Services
             }
 
             //store mapping
-            if (storeId > 0)
+            /*if (storeId > 0)
             {
                 currencies = currencies
                     .Where(c => _storeMappingService.Authorize(c, storeId))
                     .ToList();
-            }
+            }*/
 
             return currencies;
         }
@@ -203,10 +205,11 @@ namespace SimplCommerce.Module.Core.Services
                 throw new ArgumentNullException(nameof(currency));
 
             //if (currency is IEntityForCaching)
-            if(currency is CurrencyForCaching)
+            if (currency is CurrencyForCaching)
                 throw new ArgumentException("Cacheable entities are not supported by Entity Framework");
 
             _currencyRepository.Add(currency);
+            _currencyRepository.SaveChanges();
 
             _cacheManager.RemoveByPattern(NopDirectoryDefaults.CurrenciesPatternCacheKey);
 
@@ -224,10 +227,11 @@ namespace SimplCommerce.Module.Core.Services
                 throw new ArgumentNullException(nameof(currency));
 
             //if (currency is IEntityForCaching)
-            if(currency is CurrencyForCaching)
+            if (currency is CurrencyForCaching)
                 throw new ArgumentException("Cacheable entities are not supported by Entity Framework");
 
             _currencyRepository.Update(currency);
+            _currencyRepository.SaveChanges();
 
             _cacheManager.RemoveByPattern(NopDirectoryDefaults.CurrenciesPatternCacheKey);
 
@@ -290,7 +294,11 @@ namespace SimplCommerce.Module.Core.Services
             if (sourceCurrencyCode == null)
                 throw new ArgumentNullException(nameof(sourceCurrencyCode));
 
-            var primaryExchangeRateCurrency = GetCurrencyById(_currencySettings.PrimaryExchangeRateCurrencyId);
+            string primaryExchangeRateCurrencyCode = _configuration.GetValue<string>("Global.PrimaryExchangeRateCurrencyCode") ?? "EUR";
+
+            //var primaryExchangeRateCurrency = GetCurrencyById(_currencySettings.PrimaryExchangeRateCurrencyId);
+            var primaryExchangeRateCurrency = GetCurrencyByCode(primaryExchangeRateCurrencyCode);
+
             if (primaryExchangeRateCurrency == null)
                 throw new Exception("Primary exchange rate currency cannot be loaded");
 
@@ -300,7 +308,7 @@ namespace SimplCommerce.Module.Core.Services
 
             var exchangeRate = sourceCurrencyCode.Rate;
             if (exchangeRate == decimal.Zero)
-                throw new NopException($"Exchange rate not found for currency [{sourceCurrencyCode.Name}]");
+                throw new Exception($"Exchange rate not found for currency [{sourceCurrencyCode.Name}]");
             result = result / exchangeRate;
 
             return result;
@@ -317,7 +325,10 @@ namespace SimplCommerce.Module.Core.Services
             if (targetCurrencyCode == null)
                 throw new ArgumentNullException(nameof(targetCurrencyCode));
 
-            var primaryExchangeRateCurrency = GetCurrencyById(_currencySettings.PrimaryExchangeRateCurrencyId);
+            string primaryExchangeRateCurrencyCode = _configuration.GetValue<string>("Global.PrimaryExchangeRateCurrencyCode") ?? "EUR";
+
+            //var primaryExchangeRateCurrency = GetCurrencyById(_currencySettings.PrimaryExchangeRateCurrencyId);
+            var primaryExchangeRateCurrency = GetCurrencyByCode(primaryExchangeRateCurrencyCode);
             if (primaryExchangeRateCurrency == null)
                 throw new Exception("Primary exchange rate currency cannot be loaded");
 
@@ -327,7 +338,7 @@ namespace SimplCommerce.Module.Core.Services
 
             var exchangeRate = targetCurrencyCode.Rate;
             if (exchangeRate == decimal.Zero)
-                throw new NopException($"Exchange rate not found for currency [{targetCurrencyCode.Name}]");
+                throw new Exception($"Exchange rate not found for currency [{targetCurrencyCode.Name}]");
             result = result * exchangeRate;
 
             return result;
@@ -344,7 +355,10 @@ namespace SimplCommerce.Module.Core.Services
             if (sourceCurrencyCode == null)
                 throw new ArgumentNullException(nameof(sourceCurrencyCode));
 
-            var primaryStoreCurrency = GetCurrencyById(_currencySettings.PrimaryStoreCurrencyId);
+            string primaryExchangeRateCurrencyCode = _configuration.GetValue<string>("Global.PrimaryExchangeRateCurrencyCode") ?? "EUR";
+
+            //var primaryStoreCurrency = GetCurrencyById(_currencySettings.PrimaryStoreCurrencyId);
+            var primaryStoreCurrency = GetCurrencyByCode(primaryExchangeRateCurrencyCode);
             var result = ConvertCurrency(amount, sourceCurrencyCode, primaryStoreCurrency);
             return result;
         }
@@ -357,7 +371,10 @@ namespace SimplCommerce.Module.Core.Services
         /// <returns>Converted value</returns>
         public virtual decimal ConvertFromPrimaryStoreCurrency(decimal amount, Currency targetCurrencyCode)
         {
-            var primaryStoreCurrency = GetCurrencyById(_currencySettings.PrimaryStoreCurrencyId);
+            string primaryExchangeRateCurrencyCode = _configuration.GetValue<string>("Global.PrimaryExchangeRateCurrencyCode") ?? "EUR";
+
+            //var primaryStoreCurrency = GetCurrencyById(_currencySettings.PrimaryStoreCurrencyId);
+            var primaryStoreCurrency = GetCurrencyByCode(primaryExchangeRateCurrencyCode);
             var result = ConvertCurrency(amount, primaryStoreCurrency, targetCurrencyCode);
             return result;
         }
@@ -387,10 +404,12 @@ namespace SimplCommerce.Module.Core.Services
         /// <param name="systemName">System name</param>
         /// <param name="customer">Load records allowed only to a specified customer; pass null to ignore ACL permissions</param>
         /// <returns>Found exchange rate provider</returns>
-        public virtual IExchangeRateProvider LoadExchangeRateProviderBySystemName(string systemName, Customer customer = null)
+        public virtual IExchangeRateProvider LoadExchangeRateProviderBySystemName(string systemName/*, Customer customer = null*/)
         {
-            var descriptor = _pluginService.GetPluginDescriptorBySystemName<IExchangeRateProvider>(systemName, customer: customer);
-            return descriptor?.Instance<IExchangeRateProvider>();
+            //var descriptor = _pluginService.GetPluginDescriptorBySystemName<IExchangeRateProvider>(systemName, customer: customer);
+            //return descriptor?.Instance<IExchangeRateProvider>();
+
+            return _exchangeRateProvider;
         }
 
         /// <summary>
@@ -398,11 +417,12 @@ namespace SimplCommerce.Module.Core.Services
         /// </summary>
         /// <param name="customer">Load records allowed only to a specified customer; pass null to ignore ACL permissions</param>
         /// <returns>Exchange rate providers</returns>
-        public virtual IList<IExchangeRateProvider> LoadAllExchangeRateProviders(Customer customer = null)
+        public virtual IList<IExchangeRateProvider> LoadAllExchangeRateProviders(/*Customer customer = null*/)
         {
-            var exchangeRateProviders = _pluginService.GetPlugins<IExchangeRateProvider>(customer: customer);
+            // var exchangeRateProviders = _pluginService.GetPlugins<IExchangeRateProvider>(customer: customer);
+            //return exchangeRateProviders.OrderBy(tp => tp.PluginDescriptor).ToList();
 
-            return exchangeRateProviders.OrderBy(tp => tp.PluginDescriptor).ToList();
+            return new List<IExchangeRateProvider> { _exchangeRateProvider };
         }
 
         #endregion

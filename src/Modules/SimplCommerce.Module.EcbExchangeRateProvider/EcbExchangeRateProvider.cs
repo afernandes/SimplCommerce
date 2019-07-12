@@ -22,11 +22,11 @@ namespace SimplCommerce.Module.EcbExchangeRateProvider
 
         #region Ctor
 
-        public EcbExchangeRateProvider(IStringLocalizer localizer,
-            ILogger logger)
+        public EcbExchangeRateProvider(IStringLocalizerFactory stringLocalizerFactory,
+            ILoggerFactory loggerFactory)
         {
-            _localizer = localizer;
-            _logger = logger;
+            _localizer = stringLocalizerFactory.Create(null);
+            _logger = loggerFactory.CreateLogger<EcbExchangeRateProvider>();
         }
 
         #endregion

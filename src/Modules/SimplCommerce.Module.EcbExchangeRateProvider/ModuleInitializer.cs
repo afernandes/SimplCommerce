@@ -11,6 +11,7 @@ namespace SimplCommerce.Module.EcbExchangeRateProvider
         public void ConfigureServices(IServiceCollection serviceCollection)
         {
             serviceCollection.AddTransient<IExchangeRateProvider, EcbExchangeRateProvider>();
+            serviceCollection.AddTransient<EcbExchangeRateScheduledJob>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

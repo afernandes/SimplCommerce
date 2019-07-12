@@ -26,7 +26,7 @@
     <ProjectReference Include="..\Modules\SimplCommerce.Module.Cms\SimplCommerce.Module.Cms.csproj" />
     <ProjectReference Include="..\Modules\SimplCommerce.Module.Comments\SimplCommerce.Module.Comments.csproj" />
     <ProjectReference Include="..\Modules\SimplCommerce.Module.Contacts\SimplCommerce.Module.Contacts.csproj" />
-    <ProjectReference Include="..\Modules\SimplCommerce.Module.Currency\SimplCommerce.Module.Currencies.csproj" />
+    <ProjectReference Include="..\Modules\SimplCommerce.Module.Currencies\SimplCommerce.Module.Currencies.csproj" />
     <ProjectReference Include="..\Modules\SimplCommerce.Module.DinkToPdf\SimplCommerce.Module.DinkToPdf.csproj" />
     <ProjectReference Include="..\Modules\SimplCommerce.Module.EcbExchangeRateProvider\SimplCommerce.Module.EcbExchangeRateProvider.csproj" />
     <ProjectReference Include="..\Modules\SimplCommerce.Module.HangfireJobs\SimplCommerce.Module.HangfireJobs.csproj" />

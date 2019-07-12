@@ -3,13 +3,8 @@ using SimplCommerce.Module.Core.Models;
 
 namespace SimplCommerce.Module.Core.Extensions
 {
-    public partial interface IWorkContext
+    public interface IWorkContext
     {
         Task<User> GetCurrentUser();
-
-        /// <summary>
-        /// Gets or sets current user working currency
-        /// </summary>
-        Currency WorkingCurrency { get; set; }
     }
 }

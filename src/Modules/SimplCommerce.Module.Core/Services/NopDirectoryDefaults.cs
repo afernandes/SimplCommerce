@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SimplCommerce.Module.Currencies.Directory
+namespace SimplCommerce.Module.Core.Services
 {
     /// <summary>
     /// Represents default values related to directory services

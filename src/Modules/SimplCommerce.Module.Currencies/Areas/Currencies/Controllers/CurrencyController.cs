@@ -17,17 +17,17 @@ namespace SimplCommerce.Module.Currencies.Areas.Currencies.Controllers
         #region Fields
 
         private readonly ICurrencyService _currencyService;
-        private readonly IWorkContext _workContext;
+        private readonly IWorkCurrency _workCurrency;
 
         #endregion
 
         #region Ctor
 
         public CurrencyController(ICurrencyService currencyService,
-            IWorkContext workContext)
+            IWorkCurrency workCurrency)
         {
             _currencyService = currencyService;
-            _workContext = workContext;
+            _workCurrency = workCurrency;
         }
 
         #endregion
@@ -43,7 +43,7 @@ namespace SimplCommerce.Module.Currencies.Areas.Currencies.Controllers
         {
             var currency = _currencyService.GetCurrencyById(customerCurrency);
             if (currency != null)
-                _workContext.WorkingCurrency = currency;
+                _workCurrency.WorkingCurrency = currency;
 
             //home page
             if (string.IsNullOrEmpty(returnUrl))

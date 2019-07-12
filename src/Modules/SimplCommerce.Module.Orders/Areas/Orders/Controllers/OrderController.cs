@@ -18,12 +18,16 @@ namespace SimplCommerce.Module.Orders.Areas.Orders.Controllers
         private readonly IMediaService _mediaService;
         private readonly IRepository<Order> _orderRepository;
         private readonly IWorkContext _workContext;
+        private readonly IWorkCurrency _workCurrency;
+        private readonly ICurrencyService _currencyService;
 
-        public OrderController(IRepository<Order> orderRepository, IWorkContext workContext, IMediaService mediaService)
+        public OrderController(IRepository<Order> orderRepository, IWorkContext workContext, IWorkCurrency workCurrency, IMediaService mediaService, ICurrencyService currencyService)
         {
             _orderRepository = orderRepository;
             _workContext = workContext;
+            _workCurrency = workCurrency;
             _mediaService = mediaService;
+            _currencyService = currencyService;
         }
 
         [HttpGet("user/order-history")]
@@ -65,7 +69,7 @@ namespace SimplCommerce.Module.Orders.Areas.Orders.Controllers
         {
             var currency = _currencyService.GetCurrencyById(customerCurrency);
             if (currency != null)
-                _workContext.WorkingCurrency = currency;
+                _workCurrency.WorkingCurrency = currency;
 
             //home page
             if (string.IsNullOrEmpty(returnUrl))
