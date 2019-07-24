@@ -15,7 +15,7 @@ namespace SimplCommerce.WebHost.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.1-servicing-10028")
+                .HasAnnotation("ProductVersion", "2.2.6-servicing-10079")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -919,6 +919,13 @@ namespace SimplCommerce.WebHost.Migrations
                             IsVisibleInCommonSettingPage = false,
                             Module = "Core",
                             Value = "Generic"
+                        },
+                        new
+                        {
+                            Id = "Global.DefaultCultureUI",
+                            IsVisibleInCommonSettingPage = true,
+                            Module = "Global",
+                            Value = "en-US"
                         },
                         new
                         {
@@ -2143,6 +2150,24 @@ namespace SimplCommerce.WebHost.Migrations
                             IsEnabled = true,
                             LandingViewComponentName = "StripeLanding",
                             Name = "Stripe"
+                        },
+                        new
+                        {
+                            Id = "MomoPayment",
+                            AdditionalSettings = "{\"IsSandbox\":true,\"PartnerCode\":\"MOMOIQA420180417\",\"AccessKey\":\"SvDmj2cOTYZmQQ3H\",\"SecretKey\":\"PPuDXq1KowPT1ftR8DvlQTHhC03aul17\",\"PaymentFee\":0.0}",
+                            ConfigureUrl = "payments-momo-config",
+                            IsEnabled = true,
+                            LandingViewComponentName = "MomoLanding",
+                            Name = "Momo Payment"
+                        },
+                        new
+                        {
+                            Id = "NganLuong",
+                            AdditionalSettings = "{\"IsSandbox\":true, \"MerchantId\": 47249, \"MerchantPassword\": \"e530745693dbde678f9da98a7c821a07\", \"ReceiverEmail\": \"nlqthien@gmail.com\"}",
+                            ConfigureUrl = "payments-nganluong-config",
+                            IsEnabled = true,
+                            LandingViewComponentName = "NganLuongLanding",
+                            Name = "Ngan Luong Payment"
                         });
                 });
 
