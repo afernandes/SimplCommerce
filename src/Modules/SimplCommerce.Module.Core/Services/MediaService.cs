@@ -28,7 +28,7 @@ namespace SimplCommerce.Module.Core.Services
 
         public string GetMediaUrl(string fileName)
         {
-            return _storageService.GetMediaUrl(fileName);
+            return _storageService.GetMediaUrl(fileName ?? "no-image.png");
         }
 
         public string GetThumbnailUrl(Media media)

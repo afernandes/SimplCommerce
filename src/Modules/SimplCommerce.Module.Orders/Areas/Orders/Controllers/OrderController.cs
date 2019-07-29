@@ -124,7 +124,7 @@ namespace SimplCommerce.Module.Orders.Areas.Orders.Controllers
                     ProductPrice = x.ProductPrice,
                     Quantity = x.Quantity,
                     DiscountAmount = x.DiscountAmount,
-                    ProductImage = x.Product.ThumbnailImage.FileName,
+                    ProductImage = x.Product.ThumbnailImage?.FileName,
                     TaxAmount = x.TaxAmount,
                     TaxPercent = x.TaxPercent,
                     VariationOptions = OrderItemVm.GetVariationOption(x.Product)
