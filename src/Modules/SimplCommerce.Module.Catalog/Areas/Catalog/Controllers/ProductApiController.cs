@@ -58,6 +58,26 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
             _workContext = workContext;
         }
 
+        [HttpGet("quick-search")]
+        public async Task<IActionResult> QuickSearch(string name)
+        {
+            var query = _productRepository.Query()
+                .Where(x => !x.IsDeleted && !x.HasOptions && x.IsAllowToOrder);
+
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                query = query.Where(x => x.Name.Contains(name));
+            }
+
+            var products = await query.Take(5).Select(x => new
+            {
+                x.Id,
+                x.Name
+            }).ToListAsync();
+
+            return Ok(products);
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(long id)
         {
@@ -295,7 +315,8 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
                 StockTrackingIsEnabled = model.Product.StockTrackingIsEnabled,
                 HasOptions = model.Product.Variations.Any() ? true : false,
                 IsVisibleIndividually = true,
-                CreatedBy = currentUser
+                CreatedBy = currentUser,
+                LatestUpdatedBy = currentUser
             };
 
             if (!User.IsInRole("admin"))
@@ -410,7 +431,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
             product.IsCallForPricing = model.Product.IsCallForPricing;
             product.IsAllowToOrder = model.Product.IsAllowToOrder;
             product.StockTrackingIsEnabled = model.Product.StockTrackingIsEnabled;
-            product.UpdatedBy = currentUser;
+            product.LatestUpdatedBy = currentUser;
 
             if (isPriceChanged)
             {
@@ -490,6 +511,8 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
                     LinkedProduct = product.Clone()
                 };
 
+                productLink.LinkedProduct.CreatedById = loginUser.Id;
+                productLink.LinkedProduct.LatestUpdatedById = loginUser.Id;
                 productLink.LinkedProduct.Name = variationVm.Name;
                 productLink.LinkedProduct.Slug = variationVm.Name.ToUrlFriendly();
                 productLink.LinkedProduct.Sku = variationVm.Sku;
@@ -637,6 +660,8 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
                         LinkedProduct = product.Clone()
                     };
 
+                    productLink.LinkedProduct.CreatedById = loginUser.Id;
+                    productLink.LinkedProduct.LatestUpdatedById = loginUser.Id;
                     productLink.LinkedProduct.Name = productVariationVm.Name;
                     productLink.LinkedProduct.Slug = StringHelper.ToUrlFriendly(productVariationVm.Name);
                     productLink.LinkedProduct.Sku = productVariationVm.Sku;
@@ -672,6 +697,8 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
                         isPriceChanged = true;
                     }
 
+                    productLink.LinkedProduct.LatestUpdatedById = loginUser.Id;
+                    productLink.LinkedProduct.LatestUpdatedOn = DateTimeOffset.Now;
                     productLink.LinkedProduct.Sku = productVariationVm.Sku;
                     productLink.LinkedProduct.Gtin = productVariationVm.Gtin;
                     productLink.LinkedProduct.Price = productVariationVm.Price;

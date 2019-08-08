@@ -69,6 +69,7 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
             return Json(customerGroups);
         }
 
+        [HttpGet]
         public async Task<IActionResult> Get()
         {
             var customerGroups = await _customerGroupRepository.Query().Select(x => new
@@ -134,7 +135,7 @@ namespace SimplCommerce.Module.Core.Areas.Core.Controllers
                 customerGroup.Name = model.Name;
                 customerGroup.Description = model.Description;
                 customerGroup.IsActive = model.IsActive;
-                customerGroup.UpdatedOn = DateTimeOffset.Now;
+                customerGroup.LatestUpdatedOn = DateTimeOffset.Now;
 
                 await  _customerGroupRepository.SaveChangesAsync();
                 return Accepted();

@@ -161,6 +161,7 @@ namespace SimplCommerce.Module.Shipments.Areas.Shipments.Controllers
                     x.OrderId,
                     x.VendorId,
                     WarehouseName = x.Warehouse.Name,
+                    x.TrackingNumber,
                     x.CreatedOn,
                     ShippingAddress = new
                     {
@@ -209,7 +210,7 @@ namespace SimplCommerce.Module.Shipments.Areas.Shipments.Controllers
                     CreatedById = currentUser.Id,
                     TrackingNumber = model.TrackingNumber,
                     CreatedOn = DateTimeOffset.Now,
-                    UpdatedOn = DateTimeOffset.Now
+                    LatestUpdatedOn = DateTimeOffset.Now
                 };
 
                 if (!User.IsInRole("admin"))

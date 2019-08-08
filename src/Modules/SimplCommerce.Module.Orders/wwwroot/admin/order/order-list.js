@@ -2,9 +2,8 @@
 (function () {
     angular
         .module('simplAdmin.orders')
-        .controller('OrderListCtrl', OrderListCtrl);
+        .controller('OrderListCtrl', ['orderService', 'translateService', OrderListCtrl]);
 
-    /* @ngInject */
     function OrderListCtrl(orderService, translateService) {
         var vm = this;
         vm.translate = translateService;
@@ -24,6 +23,14 @@
                 tableState.pagination.totalItemCount = result.data.totalRecord;
                 vm.isLoading = false;
             });
+        };
+
+        vm.getOrdersExport = function getOrdersExport() {
+            orderService.getOrdersExport(vm.tableStateRef);
+        };
+
+        vm.getOrderLinesExport = function getOrderLinesExport() {
+            orderService.getOrderLinesExport(vm.tableStateRef);
         };
     }
 })();
