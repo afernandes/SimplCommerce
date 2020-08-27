@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -82,11 +83,16 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
                 query = query.Where(x => x.Price <= searchOption.MaxPrice.Value);
             }
 
-            var brands = searchOption.GetBrands();
+            var categories = searchOption.GetCategories();
+            if (categories.Any())
+            {
+                query = query.Where(p => p.Categories.Select(c => c.CategoryId).Intersect(_categoryRepository.Query().Where(cat => categories.Contains(cat.Slug)).Select(c => c.Id)).Any());
+            }
+
+            var brands = searchOption.GetBrands().ToArray();
             if (brands.Any())
             {
-                var brandIds = _brandRepository.Query().Where(x => brands.Contains(x.Slug)).Select(x => x.Id).ToList();
-                query = query.Where(x => x.BrandId.HasValue && brandIds.Contains(x.BrandId.Value));
+                query = query.Where(x => x.BrandId != null && brands.Contains(x.Brand.Slug));
             }
 
             model.TotalProduct = query.Count();
@@ -98,16 +104,13 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
                 offset = (_pageSize * currentPageNum) - _pageSize;
             }
 
-            query = query
-                .Include(x => x.Brand)
-                .Include(x => x.ThumbnailImage);
-
             query = ApplySort(searchOption, query);
 
             var products = query
-                .Select(x => ProductThumbnail.FromProduct(x))
+                .Include(x => x.ThumbnailImage)
                 .Skip(offset)
                 .Take(_pageSize)
+                .Select(x => ProductThumbnail.FromProduct(x))
                 .ToList();
 
             foreach (var product in products)
@@ -140,17 +143,37 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
             return query;
         }
 
-        private static void AppendFilterOptionsToModel(ProductsByCategory model, IQueryable<Product> query)
+        private void AppendFilterOptionsToModel(ProductsByCategory model, IQueryable<Product> query)
         {
             model.FilterOption.Price.MaxPrice = query.Max(x => x.Price);
             model.FilterOption.Price.MinPrice = query.Min(x => x.Price);
 
-            model.FilterOption.Brands = query
-                .Where(x => x.BrandId != null)
+            var getCategoryName = _contentLocalizationService.GetLocalizationFunction<Category>();
+
+            model.FilterOption.Categories = query
+                .SelectMany(x => x.Categories)
+                .GroupBy(x => new
+                {
+                    x.Category.Id,
+                    x.Category.Name,
+                    x.Category.Slug,
+                    x.Category.ParentId
+                })
+                .Select(g => new FilterCategory
+                {
+                    Id = (int)g.Key.Id,
+                    Name = getCategoryName(g.Key.Id, nameof(g.Key.Name), g.Key.Name),
+                    Slug = g.Key.Slug,
+                    ParentId = g.Key.ParentId,
+                    Count = g.Count()
+                }).ToList();
+
+            model.FilterOption.Brands = query.Include(x => x.Brand)
+                .Where(x => x.BrandId != null).ToList()
                 .GroupBy(x => x.Brand)
                 .Select(g => new FilterBrand
                 {
-                    Id = (int)g.Key.Id,
+                    Id = g.Key.Id,
                     Name = g.Key.Name,
                     Slug = g.Key.Slug,
                     Count = g.Count()

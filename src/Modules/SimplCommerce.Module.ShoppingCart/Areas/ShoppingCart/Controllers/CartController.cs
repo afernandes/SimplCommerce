@@ -51,7 +51,7 @@ namespace SimplCommerce.Module.ShoppingCart.Areas.ShoppingCart.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("cart/add-item-result")]
         public async Task<IActionResult> AddToCartResult(long productId)
         {
             var currentUser = await _workContext.GetCurrentUser();
@@ -188,6 +188,20 @@ namespace SimplCommerce.Module.ShoppingCart.Areas.ShoppingCart.Controllers
             _cartItemRepository.SaveChanges();
 
             return await List();
+        }
+
+        [HttpPost("cart/unlock")]
+        public async Task<IActionResult> Unlock()
+        {
+            var currentUser = await _workContext.GetCurrentUser();
+            var cart = await _cartService.GetActiveCart(currentUser.Id);
+            if (cart == null)
+            {
+                return NotFound();
+            }
+
+            await _cartService.UnlockCart(cart);
+            return Accepted();
         }
 
         private IActionResult CreateCartLockedResult()

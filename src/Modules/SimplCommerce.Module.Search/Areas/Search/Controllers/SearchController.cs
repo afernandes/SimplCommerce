@@ -87,19 +87,18 @@ namespace SimplCommerce.Module.Search.Areas.Search.Controllers
 
             if (string.Compare(model.CurrentSearchOption.Category, "all", StringComparison.OrdinalIgnoreCase) != 0)
             {
-                var categories = searchOption.GetCategories();
+                var categories = searchOption.GetCategories().ToArray();
                 if (categories.Any())
                 {
-                    var categoryIds = _categoryRepository.Query().Where(x => categories.Contains(x.Slug)).Select(x => x.Id).ToList();
-                    query = query.Where(x => x.Categories.Any(c => categoryIds.Contains(c.CategoryId)));
+                    query = query.Where(x => x.Categories.Any(c => categories.Contains(c.Category.Slug)));
                 }
             }
 
-            var brands = searchOption.GetBrands();
+            // EF Core bug, so we have to covert to Array
+            var brands = searchOption.GetBrands().ToArray();
             if (brands.Any())
             {
-                var brandIs = _brandRepository.Query().Where(x => brands.Contains(x.Slug)).Select(x => x.Id).ToList();
-                query = query.Where(x => x.BrandId.HasValue && brandIs.Contains(x.BrandId.Value));
+                query = query.Where(x => x.BrandId.HasValue && brands.Contains(x.Brand.Slug));
             }
 
             model.TotalProduct = query.Count();
@@ -113,15 +112,13 @@ namespace SimplCommerce.Module.Search.Areas.Search.Controllers
 
             SaveSearchQuery(searchOption, model);
 
-            query = query
-                .Include(x => x.ThumbnailImage);
-
             query = AppySort(searchOption, query);
 
             var products = query
-                .Select(x => ProductThumbnail.FromProduct(x))
+                .Include(x => x.ThumbnailImage)
                 .Skip(offset)
                 .Take(_pageSize)
+                .Select(x => ProductThumbnail.FromProduct(x))
                 .ToList();
 
             foreach (var product in products)
@@ -154,10 +151,12 @@ namespace SimplCommerce.Module.Search.Areas.Search.Controllers
             return query;
         }
 
-        private static void AppendFilterOptionsToModel(SearchResult model, IQueryable<Product> query)
+        private void AppendFilterOptionsToModel(SearchResult model, IQueryable<Product> query)
         {
             model.FilterOption.Price.MaxPrice = query.Max(x => x.Price);
             model.FilterOption.Price.MinPrice = query.Min(x => x.Price);
+
+            var getCategoryName = _contentLocalizationService.GetLocalizationFunction<Category>();
 
             model.FilterOption.Categories = query
                 .SelectMany(x => x.Categories)
@@ -171,14 +170,15 @@ namespace SimplCommerce.Module.Search.Areas.Search.Controllers
                 .Select(g => new FilterCategory
                 {
                     Id = (int)g.Key.Id,
-                    Name = g.Key.Name,
+                    Name = getCategoryName(g.Key.Id, nameof(g.Key.Name), g.Key.Name),
                     Slug = g.Key.Slug,
                     ParentId = g.Key.ParentId,
                     Count = g.Count()
                 }).ToList();
 
-            model.FilterOption.Brands = query
-               .Where(x => x.BrandId != null)
+            // TODO an EF Core bug, so we have to do evaluation in client
+            model.FilterOption.Brands = query.Include(x => x.Brand)
+               .Where(x => x.BrandId != null).ToList()
                .GroupBy(x => x.Brand)
                .Select(g => new FilterBrand
                {

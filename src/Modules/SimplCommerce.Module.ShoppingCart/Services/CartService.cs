@@ -122,14 +122,15 @@ namespace SimplCommerce.Module.ShoppingCart.Services
                 IsProductPriceIncludeTax = cart.IsProductPriceIncludeTax,
                 TaxAmount = cart.TaxAmount,
                 ShippingAmount = cart.ShippingAmount,
-                OrderNote = cart.OrderNote
+                OrderNote = cart.OrderNote,
+                LockedOnCheckout = cart.LockedOnCheckout
             };
 
             cartVm.Items = _cartItemRepository
                 .Query()
                 .Include(x => x.Product).ThenInclude(p => p.ThumbnailImage)
                 .Include(x => x.Product).ThenInclude(p => p.OptionCombinations).ThenInclude(o => o.Option)
-                .Where(x => x.CartId == cart.Id)
+                .Where(x => x.CartId == cart.Id).ToList()
                 .Select(x => new CartItemVm(_currencyService)
                 {
                     Id = x.Id,
@@ -195,7 +196,8 @@ namespace SimplCommerce.Module.ShoppingCart.Services
                     cartTo = new Cart
                     {
                         CustomerId = toUserId,
-                        CreatedById = toUserId
+                        CreatedById = toUserId,
+                        IsProductPriceIncludeTax = cartFrom.IsProductPriceIncludeTax
                     };
 
                     _cartRepository.Add(cartTo);
@@ -222,6 +224,20 @@ namespace SimplCommerce.Module.ShoppingCart.Services
                 }
 
                await _cartRepository.SaveChangesAsync();
+            }
+        }
+
+        public async Task UnlockCart(Cart cart)
+        {
+            if(cart == null)
+            {
+                throw new ArgumentNullException(nameof(cart));
+            }
+
+            if (cart.LockedOnCheckout)
+            {
+                cart.LockedOnCheckout = false;
+                await _cartRepository.SaveChangesAsync();
             }
         }
     }
